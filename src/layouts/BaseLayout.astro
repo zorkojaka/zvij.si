@@ -1,0 +1,28 @@
+---
+import "../styles/global.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import site from "../content/site.json";
+
+const { title, description } = Astro.props;
+---
+<!doctype html>
+<html lang="sl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="canonical" href={Astro.url.href} />
+  </head>
+  <body>
+    <Header siteName={site.siteName} />
+    <main>
+      <slot />
+    </main>
+    <Footer contact={site.contact} social={site.social} footer={site.footer} />
+  </body>
+</html>

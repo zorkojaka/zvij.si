@@ -1,0 +1,23 @@
+{
+  "siteName": "ZVij.si",
+  "tagline": "Stran v izdelavi",
+  "logoText": "ZVij.si",
+  "contact": {
+    "email": "info@zvij.si",
+    "phone": "+386 40 000 000",
+    "address": "Ljubljana, Slovenija"
+  },
+  "social": [
+    {
+      "label": "Instagram",
+      "url": "https://instagram.com/"
+    },
+    {
+      "label": "Facebook",
+      "url": "https://facebook.com/"
+    }
+  ],
+  "footer": {
+    "copyright": "© 2024 ZVij.si. Vse pravice pridržane."
+  }
+}

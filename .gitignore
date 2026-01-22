@@ -22,3 +22,7 @@ error_log
 Thumbs.db
 .idea/
 .vscode/
+# Node / Astro
+node_modules/
+dist/
+!.gitkeep
