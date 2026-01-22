@@ -1,0 +1,36 @@
+{
+  "slug": "/",
+  "seo": {
+    "title": "ZVij.si",
+    "description": "Stran v izdelavi."
+  },
+  "sections": [
+    {
+      "type": "hero",
+      "title": "ZVij.si",
+      "subtitle": "Stran v izdelavi",
+      "cta": {
+        "label": "Kontaktiraj nas",
+        "href": "/kontakt"
+      }
+    },
+    {
+      "type": "featureList",
+      "title": "Kaj pripravljamo",
+      "items": [
+        "Nova vizualna identiteta",
+        "Hitrejša uporabniška izkušnja",
+        "Enostavno urejanje vsebin"
+      ]
+    },
+    {
+      "type": "cta",
+      "title": "Želite biti obveščeni?",
+      "description": "Kontaktirajte nas za več informacij o prenovi.",
+      "cta": {
+        "label": "Pošlji povpraševanje",
+        "href": "/kontakt"
+      }
+    }
+  ]
+}

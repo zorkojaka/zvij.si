@@ -1,0 +1,37 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import home from "../content/pages/home.json";
+
+const hero = home.sections.find((section) => section.type === "hero");
+const featureList = home.sections.find((section) => section.type === "featureList");
+const cta = home.sections.find((section) => section.type === "cta");
+---
+<BaseLayout title={home.seo.title} description={home.seo.description}>
+  <section class="hero">
+    <div class="container">
+      <p class="eyebrow">{home.seo.description}</p>
+      <h1>{hero?.title}</h1>
+      <p class="subtitle">{hero?.subtitle}</p>
+      <a class="button" href={hero?.cta.href}>{hero?.cta.label}</a>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="container">
+      <h2>{featureList?.title}</h2>
+      <ul>
+        {featureList?.items.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="container">
+      <h2>{cta?.title}</h2>
+      <p>{cta?.description}</p>
+      <a class="button" href={cta?.cta.href}>{cta?.cta.label}</a>
+    </div>
+  </section>
+</BaseLayout>
