@@ -1,0 +1,29 @@
+@import '../../../../../../../../themes/plamen/assets/css/scss/variables';
+@import '../../../../../../../../themes/plamen/assets/css/scss/_grid-variables';
+@import '../../../../../../../../themes/plamen/assets/css/scss/mixins';
+
+section.qodef-elementor-content-grid > .elementor-container {
+    width: $content-grid-width-1100;
+    margin: 0 auto;
+
+    @each $key, $values in $content-grid-width-map {
+
+        @media only screen and (min-width: map-deep-get($content-grid-width-map, $key, 'responsive-break')) {
+
+            .qodef-content-grid-#{$key} & {
+                width: map-deep-get($content-grid-width-map, $key, 'content-grid-width');
+                max-width: map-deep-get($content-grid-width-map, $key, 'content-grid-width');
+            }
+        }
+    }
+}
+
+section.qodef-elementor-content-grid > .elementor-container {
+
+    @each $key, $values in $content-grid-width-responsive-map {
+
+        @media only screen and (max-width: map-deep-get($content-grid-width-responsive-map, $key, 'responsive-break')) {
+            width: map-deep-get($content-grid-width-responsive-map, $key, 'content-grid-width');
+        }
+    }
+}

@@ -1,0 +1,51 @@
+.widget.qodef-social-text {
+    display: inline-block;
+
+    .qodef-social-text-link {
+        margin-right: 30px;
+        color: $main-color;
+        font-family: $script-font;
+        text-transform: capitalize;
+        font-size: 20px;
+	    
+	    a {
+		    color: $main-color;
+	    }
+    
+        span:after {
+            content: '.'
+        }
+
+        &:last-child {
+            margin: 0;
+        }
+    }
+}
+
+#qodef-top-area .widget.qodef-social-text {
+
+	.qodef-social-text-link {
+		font-size: 14px;
+	}
+	
+	a {
+		color: $main-color; //Override default link color for Top Area
+
+        &:hover {
+            color: #fff;
+        }
+	}
+}
+
+#qodef-page-sidearea .widget.qodef-social-text,
+#qodef-page-footer .widget.qodef-social-text,
+#qodef-side-area .widget.qodef-social-text {
+
+    a {
+        color: $main-color; //Override default link color for Sidebar Area, Side Area and Footer Area
+
+        &:hover {
+            color: #000;
+        }
+    }
+}

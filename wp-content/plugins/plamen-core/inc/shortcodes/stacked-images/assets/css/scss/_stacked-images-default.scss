@@ -1,0 +1,69 @@
+/* ==========================================================================
+   Stacked Images style - begin
+   ========================================================================== */
+
+.qodef-stacked-images {
+	@include qodefRelativeLayout();
+	
+	.qodef-m-images {
+		position: relative;
+		display: inline-block;
+		vertical-align: middle;
+		opacity: 0;
+		transition: all .7s cubic-bezier(0.23, 1, 0.32, 1);
+		
+		.qodef-e-image {
+			
+			&.qodef--stack {
+				position: absolute;
+				display: block;
+				bottom: -100%;
+				transition: all .7s cubic-bezier(0.23, 1, 0.32, 1);
+			}
+		}
+		
+		@at-root .qodef-stack--left#{&} {
+			margin: 0 0 0 30%;
+		}
+		
+		@at-root .qodef-stack--right#{&} {
+			margin: 0 30% 0 0;
+		}
+		
+		@at-root .qodef-stack--bottom#{&} {
+			padding: 0 0 75px;
+		}
+		
+		&.qodef--appeared {
+			opacity: 1;
+
+			.qodef-e-image {
+
+				&.qodef--stack {
+
+					@at-root .qodef-stack--left#{&} {
+						bottom: 70px;
+						left: 0;
+						transform: translate(-50%, 0);
+					}
+
+					@at-root .qodef-stack--right#{&} {
+						bottom: 70px;
+						right: 0;
+						transform: translate(50%, 0);
+					}
+
+					@at-root .qodef-stack--bottom#{&} {
+						bottom: 0;
+						right: 15%;
+						max-width: 40%;
+					}
+				}
+			}
+		}
+	}
+}
+
+/* ==========================================================================
+   Stacked Images style - end
+   ========================================================================== */

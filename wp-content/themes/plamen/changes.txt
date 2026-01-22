@@ -1,0 +1,32 @@
+1.3
+- Added WordPress 5.8.3 compatibility
+- Added WooCommerce 6.1.0 compatibility
+- Added PHP8 compatibility
+- Updated Qode Framework to 1.1.8
+- Updated Revolution Slider to 6.5.14
+- Updated Plamen Core to 1.2
+- Fixed product review stars
+- Fixed perfect scrollbar
+- Fixed Testimonials Slider Options
+- Fixed cart widgets in WordPress 5.8
+- Improved theme registration to block Shortcodes and CPT loading if the theme is not registered
+- Improved theme registration - code already used case
+- Theme Validation Rest Endpoint
+
+1.2
+- Added compatibility with Qi Addons for Elementor plugin
+- Added WordPress 5.7.2 compatibility
+- Added WooCommerce 5.4.1 compatibility
+- Updated Revolution Slider to 6.4.11
+- Updated Qode Framework to 1.1.5
+
+1.1
+- Added WordPress 5.5 compatibility
+- Added WooCommerce 4.6.0 compatibility
+- Updated Qode Framework to 1.1.3
+- Updated Plamen Core to 1.1
+- Updated Revolution Slider to 6.2.23
+- Fixed Elementor fields import
+- Fixed custom font global option functionality
+- Fixed NaN value - WooCommerce quantity input fields
+- Removed unnecessary tag from WooCommerce cart widgets

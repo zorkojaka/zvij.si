@@ -1,0 +1,32 @@
+.qodef-team-list {
+
+	&.qodef-item-layout--info-on-hover {
+		
+		.qodef-e-inner {
+
+			&:hover {
+				
+				.qodef-e-content {
+					opacity: 1;
+					z-index: 1; // safari fix
+				}
+			}
+		}
+		
+		.qodef-e-content {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			top: 0;
+			left: 0;
+			background-color: #fff;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-direction: column;
+			opacity: 0;
+			transition: $opacity-transition;
+			z-index: -1; // safari fix
+		}
+	}
+}

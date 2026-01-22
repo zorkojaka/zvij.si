@@ -1,0 +1,93 @@
+/* ==========================================================================
+   Item Showcase shortcode styles
+   ========================================================================== */
+
+$space-between-items: 60px;
+$offset-size: 70px;
+$offset-animation: opacity .55s cubic-bezier(.23, 1, .32, 1), transform .55s cubic-bezier(.23, 1, .32, 1);
+
+.qodef-item-showcase {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	visibility: hidden;
+	
+	.qodef-m-image {
+		position: relative;
+		flex-shrink: 0;
+		margin: 0 $space-between-items;
+		opacity: 0;
+		transform: translateY($offset-size);
+		transition: $offset-animation;
+		
+		img {
+			display: block;
+		}
+	}
+	
+	.qodef-m-items {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		
+		&.qodef--left {
+			text-align: right;
+		}
+		
+		&.qodef--right {
+			text-align: left;
+		}
+	}
+	
+	.qodef-m-item {
+		@include qodefRelativeLayout();
+		margin-top: $space-between-items;
+		opacity: 0;
+		transform: translateY($offset-size);
+		transition: $offset-animation;
+		
+		&:first-child {
+			margin-top: 0;
+		}
+		
+		@for $i from 1 through 6 {
+			
+			&:nth-child(#{$i}) {
+				transition-delay: #{$i*200}ms;
+			}
+		}
+	}
+	
+	.qodef-e-title {
+		margin: 0;
+	}
+	
+	.qodef-e-title-link {
+		@include qodefTypographyLayout();
+		
+		&:hover {
+			color: $main-color;
+		}
+	}
+	
+	.qodef-e-text {
+		margin: 20px 0 0;
+	}
+	
+	&.qodef--init {
+		visibility: visible;
+		
+		.qodef-m-image {
+			opacity: 1;
+			transform: translateY(0);
+		}
+		
+		.qodef-m-item {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+}

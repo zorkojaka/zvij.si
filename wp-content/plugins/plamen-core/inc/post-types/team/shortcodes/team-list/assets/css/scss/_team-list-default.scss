@@ -1,0 +1,84 @@
+/* ==========================================================================
+   Team lists shortcode styles
+   ========================================================================== */
+
+.qodef-team-list {
+	text-align: center;
+	
+	.qodef-e {
+		overflow: hidden;
+		
+		.qodef-e-image {
+			position: relative;
+			
+			.qodef-e-media-image {
+				&:after {
+					content: '';
+					@include qodefAbsoluteLayout();
+					z-index: 2;
+					background-image: linear-gradient(to bottom, #af9e91, #2a1403);
+					opacity: 0;
+					transition: opacity .3s cubic-bezier(0.46, 0.03, 0.52, 0.96) .1s;
+				}
+			}
+		}
+		
+		.qodef-e-content {
+			@include qodefAbsoluteLayout();
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			z-index: 4;
+			color: #fff;
+			transform: translateY(10%);
+			opacity: 0;
+			visibility: hidden;
+			transition: .3s cubic-bezier(0.46, 0.03, 0.52, 0.96);
+			
+			* {
+				color: inherit
+			}
+			
+			.qodef-e-role {
+				@include qodefH7Style();
+				color: #fff;
+				text-transform: uppercase;
+				margin: 0;
+			}
+			
+			.qodef-e-title {
+				margin: 2px 0 13px;
+			}
+			
+			.qodef-team-member-social-icons {
+				margin: 0;
+				
+				.qodef-social-icon-text {
+					font-family: $script-font;
+					font-size: 20px;
+					text-transform: capitalize;
+					margin: 0 17px;
+					opacity: 1;
+					transition: opacity .2s ease-out;
+
+					&:hover {
+						opacity: .75;
+					}
+				}
+			}
+		}
+		
+		&:hover {
+			.qodef-e-media-image:after {
+				opacity: .8;
+			}
+			
+			.qodef-e-content {
+				opacity: 1;
+				visibility: visible;
+				transform: translateY(0);
+				transition: .3s cubic-bezier(0.46, 0.03, 0.52, 0.96) .1s;
+			}
+		}
+	}
+}

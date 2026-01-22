@@ -1,0 +1,50 @@
+/* ==========================================================================
+   Social Share shortcode styles
+   ========================================================================== */
+
+.qodef-social-share {
+	&.qodef-layout--text {
+
+		.qodef-social-title {
+
+			.widget_plamen_core_social_share & {
+				font-size: 17px;
+			}
+		}
+		
+		li {
+			margin-right: 30px;
+			font-family: $script-font;
+			text-transform: capitalize;
+
+			.widget_plamen_core_social_share & {
+				margin-right: 37px;
+			}
+			
+			&:last-child {
+				margin-right: 0;
+			}
+			
+			a {
+				color: $main-color;
+				font-size: 16px;
+
+				&:hover {
+					color: $heading-color;
+				}
+				
+				.widget_plamen_core_social_share & {
+					font-size: 20px;
+				}
+				
+				span:after {
+					content: '.'
+				}
+			}
+		}
+	}
+}
+
+/* ==========================================================================
+   Social Share shortcode styles
+   ========================================================================== */

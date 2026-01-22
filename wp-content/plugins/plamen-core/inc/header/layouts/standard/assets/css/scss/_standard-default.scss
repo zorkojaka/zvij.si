@@ -1,0 +1,34 @@
+/* ==========================================================================
+   Header layout styles
+   ========================================================================== */
+
+$left-right-spacing: 12px;
+
+#qodef-page-header-inner {
+	
+	.qodef-header-standard--right & {
+		
+		.qodef-header-navigation {
+			margin-left: auto;
+		}
+	}
+	
+	.qodef-header-standard--center & {
+		
+		.qodef-header-navigation {
+			margin-left: auto;
+			margin-right: auto;
+		}
+	}
+	
+	.qodef-header-standard--left & {
+		
+		.qodef-header-navigation {
+			margin-right: auto;
+		}
+		
+		.qodef-header-logo-link {
+			margin-right: $left-right-spacing * 2;
+		}
+	}
+}

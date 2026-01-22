@@ -1,0 +1,31 @@
+.qodef-reviews-per-criteria {
+    .qodef-item-reviews-average-rating {
+        color: $main-color;
+        font-size: 60px;
+        line-height: 1em;
+        font-weight: 700;
+    }
+
+    .qodef-item-reviews-verbal-description {
+        vertical-align: middle;
+        margin: 2px 0 0;
+    }
+
+    .qodef-item-reviews-rating-icon {
+        vertical-align: middle;
+        font-size: 20px;
+    }
+
+    .qodef-item-reviews-display-right {
+        vertical-align: middle;
+        padding-left: 200px;
+
+        .qodef-item-reviews-display-bar {
+            line-height: 28px;
+
+            .qodef-item-reviews-display-bar-inner {
+                padding: 6px 0;
+            }
+        }
+    }
+}

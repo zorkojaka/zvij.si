@@ -1,0 +1,55 @@
+/* ==========================================================================
+   Frame Slider shortcode responsive style - begin
+   ========================================================================== */
+
+@include qodefScreenSize1024 {
+    .qodef-frame-slider-holder {
+        $bottom-distance: 96px;
+
+        margin-bottom: $bottom-distance;
+
+        .swiper-pagination-bullets {
+            bottom: -$bottom-distance !important;
+        }
+    }
+}
+
+@include qodefScreenSize768 {
+    .qodef-frame-slider-holder {
+        $bottom-distance: 86px;
+
+        margin-bottom: $bottom-distance;
+
+        .swiper-pagination-bullets {
+            bottom: -$bottom-distance !important;
+        }
+    }
+}
+
+@include qodefScreenSize680 {
+    .qodef-frame-slider-holder {
+        $bottom-distance: 76px;
+
+        margin-bottom: $bottom-distance;
+
+        .swiper-pagination-bullets {
+            bottom: -$bottom-distance !important;
+        }
+    }
+}
+
+@include qodefScreenSize480 {
+    .qodef-frame-slider-holder {
+        $bottom-distance: 46px;
+
+        margin-bottom: $bottom-distance;
+
+        .swiper-pagination-bullets {
+            bottom: -$bottom-distance !important;
+        }
+    }
+}
+
+/* ==========================================================================
+   Frame Slider shortcode responsive style - end
+   ========================================================================== */

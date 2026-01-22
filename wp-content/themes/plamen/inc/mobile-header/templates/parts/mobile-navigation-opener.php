@@ -1,0 +1,1 @@
+<a class="qodef-mobile-header-opener" href="#"><?php esc_html_e( 'Menu', 'plamen' ); ?></a>

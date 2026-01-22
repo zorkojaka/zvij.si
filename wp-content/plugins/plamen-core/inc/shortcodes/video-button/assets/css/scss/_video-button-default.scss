@@ -1,0 +1,78 @@
+/* ==========================================================================
+   Video Button shortcode start styles
+   ========================================================================== */
+
+.qodef-video-button {
+	position: relative;
+	display: inline-block;
+	vertical-align: middle;
+
+	.qodef-m-play {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: $heading-color;
+		font-size: 138px;
+		line-height: 1em;
+
+		@include qodefScreenSize680 {
+			font-size: 69px;
+		}
+
+		span {
+			position: relative;
+			display: inline-flex;
+			line-height: inherit;
+			align-items: center;
+			justify-content: center;
+			width: 1em;
+			height: 1em;
+
+			&:before {
+				content: '';
+				font-size: inherit;
+				display: block;
+				line-height: inherit;
+				border: .145em solid currentColor; //20px
+				border-top-color: transparent;
+				border-bottom-color: transparent;
+				border-left-width: 0.253em; //35px
+				border-right-width: 0;
+				border-right-color: transparent;
+				margin-left: .09em;
+			}
+
+			&:after {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				display: block;
+				width: 100%;
+				height: 100%;
+				border-radius: 50%;
+				border: 1px solid  currentColor;
+				transition: transform .2s cubic-bezier(0.46, 0.03, 0.52, 0.96);
+			}
+		}
+
+		&:hover {
+
+			span {
+
+				&:after {
+					transform: scale(.85);
+				}
+			}
+		}
+	}
+}
+/* ==========================================================================
+   Video Button shortcode end styles
+   ========================================================================== */

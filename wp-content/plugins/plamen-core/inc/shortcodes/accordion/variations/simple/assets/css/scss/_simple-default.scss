@@ -1,0 +1,75 @@
+/* ==========================================================================
+   Accordion shortcode styles
+   ========================================================================== */
+
+$swiper-arrow: svg-arrow(24px, 15px);
+
+.qodef-accordion.qodef-layout--simple {
+	
+	.qodef-accordion-title {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin: 5px 0 0;
+		padding: 12px 20px 11px 0;
+		transition: color .2s ease-out;
+		cursor: pointer;
+		border-bottom: 1px solid $main-color;
+		
+		&:first-child {
+			margin-top: 0;
+		}
+		
+		.qodef-accordion-mark {
+			position: relative;
+			flex-shrink: 0;
+			width: 20px;
+			height: 18px;
+			line-height: 1;
+			text-align: center;
+			transform: translateY(-50%);
+
+			span {
+				position: absolute;
+				display: block;
+				width: 100%;
+				top: 50%;
+				transition: transform .2s ease-out;
+				
+				&:before {
+					display: block;
+					line-height: inherit;
+				}
+				
+				&.qodef-icon--arrow {
+					transform: rotate(0);
+					transform-origin: 50% 30%;
+				}
+			}
+		}
+		
+		&.ui-state-active,
+		&.ui-state-hover {
+
+			.qodef-accordion-mark {
+				
+				span {
+
+					&.qodef-icon--arrow {
+						transform: rotate(-180deg);
+					}
+				}
+			}
+		}
+	}
+	
+	.qodef-accordion-content {
+		padding: 31px 0;
+		margin: 0;
+		
+		p {
+			margin: 0;
+		}
+	}
+}

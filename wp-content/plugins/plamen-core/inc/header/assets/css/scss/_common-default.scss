@@ -1,0 +1,69 @@
+/* ==========================================================================
+   Header common styles
+   ========================================================================== */
+
+$left-right-spacing: 12px;
+
+#qodef-page-header {
+
+	.qodef-header--light & {
+
+		#qodef-page-header-inner {
+			color: #fff;
+		}
+	}
+
+	.qodef-header--dark & {
+		#qodef-page-header-inner {
+			color: #000;
+		}
+	}
+
+	#qodef-page-header-inner .qodef-header-navigation > ul > li > a {
+
+		.qodef-header--light & {
+			color: #fff !important;
+		}
+
+		.qodef-header--dark & {
+			color: #000 !important;
+		}
+	}
+
+	.qodef-widget-holder {
+		display: flex;
+		align-items: center;
+		height: 100%;
+		margin-left: $left-right-spacing * 2;
+		color: inherit;
+
+		.widget {
+			margin: 0 $left-right-spacing;
+			color: inherit;
+
+			a {
+				color: inherit;
+			}
+			
+			&:first-child {
+				margin-left: 0;
+			}
+			
+			&:last-child {
+				margin-right: 0;
+			}
+		}
+	}
+	
+	div[id^="monster-widget-placeholder"],
+	div[id^="woo-monster-widget-placeholder"] {
+		display: none;
+	}
+}
+
+#qodef-page-header-inner {
+
+	&.qodef-content-grid {
+		padding: 0;
+	}
+}

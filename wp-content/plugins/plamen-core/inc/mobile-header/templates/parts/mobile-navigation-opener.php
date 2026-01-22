@@ -1,0 +1,1 @@
+<a class="qodef-mobile-header-opener" href="#"><?php echo plamen_get_svg_icon('menu'); ?></a>

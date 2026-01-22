@@ -1,0 +1,21 @@
+/* ==========================================================================
+   Blog list shortcode styles
+   ========================================================================== */
+
+.qodef-blog.qodef-shortcode {
+
+	&.qodef-swiper-container {
+		cursor: grab;
+
+		&.qodef-side-offset {
+			padding: 0 11.52%
+		}
+
+		@include qodefScreenSize680 {
+			.swiper-button-prev,
+			.swiper-button-next {
+				display: none;
+			}
+		}
+	}
+}

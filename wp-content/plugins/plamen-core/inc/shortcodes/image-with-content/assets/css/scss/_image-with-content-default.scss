@@ -1,0 +1,76 @@
+/* ==========================================================================
+   Section Title shortcode styles
+   ========================================================================== */
+
+.qodef-image-with-content {
+	@include qodefRelativeLayout();
+	
+	&.qodef-alignment--center {
+		text-align: center;
+	}
+	
+	&.qodef-alignment--left {
+		text-align: left;
+	}
+	
+	&.qodef-alignment--right {
+		text-align: right;
+	}
+	
+	&.qodef-image-on--right {
+		.qodef-grid-inner {
+			flex-direction: row-reverse;
+		}
+	}
+	
+	.qodef-grid-inner {
+		display: flex;
+	}
+	
+	.qodef-content-wrapper {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background: #fff;
+		height: 100%;
+	}
+	
+	.qodef-m-holder {
+		max-width: 45%;
+	
+		.qodef-m-title {
+			margin: 0 0 8px;
+		}
+		
+		.qodef-m-text-wrapper {
+			position: relative;
+			
+			.qodef-m-text {
+				margin: 5px 0 0;
+			}
+			
+			.qodef-m-background-text {
+				top: 0;
+				left: 50%;
+				text-indent: -.2em;
+				display: block;
+				width: 100%;
+				text-align: center;
+				position: absolute;
+				margin: 0;
+				opacity: .27;
+				font-family: $script-font;
+				font-size: 250px;
+				line-height: .7em;
+				transform: translateX(-50%);
+				color: transparent;
+				-webkit-text-stroke: 1px $main-color;
+				
+				@media all and (-ms-high-contrast:none) {       //IE Text stroke replacement
+					color: #fff;
+					text-shadow: -1px -1px 0px $main-color, 1px 1px 0px $main-color, -1px 1px 0px $main-color, 1px -1px 0px $main-color;
+				}
+			}
+		}
+	}
+}

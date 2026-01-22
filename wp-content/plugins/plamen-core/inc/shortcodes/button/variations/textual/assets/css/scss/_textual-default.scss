@@ -1,0 +1,27 @@
+.qodef-button {
+    &.qodef-layout--textual {
+        padding: 0 !important;
+        color: $heading-color;
+	    @include qodefButtonSimpleStyle();
+        background-color: transparent;
+
+        .qodef-m-text {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        &:hover {
+            color: $heading-color;
+
+            &:before {
+                transform: scaleX(1);
+                transition: .3s cubic-bezier(0.46, 0.03, 0.52, 0.96) .2s;
+            }
+
+            &:after {
+                transform: scaleX(0);
+                transition: .3s cubic-bezier(0.46, 0.03, 0.52, 0.96);
+            }
+        }
+    }
+}

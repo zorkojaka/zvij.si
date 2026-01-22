@@ -1,0 +1,17 @@
+/* ==========================================================================
+# Afe Verification responsive style
+========================================================================== */
+
+#qodef-age-verification-modal {
+    
+    @include qodefScreenSize680 {
+    
+        .qodef-m-content {
+            min-width: auto;
+        }
+    
+        .qodef-m-content-note {
+            display: none;
+        }
+    }
+}

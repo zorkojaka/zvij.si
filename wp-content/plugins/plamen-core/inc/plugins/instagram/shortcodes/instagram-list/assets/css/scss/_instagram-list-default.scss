@@ -1,0 +1,117 @@
+/* ==========================================================================
+   Instagram List shortcode styles
+   ========================================================================== */
+
+.qodef-instagram-list {
+	
+	#sb_instagram #sbi_images {
+		
+		.sbi_photo_wrap {
+			
+			a {
+				background-image: none !important;
+				height: auto !important;
+				opacity: 1 !important;
+				padding-bottom: 0 !important;
+				
+				img {
+					display: inline-block !important;
+				}
+
+				&:before {
+					content: '';
+					@include qodefAbsoluteLayout();
+					background-color: rgba(#000, .5);
+					opacity: 0;
+					transition: opacity .2s ease-in-out;
+				}
+
+				&:after {
+					position: absolute;
+					top: 50%;
+					left: 50%;
+					content: 'Ig.';
+					font-family: $script-font;
+					font-size: 25px;
+					letter-spacing: 0.09em;
+					color: $main-color;
+					transform: translateX(-50%) translateY(-50%);
+					opacity: 0;
+					transition: opacity .2s ease-in-out;
+				}
+
+				&:hover {
+
+					&:before,
+					&:after {
+						opacity: 1;
+					}
+				}
+			}
+		}
+	}
+	
+	@for $i from 0 to length($grid-columns-gutter-label) {
+		&.qodef-gutter--#{nth($grid-columns-gutter-label,$i+1)} {
+			$gutter-size: nth($grid-columns-gutter-size, $i+1);
+			$gutter-double-size: $gutter-size * 2;
+			
+			&.qodef--no-bottom-space {
+				
+				@if ($gutter-size == 0) {
+					margin-bottom: 0;
+				} @else {
+					margin-bottom: -#{$gutter-double-size}px;
+				}
+			}
+			
+			#sb_instagram #sbi_images {
+				float: none;
+				padding: 0 !important;
+				width: auto;
+				@if ($gutter-size == 0) {
+					margin: 0;
+				} @else {
+					margin: 0 -#{$gutter-size}px;
+				}
+				
+				> .sbi_item {
+					
+					@if ($gutter-size == 0) {
+						padding: 0 !important;
+						margin: 0 !important;
+					} @else {
+						padding: 0 #{$gutter-size}px !important;
+						margin: 0 0 #{$gutter-double-size}px !important;
+					}
+				}
+			}
+		}
+	}
+}
+
+// slider styles
+.qodef-instagram-swiper-container {
+	position: relative;
+	margin: 0 auto;
+	padding: 0;
+	list-style: none;
+	z-index: 1;
+	visibility: hidden;
+	overflow: hidden;
+	
+	.swiper-slide {
+		
+		a, img {
+			width: 100%;
+		}
+	}
+	
+	&.qodef-swiper--initialized {
+		visibility: visible;
+	}
+}
+
+/* ==========================================================================
+   Instagram List shortcode styles
+   ========================================================================== */

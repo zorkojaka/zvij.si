@@ -1,0 +1,34 @@
+.qodef-banner {
+	
+	&.qodef-layout--link-button {
+		
+		.qodef-m-title {
+			margin: 10px 0;
+		}
+		
+		.qodef-m-text {
+			margin: 0;
+		}
+		
+		.qodef-m-button {
+			margin: 27px 0 0;
+			z-index: 22; // So border holder doesn't cover it
+
+			@include qodefScreenSize1366 {
+				margin-top: 7px;
+			}
+
+			@include qodefScreenSize768 {
+				margin-top: 20px;
+			}
+
+			@include qodefScreenSize680 {
+				margin-top: 0;
+			}
+			
+			.qodef-layout--textual {
+				color: #fff;
+			}
+		}
+	}
+}

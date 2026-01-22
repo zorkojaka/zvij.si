@@ -1,0 +1,59 @@
+.qodef-review-rating {
+	display: flex;
+	
+	.qodef-rating-inner {
+		display: flex;
+		flex-basis: 50%;
+	}
+	
+	label {
+		margin: 0 10px 0 0;
+	}
+	
+	.qodef-comment-rating-box {
+		margin: 0;
+	}
+	
+	.qodef-star-rating {
+		position: relative;
+		display: inline-block;
+		vertical-align: top;
+		margin: 0;
+		font-size: 0;
+		color: transparent;
+		cursor: pointer;
+		overflow: hidden;
+		
+		&:before {
+			position: relative;
+			display: inline-block;
+			vertical-align: top;
+			overflow: hidden;
+			z-index: -1;
+			@include qodefRatingsStarPseudoStarContent();
+			@include qodefRatingsStarPseudoStyle($heading-color);
+		}
+		
+		&.active {
+			
+			&:after {
+				position: absolute;
+				top: 0;
+				right: 0;
+				display: block;
+				@include qodefRatingsStarPseudoStarContent(true);
+				@include qodefRatingsStarPseudoStyle($heading-color);
+			}
+		}
+	}
+	
+	.qodef-comments-ratings {
+		@include qodefRatingsStyle();
+	}
+}
+
+// Import post info parts
+@import "parts/details-per-criteria";
+@import "parts/details-per-mark";
+@import "parts/details-simple";
+@import "parts/item-holder";

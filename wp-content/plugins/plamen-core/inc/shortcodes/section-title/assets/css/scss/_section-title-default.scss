@@ -1,0 +1,35 @@
+/* ==========================================================================
+   Section Title shortcode styles
+   ========================================================================== */
+
+.qodef-section-title {
+	@include qodefRelativeLayout();
+	
+	&.qodef-alignment--center {
+		text-align: center;
+	}
+	
+	&.qodef-alignment--left {
+		text-align: left;
+	}
+	
+	&.qodef-alignment--right {
+		text-align: right;
+	}
+	
+	.qodef-m-title {
+		margin: 0;
+	}
+	
+	.qodef-m-tagline {
+		display: block;
+		margin: 0 0 17px;
+		font-family: $script-font;
+		font-size: 25px;
+		color: $main-color;
+	}
+	
+	.qodef-m-text {
+		margin: 5px 0 0;
+	}
+}

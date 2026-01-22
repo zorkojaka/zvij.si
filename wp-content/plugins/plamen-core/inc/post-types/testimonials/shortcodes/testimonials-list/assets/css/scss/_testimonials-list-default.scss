@@ -1,0 +1,170 @@
+/* ==========================================================================
+   Testimonials list shortcode styles
+   ========================================================================== */
+
+.qodef-testimonials-list {
+	
+	.qodef-e-media-image {
+		position: absolute;
+		border-radius: 50%;
+		border: 1px solid $main-color;
+		padding: 10px;
+		margin-right: 25px;
+		overflow: hidden;
+		line-height: 0;
+		opacity: 0;
+		transition: opacity .5s ease-in-out;
+		width: 267px;
+		height: 267px;
+		
+		img {
+			border-radius: 50%;
+		}
+		
+		&.active {
+			opacity: 1;
+		}
+	}
+	
+	.qodef-m-testimonials-swiper {
+		overflow: hidden;
+		
+		.swiper-wrapper {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			overflow: hidden;
+		}
+
+		.swiper-slide {
+
+			.qodef-e-inner {
+
+				> * {
+					transition-duration: .5s;
+				}
+			}
+		}
+
+		.swiper-slide.swiper-slide-active {
+
+			.qodef-e-inner {
+
+				> * {
+					opacity: 1;
+					visibility: visible;
+					transition: .3s cubic-bezier(0.46, 0.03, 0.52, 0.96) .4s;
+				}
+			}
+		}
+		
+		.qodef-e-inner {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			box-sizing: border-box;
+
+			> * {
+				opacity: 0;
+				visibility: hidden;
+				transition: .3s cubic-bezier(0.46, 0.03, 0.52, 0.96);
+			}
+		}
+
+		@include qodefScreenSize680 {
+			.swiper-button-prev,
+			.swiper-button-next {
+				display: none;
+			}
+		}
+	}
+
+	.qodef-e-title {
+		margin: 0 0 25px;
+		display: none;
+	}
+
+	.qodef-e-text {
+		margin: 0 0 25px;
+		font-family: $script-font;
+		font-size: 38px;
+		line-height: 45px;
+		margin-bottom: 23px;
+		color: $main-color;
+	}
+
+	.qodef-e-author {
+		margin: 0;
+
+		h4 {
+			margin-bottom: 4px;
+		}
+	}
+
+	.qodef-e-content {
+		&:after {
+			content: '';
+			position: absolute;
+			background: url("/wp-content/themes/plamen/assets/img/testimonialbg.png") no-repeat right;
+			right: 75px;
+			bottom: 30px;
+			display: block;
+			width: 280px;
+			height: 194px; //So quote img won't get cut
+		}
+
+		&.qodef-testimonials-simple {
+
+			.swiper-wrapper {
+				padding: 0 100px 0 10px;
+				box-sizing: border-box;
+			}
+		}
+
+		&:not(.qodef-testimonials-simple) {
+			.qodef-e-inner {
+				min-height: 267px; // Height of the image
+			}
+
+			.qodef-e-text {
+				margin-right: 70px;
+			}
+
+			&:after {
+				right: 125px;
+			}
+		}
+	}
+	
+	.swiper-pagination-bullets {
+		position: absolute !important;
+		text-align: left;
+		bottom: 0 !important;
+		
+		.swiper-pagination-bullet {
+			margin-bottom: 20px !important;
+
+			&:last-of-type {
+				margin-bottom: 0 !important;
+			}
+
+			&:before {
+				background-color: $main-color;
+			}
+		}
+	}
+	
+	&.qodef-skin--light {
+		.qodef-e-title,
+		.qodef-e-text,
+		.qodef-e-author {
+			color: #fff;
+		}
+		
+		.swiper-pagination-bullet {
+			&:before {
+				background-color: #fff;
+			}
+		}
+	}
+}

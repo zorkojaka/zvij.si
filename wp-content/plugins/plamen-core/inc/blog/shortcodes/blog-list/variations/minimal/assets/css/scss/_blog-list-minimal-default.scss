@@ -1,0 +1,50 @@
+/* ==========================================================================
+   Blog List Minimal styles
+   ========================================================================== */
+
+.qodef-blog {
+	
+	&.qodef-item-layout--minimal {
+		
+		article {
+			text-align: center;
+			
+			.qodef-e-info {
+				justify-content: center;
+
+				&.qodef-info--top {
+					margin-bottom: 3px;
+				}
+				
+				&.qodef-info--bottom {
+					margin-top: 30px;
+
+					@include qodefScreenSize680 {
+						margin-bottom: 30px;
+					}
+				}
+			}
+			
+			.qodef-e-title {
+				margin: 10px 0 15px;
+			}
+			
+			&.format-quote,
+			&.format-link {
+				.qodef-e-inner {
+					padding:0;
+					background: transparent;
+					margin-bottom: 0;
+					
+					&:after {
+						content: none
+					}
+				}
+
+				.qodef-e-inner .qodef-e-info.qodef-info--bottom {
+					line-height: inherit;
+				}
+			}
+		}
+	}
+}

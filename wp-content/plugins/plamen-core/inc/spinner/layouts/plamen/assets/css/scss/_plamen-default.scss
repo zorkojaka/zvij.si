@@ -1,0 +1,182 @@
+/* ==========================================================================
+   Spinner layout styles
+   ========================================================================== */
+
+#qodef-page-spinner {
+
+    &.qodef-layout--plamen {
+
+        .qodef-m-spinner {
+            width: 100%;
+            height: 100%;
+        }
+
+        .qodef-m-plamen {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000;
+            background-image: url('../../inc/spinner/layouts/plamen/assets/img/preloader-background.jpg');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+
+            .qodef-browser--edge & {
+                background-image: none;
+            }
+        }
+
+        .qodef-m-plamen-frame {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            transition: opacity .3s ease;
+
+            .qodef-browser--edge & {
+                z-index: 1;
+            }
+
+            @include qodefScreenSize1440 {
+                width: 75%;
+                height: 290px;
+            }
+
+            @include qodefScreenSize680 {
+                width: 100%;
+                height: 350px;
+            }
+
+            path {
+                stroke-dashoffset: 500;
+                stroke-dasharray: 500;
+            }
+
+	        .qodef-browser--ms-explorer & {
+
+		        path {
+			        stroke-dasharray: 0;
+			        stroke-dashoffset: 0;
+		        }
+	        }
+
+            &.qodef-animate-elements {
+
+                path {
+                    animation: 2s qodefAnimateFrame forwards;
+                }
+
+                .qodef-m-plamen-image,
+                .qodef-m-plamen-text {
+                    animation: 1s qodefAnimateElement forwards;
+                }
+
+                .qodef-m-plamen-image {
+                    animation-delay: .75s;
+                }
+
+                .qodef-m-plamen-text {
+                    animation-delay: 1.5s;
+                }
+            }
+        }
+
+        .qodef-m-plamen-image,
+        .qodef-m-plamen-text {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%) translateY(10%);
+            visibility: hidden;
+            opacity: 0;
+        }
+
+        .qodef-m-plamen-image {
+            top: 50%;
+
+            @include qodefScreenSize1440 {
+                top: 48%;
+            }
+
+            @include qodefScreenSize1024 {
+                top: 46%;
+            }
+
+            @include qodefScreenSize768 {
+                top: 47%;
+            }
+
+            @include qodefScreenSize680 {
+                top: calc(48% + 2px);
+            }
+        }
+
+        .qodef-m-plamen-text {
+            bottom: 20px;
+            font-family: $script-font;
+            font-size: 43px;
+            color: #fff;
+
+            @include qodefScreenSize1440 {
+                bottom: 14px;
+                font-size: 40px;
+            }
+
+            @include qodefScreenSize1280 {
+                bottom: 22px;
+                font-size: 35px;
+            }
+
+            @include qodefScreenSize1024 {
+                bottom: 44px;
+                font-size: 28px;
+            }
+
+            @include qodefScreenSize768 {
+                bottom: 66px;
+                font-size: 22px;
+            }
+
+            @include qodefScreenSize680 {
+                bottom: 120px;
+                font-size: 14px;
+            }
+        }
+
+        .qodef-m-plamen-smoke {
+            position: absolute;
+            bottom: 0;
+
+            video {
+                mix-blend-mode: screen;
+            }
+        }
+    }
+}
+
+@keyframes qodefAnimateFrame {
+    0% {
+        stroke-dashoffset: 500;
+    }
+
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes qodefAnimateElement {
+    0% {
+        transform: translateX(-50%) translateY(10%);
+        visibility: hidden;
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(-50%) translateY(0);
+        visibility: visible;
+        opacity: 1;
+    }
+}

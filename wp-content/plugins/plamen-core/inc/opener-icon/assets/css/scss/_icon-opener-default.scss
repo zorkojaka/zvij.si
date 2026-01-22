@@ -1,0 +1,125 @@
+/* ==========================================================================
+   Opener icon styles
+   ========================================================================== */
+
+.qodef-opener-icon {
+	position: relative;
+	display: inline-block;
+	vertical-align: middle;
+	line-height: 1;
+	
+	.qodef-m-icon {
+		position: relative;
+		visibility: visible;
+		display: inline-block;
+		
+		&.qodef--close {
+			position: absolute;
+			top: 0;
+			left: 0;
+			visibility: hidden;
+		}
+	}
+	
+	&.qodef-source--icon-pack {
+		font-size: 35px;
+		
+		* {
+			display: inline-block;
+			line-height: inherit;
+			
+			&:before {
+				display: inline-block;
+				line-height: inherit;
+			}
+		}
+	}
+	
+	&.qodef-source--svg-path {
+		
+		span {
+			position: relative;
+			
+			> * {
+				vertical-align: middle;
+			}
+			
+			> *,
+			path {
+				fill: currentColor;
+			}
+
+			.qodef-svg-side-area-open {
+
+				line {
+					stroke-dasharray: 56;
+					stroke-dashoffset: 0;
+					transition: .5s cubic-bezier(0.46, 0.03, 0.52, 0.96);
+
+					&:nth-child(2) {
+						transition-delay: .1s;
+					}
+
+					&:nth-child(3) {
+						transition-delay: .2s;
+					}
+				}
+			}
+		}
+
+		&:hover {
+
+			.qodef-svg-side-area-open {
+
+				line {
+					stroke-dashoffset: -112;
+				}
+			}
+		}
+	}
+	
+	&.qodef-source--predefined {
+		
+		.qodef-m-lines {
+			position: relative;
+			display: block;
+			width: 30px;
+			height: 30px;
+		}
+		
+		.qodef-m-line {
+			position: absolute;
+			left: 0;
+			height: 4px;
+			width: 100%;
+			background-color: currentColor;
+			transition: top .3s ease, transform .3s ease;
+			
+			&.qodef--1 {
+				top: 8px;
+			}
+			
+			&.qodef--2 {
+				top: 17px;
+			}
+		}
+	}
+	
+	.qodef-header--light:not(.qodef-fullscreen-menu--opened) & {
+		
+		&.qodef-source--icon-pack,
+		&.qodef-source--svg-path,
+		&.qodef-source--predefined {
+			color: inherit;
+		}
+	}
+	
+	.qodef-header--dark:not(.qodef-fullscreen-menu--opened) & {
+		
+		&.qodef-source--icon-pack,
+		&.qodef-source--svg-path,
+		&.qodef-source--predefined {
+			color: inherit;
+		}
+	}
+}

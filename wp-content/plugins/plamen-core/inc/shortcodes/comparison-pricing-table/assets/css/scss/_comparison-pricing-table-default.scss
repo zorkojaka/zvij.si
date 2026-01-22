@@ -1,0 +1,113 @@
+/* ==========================================================================
+   Comparison Pricing Table shortcode styles
+   ========================================================================== */
+
+.qodef-comparision-pricing-table {
+	position: relative;
+	display: flex;
+	align-items: stretch;
+	flex-wrap: wrap;
+	
+	ul {
+		list-style-type: none;
+		margin: 0;
+	}
+	
+	h1, h2, h3, h4, h5, h6,	p {
+		margin: 0;
+	}
+	
+	.qodef-m-table {
+		border: 1px solid $border-color;
+		
+		.qodef-m-table-head {
+			display: flex;
+			align-items: center;
+			min-height: 112px;
+			padding: 22px 30px;
+			background-image: url("../../inc/shortcodes/comparison-pricing-table/assets/img/pattern_dark.png");
+			border-bottom: 1px solid $border-color;
+			
+			.qodef-m-title {
+				word-break: break-word;
+			}
+		}
+		
+		.qodef-m-content {
+			
+			li {
+				padding: 22px 30px;
+				border-bottom: 1px solid $border-color;
+				
+				&:last-child {
+					border-bottom: 0;
+				}
+			}
+		}
+		
+		.qodef-m-footer {
+			position: relative;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 100%;
+			min-height: 112px;
+			padding: 22px 30px;
+			border-top: 1px solid $border-color;
+		}
+		
+		&:not(.qodef--features) {
+			display: inline-flex;
+			justify-content: space-between;
+			flex-direction: column;
+			text-align: center;
+			border-left-width: 0;
+			
+			.qodef-m-table-head {
+				justify-content: center;
+			}
+		}
+		
+		&.qodef--features {
+			
+			.qodef-m-table-head {
+				padding-left: 15%;
+				padding-right: 15%;
+			}
+			
+			.qodef-m-content {
+			
+				.qodef-e-item {
+					padding-left: 15%;
+					padding-right: 15%;
+				}
+			}
+			
+			.qodef-m-footer {
+				background-image: url("../../inc/shortcodes/comparison-pricing-table/assets/img/pattern_dark.png");
+			}
+		}
+	}
+	
+	&.qodef-columns--2 {
+		
+		.qodef-m-table {
+			width: 30%;
+			
+			&.qodef--features {
+				width: 40%;
+			}
+		}
+	}
+	
+	&.qodef-columns--3 {
+		
+		.qodef-m-table {
+			width: 23.333%;
+			
+			&.qodef--features {
+				width: 30%;
+			}
+		}
+	}
+}

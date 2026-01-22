@@ -1,0 +1,61 @@
+/* ==========================================================================
+   Item Showcase shortcode responsive styles
+   ========================================================================== */
+$image-size: 40%;
+$space-between-items: 40px;
+
+.qodef-item-showcase {
+	
+	@include qodefScreenSize1024 {
+		align-items: flex-start;
+		flex-wrap: wrap;
+		
+		.qodef-m-image {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: $image-size;
+			padding-right: $space-between-items;
+			margin: 0 !important; // to prevent margin offset from shortcode option
+		}
+		
+		.qodef-m-items {
+			left: $image-size;
+			width: calc(100% - #{$image-size});
+			
+			.qodef-m-item {
+				transition-delay: 0ms;
+			}
+			
+			&.qodef--left {
+				text-align: left;
+			}
+			
+			&.qodef--right {
+				
+				.qodef-m-item {
+					
+					&:first-child {
+						margin-top: $space-between-items;
+					}
+				}
+			}
+		}
+		
+		.qodef-m-item {
+			margin-top: $space-between-items;
+		}
+	}
+	
+	@include qodefScreenSize680 {
+		
+		.qodef-m-image {
+			display: none;
+		}
+		
+		.qodef-m-items {
+			left: 0;
+			width: 100%;
+		}
+	}
+}

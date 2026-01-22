@@ -1,0 +1,27 @@
+/* ==========================================================================
+   Comparison Pricing Table shortcode responsive styles
+   ========================================================================== */
+
+@include qodefScreenSize768() {
+	
+	.qodef-comparision-pricing-table {
+		
+		&.qodef-columns--2,
+		&.qodef-columns--3 {
+			
+			.qodef-m-table {
+				display: block;
+				width: 100%;
+				
+				&:not(.qodef--features) {
+					border-top: 0;
+					border-left-width: 1px;
+				}
+				
+				&.qodef--features {
+					width: 100%;
+				}
+			}
+		}
+	}
+}

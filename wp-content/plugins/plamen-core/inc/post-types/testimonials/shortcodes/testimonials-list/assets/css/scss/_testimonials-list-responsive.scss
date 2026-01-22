@@ -1,0 +1,141 @@
+/* ==========================================================================
+   Testimonials list shortcode responsive styles
+   ========================================================================== */
+
+.qodef-testimonials-list {
+
+	@media (min-width: 1025px) and (max-width: 1440px) {
+		.qodef-e-media-image {
+			width: 230px;
+			height: 230px;
+		}
+
+		.qodef-e-content {
+			&:not(.qodef-testimonials-simple) {
+				.qodef-e-inner {
+					min-height: 230px; // Height of the image
+				}
+			}
+		}
+	}
+
+	@media (min-width: 768px) and (max-width: 1024px) {
+		.qodef-e-content {
+			&:after {
+				max-height: 100%;
+				background-size: contain;
+				bottom: 0;
+			}
+
+			&:not(.qodef-testimonials-simple) {
+				.qodef-e-inner {
+					min-height: 160px; // Height of the image
+				}
+			}
+		}
+
+		.qodef-grid-inner {
+			.qodef-e-media-image {
+				width: 160px;
+				height: 160px;
+			}
+
+			.qodef-m-testimonials-swiper {
+
+				max-height: 320px;
+
+				.qodef-e-inner {
+					justify-content: flex-start;
+				}
+
+				.qodef-e-text {
+					font-size: 32px;
+					line-height: 38px;
+				}
+
+				&:not(.qodef-testimonials-simple) {
+					margin-left: 200px;
+					width: calc(100% - 200px);
+				}
+			}
+		}
+
+		.swiper-pagination-bullets {
+			margin-top: 0;
+		}
+	}
+
+	@include qodefScreenSize768 {
+		.qodef-e-content {
+			&:after {
+				content: none;
+			}
+		}
+	}
+
+	@include qodefScreenSize680 {
+
+		.qodef-m-testimonials-swiper {
+			padding: 0 0 40px !important; //Moved bullets to bottom
+			box-sizing: content-box;
+		}
+
+		.qodef-e-media-image {
+			margin: 0 auto 50px;
+		}
+
+		.qodef-e-content {
+			&:after {
+				right: 0;
+			}
+
+			&.qodef-testimonials-simple {
+
+				.swiper-wrapper {
+					padding: 0;
+					box-sizing: border-box;
+				}
+			}
+		}
+
+		.qodef-m-testimonials-swiper {
+			max-height: 50vh;
+
+			&.qodef-e-content:not(.qodef-testimonials-simple) {
+				margin-top: 300px; //Offset from image because it keeps being absolute (because multiple images are on top of one another)
+
+				.qodef-e-text {
+					margin-right: 0;
+				}
+
+				&:after {
+					rigtht: 0;
+				}
+			}
+
+			.qodef-e-inner {
+				justify-content: flex-start;
+				padding: 0 3px;
+
+
+				.qodef-e-text {
+					font-size: 26px;
+					line-height: 32px;
+					margin-bottom: 5px;
+				}
+			}
+		}
+
+		.swiper-pagination-bullets {
+			top: auto !important;
+			bottom: 0 !important;
+			left: -5px;
+			text-align: left;
+
+			.swiper-pagination-bullet {
+				display: inline-block !important;
+				margin-bottom: 0 !important;
+			}
+		}
+	}
+}

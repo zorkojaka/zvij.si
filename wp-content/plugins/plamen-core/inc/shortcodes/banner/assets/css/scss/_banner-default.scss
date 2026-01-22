@@ -1,0 +1,107 @@
+/* ==========================================================================
+   Banner shortcode styles
+   ========================================================================== */
+
+.qodef-banner {
+	@include qodefRelativeLayout();
+	
+	.qodef-m-banner-link {
+		@include qodefAbsoluteLayout();
+		display: block;
+		z-index: 1;
+	}
+	
+	.qodef-m-content {
+		@include qodefAbsoluteLayout();
+		display: block;
+		color: #fff;
+		
+		&:after {
+			content: '';
+			@include qodefAbsoluteLayout();
+			border: 1px solid $main-color;
+			opacity: 0;
+			transform: scale(1);
+			transition: all .2s cubic-bezier(0.46, 0.03, 0.52, 0.96);
+		}
+	}
+	
+	&:hover {
+		.qodef-m-content:after {
+			opacity: 1;
+			width: calc(100% - 36px);
+			height: calc(100% - 36px);
+			left: 18px;
+			top: 18px;
+
+			.qodef-browser--edge & {
+				transform: scale(.95);
+				width: 100%;
+				height: 100%;
+				left: 0;
+				top: 0;
+			}
+		}
+	}
+
+	&.qodef-banner-outlined-title {
+		.qodef-m-title {
+
+			body:not(.qodef-browser--ms-explorer) & {
+				-webkit-text-stroke: 1px #fff;
+				letter-spacing: .04em;
+				color: transparent;
+			}
+		}
+	}
+	
+	.qodef-m-content-inner {
+		@include qodefAbsoluteLayout();
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 25px;
+	}
+	
+	.qodef-m-title {
+		margin: 10px 0 4px;
+		line-height: 1em;
+		text-align: center;
+	}
+	
+	span.qodef-m-title {
+		font-family: $script-font;
+		font-size: 65px;
+	}
+	
+	.qodef-m-title-inner {
+		display: inline-block;
+	}
+	
+	.qodef-m-subtitle {
+		font-family: $heading-font;
+		margin: 0 0 10px;
+		opacity: 1;
+		font-weight: 400;
+		letter-spacing: 0;
+		color: inherit;
+	}
+	
+	.qodef-m-text-field {
+		font-size: 15px;
+		margin: 0 0 10px;
+	}
+	
+	.qodef-m-image {
+		@include qodefRelativeLayout();
+		overflow: hidden;
+		
+		img {
+			display: block;
+			width: 100%;
+			object-fit: cover;
+			transition: all .35s ease-out;
+		}
+	}
+}

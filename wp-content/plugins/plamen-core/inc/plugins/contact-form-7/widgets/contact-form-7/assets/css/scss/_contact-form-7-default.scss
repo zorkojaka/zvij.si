@@ -1,0 +1,17 @@
+/* ==========================================================================
+   Contact Form 7 widget styles
+   ========================================================================== */
+
+.qodef-contact-form-7 {
+	@include qodefRelativeLayout();
+	
+	.ajax-loader {
+		position: absolute;
+		right: -10px;
+	}
+
+	div.wpcf7-validation-errors,
+	div.wpcf7-acceptance-missing {
+		border-color: #c88a5a
+	}
+}

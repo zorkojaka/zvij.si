@@ -1,0 +1,135 @@
+/* ==========================================================================
+   Full Screen Menu styles
+   ========================================================================== */
+
+#qodef-fullscreen-area {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: $box-background-color;
+	overflow-x: hidden !important;
+	visibility: hidden;
+	opacity: 0;
+	z-index: 99; /* smaller than header, bigger than content */
+	
+	.qodef-content-grid {
+		height: 100%;
+		
+		.qodef-fullscreen-menu {
+			width: 100%;
+		}
+	}
+	
+	.qodef-fullscreen-menu-animate--in & {
+		animation: qode-fade-in .25s linear both;
+	}
+	
+	.qodef-fullscreen-menu-animate--out & {
+		animation: qode-fade-out .25s linear both;
+	}
+}
+
+#qodef-fullscreen-area-inner {
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+}
+
+$menu-top-bottom-spacing: 10px 0 5px;
+$menu-level-two-left-spacing: 20px;
+
+.qodef-fullscreen-menu {
+	position: relative;
+	top: 0;
+	margin: 0 auto;
+	text-align: left;
+	
+	ul {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		
+		li {
+			position: relative;
+			margin: 0;
+			padding: 0;
+			
+			&.qodef--hide-link {
+				
+				> a {
+					cursor: default;
+				}
+			}
+		}
+		
+		&.sub-menu {
+			display: none;
+		}
+	}
+	
+	.qodef-menu-item-icon {
+		margin-right: 5px;
+	}
+	
+	.qodef-mega-menu-widget-holder {
+		display: none;
+	}
+	
+	> ul {
+		
+		> li {
+			
+			> a {
+				@include qodefMenuLevelOneInitialStyle(h2, #fff);
+				
+				&:hover {
+					@include qodefMenuLevelOneHoverStyle();
+				}
+			}
+			
+			&.current-menu-ancestor,
+			&.current-menu-item {
+				
+				> a {
+					@include qodefMenuLevelOneHoverStyle();
+				}
+			}
+		}
+	}
+	
+	.qodef-drop-down-second-inner {
+		
+		> ul {
+			padding: $menu-top-bottom-spacing;
+		}
+		
+		ul {
+			padding-left: $menu-level-two-left-spacing;
+			
+			li {
+				
+				> a {
+					@include qodefMenuLevelTwoInitialStyle();
+					@include qodefMenuLevelTwoInitialTypographyStyle(#fff);
+					
+					&:hover {
+						@include qodefMenuLevelTwoHoverStyle();
+					}
+				}
+				
+				&.current-menu-ancestor,
+				&.current-menu-item {
+					
+					> a {
+						@include qodefMenuLevelTwoHoverStyle();
+					}
+				}
+			}
+		}
+	}
+}

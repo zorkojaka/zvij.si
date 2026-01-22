@@ -1,0 +1,151 @@
+/* ==========================================================================
+   Blog List Metro styles
+   ========================================================================== */
+
+.qodef-blog {
+	
+	&.qodef-item-layout--metro {
+		
+		margin: 0;
+		
+		article {
+			
+			.qodef-e-media-image {
+				
+				&.qodef--background {
+					margin-bottom: 0;
+				}
+				
+				&:after {
+					content: '';
+					@include qodefAbsoluteLayout();
+					z-index: 2;
+					background-image: linear-gradient(to bottom, #af9e91, #2a1403);
+					opacity: 0;
+					transition: opacity .5s cubic-bezier(0.46, 0.03, 0.52, 0.96);
+				}
+			}
+			
+			.qodef-e-content {
+				@include qodefAbsoluteLayout();
+				display: flex;
+				justify-content: flex-end;
+				flex-direction: column;
+				padding: 20px 55px 35px;
+				background-color: rgba($heading-color, .12);
+				color: #fff;
+				text-align: center;
+				
+				a {
+					position: relative;
+					z-index: 3;
+					color: #fff;
+				}
+			}
+			
+			.qodef-e-title {
+				color: #fff;
+				margin-bottom: 0;
+				
+				a {
+					color: inherit;
+				}
+			}
+			
+			.qodef-e-info {
+				
+				> * {
+					color: #fff;
+				}
+				
+				a {
+					color: #fff;
+				}
+
+				.qodef-e-read-more {
+
+					> a {
+						width: auto;
+					}
+				}
+				
+				&.qodef-info--top {
+					margin-bottom: 0;
+					display: flex;
+					justify-content: center;
+
+					.qodef-e-info-category {
+						display: flex;
+
+						&:before {
+							margin-right: 5px;
+						}
+					}
+				}
+				
+				&.qodef-info--bottom {
+					margin-top: 29px;
+					margin-bottom: 10px;
+					justify-content: center;
+				}
+			}
+			
+			.qodef-info--hidden {
+				overflow: hidden;
+				max-height: 0;
+				transition: .6s;
+				z-index: 3;
+				
+				.qodef-e-excerpt {
+					padding-top: 5px;
+				}
+			}
+			
+			&:hover {
+				
+				.qodef-e-media-image:after {
+					opacity: .8;
+				}
+				
+				.qodef-info--hidden {
+					max-height: 100%;
+					transition: .6s cubic-bezier(0.4, 0, 1, 1);
+				}
+			}
+			
+			.qodef-e-post-link {
+				z-index: 2;
+			}
+		}
+		
+		&.qodef-items--fixed {
+			
+			article {
+				
+				&.format-link {
+					
+					.qodef-e-link {
+						display: flex;
+						justify-content: center;
+						flex-direction: column;
+						height: 100%;
+						padding-top: 40px;
+						padding-bottom: 40px;
+					}
+				}
+				
+				&.format-quote {
+					
+					.qodef-e-quote {
+						display: flex;
+						justify-content: center;
+						flex-direction: column;
+						height: 100%;
+						padding-top: 40px;
+						padding-bottom: 40px;
+					}
+				}
+			}
+		}
+	}
+}

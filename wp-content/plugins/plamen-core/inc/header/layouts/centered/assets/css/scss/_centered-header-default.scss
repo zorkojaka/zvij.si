@@ -1,0 +1,59 @@
+/* ==========================================================================
+   Header layout styles
+   ========================================================================== */
+
+$left-right-spacing: 12px; // Same size needs to be as in plamen-core/inc/header/assets/css/scss/_common-default.scss
+
+.qodef-header--centered {
+
+	#qodef-page-header {
+		height: 210px;
+	}
+
+	#qodef-page-header-inner {
+		flex-direction: column;
+		justify-content: center;
+		
+		> div {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			height: 100%;
+			
+			.qodef-widget-holder {
+				margin-left: 0;
+			}
+			
+			.qodef-header-navigation {
+				margin: 0 $left-right-spacing * 2;
+			}
+		}
+
+		.qodef-centered-header-wrapper {
+			flex: 1;
+		}
+
+		.qodef-header-logo-link {
+			margin-top: 30px;
+
+			&.qodef-height--not-set {
+				img {
+					max-height: 90px;
+					width: auto;
+				}
+			}
+		}
+	}
+
+	.qodef-header-sticky {
+		// Center menu even when widget area is empty
+		.qodef-header-logo-link,
+		.qodef-widget-holder {
+			flex: 0 1 100%
+		}
+
+		.qodef-widget-holder {
+			justify-content: flex-end;
+		}
+	}
+}

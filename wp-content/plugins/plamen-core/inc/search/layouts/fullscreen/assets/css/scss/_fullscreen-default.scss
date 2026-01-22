@@ -1,0 +1,176 @@
+/* ==========================================================================
+# Fullscreen search - start
+========================================================================== */
+
+/* Fullscreen search general style - start
+========================================================================== */
+
+.qodef-fullscreen-search-holder {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $background-color;
+    z-index: 111;
+
+    .qodef-fullscreen-search-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: block;
+        width: 100%;
+        height: 100%;
+        cursor: none;
+    }
+
+    .qodef-m-inner {
+        width: auto;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(15%);
+        transition: .3s cubic-bezier(0.46, 0.03, 0.52, 0.96) .2s;
+    }
+
+    .qodef-m-form {
+        position: relative;
+        width: 793px;
+        margin: 0 auto;
+
+        @include qodefScreenSize768 {
+            width: 600px;
+        }
+
+        @include qodefScreenSize680 {
+            width: 300px;
+        }
+    }
+    
+    .qodef-m-form-field {
+        height: 50px;
+        font-size: 15px;
+        color: $main-color;
+        line-height: 2em;
+	    margin-bottom: 0;
+        background: #fff;
+        border: 0;
+        border-radius: 0;
+    }
+    
+    .qodef-m-form-submit {
+        position: absolute;
+        right: 20px;
+        bottom: 20px;
+        width: auto;
+        padding: 0;
+        margin: 0;
+        color: $heading-color;
+        background: none;
+        border: 0;
+        outline: none;
+        opacity: 0;
+        cursor: pointer;
+        transition: $color-transition;
+        
+        &:hover {
+            color: $main-color;
+            background: none;
+        }
+        
+        .qodef-fullscreen-search--opened & {
+            opacity: 1;
+            bottom: 10px;
+            transition: color 0.2s ease, opacity .2s ease-out 1.1s, bottom .4s ease-out .9s;
+        }
+        
+        &.qodef-source--icon-pack {
+            font-size: 18px;
+	        line-height: 20px;
+        }
+    }
+    
+    .qodef-m-form-line {
+        position: absolute;
+        left: 0;
+        bottom: -2px;
+        width: 0;
+        border-bottom: 1px solid #000;
+        transition: all .3s ease;
+        
+        .qodef-fullscreen-search--opened & {
+            width: 100%;
+            transition: width 0.5s ease .6s;
+        }
+    }
+    
+    .qodef-m-close {
+        display: none;
+    }
+}
+/* Fullscreen search general style - end
+========================================================================== */
+
+/* Fullscreen search fade style - start
+========================================================================== */
+
+.qodef-fullscreen-search--fadeout .qodef-fullscreen-search-holder {
+    animation: fullscreen_search_fade_out .3s ease both;
+}
+
+.qodef-fullscreen-search--fadein .qodef-fullscreen-search-holder {
+    animation: fullscreen_search_fade_in .3s ease both;
+
+    .qodef-m-inner {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+@keyframes fullscreen_search_fade_out {
+    0% {
+        opacity: 1;
+        visibility: visible;
+        z-index: 111;
+    }
+    100% {
+        opacity: 0;
+        visibility: hidden;
+        z-index: 111;
+    }
+}
+
+@keyframes fullscreen_search_fade_in {
+    0% {
+        opacity: 0;
+        visibility: hidden;
+    }
+    100% {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+/* Fullscreen search fade style - end
+========================================================================== */
+
+/* ==========================================================================
+# Fullscreen search - end
+========================================================================== */
+
+.qodef-close-cursor {
+    opacity: 0;
+    margin: -11px;
+    pointer-events: none;
+    position: fixed;
+    z-index: 8000;
+
+    span {
+        font-size: 25px;
+    }
+}

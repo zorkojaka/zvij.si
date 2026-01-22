@@ -1,0 +1,54 @@
+/* ==========================================================================
+   Social Icons Group widget styles
+   ========================================================================== */
+
+.qodef-social-icons-group {
+    
+    .qodef-icon-holder {
+        margin-left: 9px;
+        
+        &:first-child {
+            margin-left: 0;
+        }
+    }
+}
+
+$wp-widgets-area-map: (
+    '':(
+        link-color: #ffffff,
+        link-hover-color: #ffffff,
+        icon-background-color: $main-color,
+        icon-background-hover-color: $heading-color,
+    ),
+);
+
+@each $key, $values in $wp-widgets-area-map {
+    #{$key} .widget {
+        &.widget_plamen_core_social_icons_group {
+
+            .qodef-icon-holder {
+                
+                a {
+                    color: map-get($values, 'link-color');
+                    transition: $color-transition;
+                }
+
+                &.qodef-layout--circle {
+                    background-color: map-get($values, 'icon-background-color');
+
+                    &:hover {
+                        background-color: map-get($values, 'icon-background-hover-color');
+
+                        a {
+                            color: map-get($values, 'link-hover-color');
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* ==========================================================================
+    Social Icons Group widget styles
+   ========================================================================== */

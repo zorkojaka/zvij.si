@@ -1,0 +1,41 @@
+/* ==========================================================================
+   Call to Action shortcode styles
+   ========================================================================== */
+
+.qodef-call-to-action {
+	
+	&.qodef-layout--standard {
+		@include qodefRelativeLayout();
+		
+		.qodef-m-inner {
+			display: flex;
+			align-items: center;
+		}
+		
+		&.qodef-style--stretched {
+			
+			.qodef-m-inner {
+				justify-content: space-between;
+			}
+		}
+		
+		&.qodef-style--centered {
+			
+			.qodef-m-inner {
+				justify-content: center;
+			}
+		}
+		
+		.qodef-m-content {
+			padding-right: 20px;
+			
+			> * {
+				margin: 0;
+			}
+		}
+		
+		.qodef-m-button {
+			flex: 0 0 auto;
+		}
+	}
+}

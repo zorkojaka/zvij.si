@@ -1,0 +1,36 @@
+/* ==========================================================================
+   Contact Info widget style start
+   ========================================================================== */
+
+$wp-widgets-map: (
+	text-size: null,
+);
+
+$wp-widgets-area-map: (
+	'': (),
+	'#qodef-top-area' : (
+		text-size: 16,
+	),
+);
+
+@each $key, $values in $wp-widgets-area-map {
+	$wp-widgets-map-merged: map-merge($wp-widgets-map, $values);
+	
+	#{$key} .widget {
+		
+		.qodef-contact-info-widget {
+			margin: 0;
+			
+			a {
+				
+				@if (map-get($wp-widgets-map-merged, 'text-size') != null) {
+					font-size: #{map-get($wp-widgets-map-merged, 'text-size')}px;
+				}
+			}
+		}
+	}
+}
+
+/* ==========================================================================
+   Contact Info widget style end
+   ========================================================================== */

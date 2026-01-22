@@ -1,0 +1,57 @@
+/* ==========================================================================
+   Section Title shortcode responsive styles
+   ========================================================================== */
+
+.qodef-image-with-content {
+	@include qodefScreenSize1440 {
+		.qodef-m-holder {
+			max-width: 55%;
+		}
+	}
+	
+	@include qodefScreenSize1024 {
+		
+		&.qodef-title-break--disabled {
+			
+			.qodef-m-title {
+				
+				br {
+					display: none;
+				}
+			}
+		}
+		
+		.qodef-m-holder {
+			max-width: 70%;
+			
+			.qodef-m-text-wrapper .qodef-m-background-text {
+				font-size: 200px;
+			}
+		}
+	}
+	
+	@include qodefScreenSize768 {
+		.qodef-grid-inner {
+			flex-wrap: wrap;
+		}
+		
+		&.qodef-grid.qodef-layout--columns.qodef-col-num--2>.qodef-grid-inner>.qodef-grid-item {
+			width: 100% !important;
+		}
+
+		&.qodef-alignment--right {
+			.qodef-m-holder {
+				text-align: left;
+			}
+		}
+		
+		.qodef-m-holder {
+			max-width: 100%;
+			padding: 3em 2em;
+			
+			.qodef-m-text-wrapper {
+				min-height: 110px;
+			}
+		}
+	}
+}

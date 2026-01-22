@@ -1,0 +1,212 @@
+/* ==========================================================================
+   WooCommerce DropDown Cart styles
+   ========================================================================== */
+
+$wp-widgets-area-map: (
+	'#qodef-page-sidebar': (
+		text-color: null,
+		link-color: null,
+		link-hover-color: null
+	),
+	'#qodef-top-area': (
+		text-color: $text-color,
+		link-color: $text-color,
+		link-hover-color: $main-color,
+	)
+);
+
+.widget_plamen_core_woo_dropdown_cart {
+	height: 100%;
+}
+
+.qodef-woo-dropdown-cart {
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+	height: 100%;
+	padding: 0 10px;
+	
+	.qodef-m-inner {
+		@include qodefRelativeLayout();
+		height: 100%;
+	}
+	
+	.qodef-m-opener {
+		position: relative;
+		display: flex;
+		align-items: center;
+		height: 100%;
+		font-size: 16px;
+		
+		.qodef-m-opener-count {
+			@include qodefH7Style(currentColor);
+			font-weight: 700;
+			margin-left: 5px;
+		}
+	}
+	
+	.qodef-m-dropdown {
+		position: absolute;
+		top: 100%;
+		left: auto;
+		right: 0;
+		text-align: left;
+		max-height: 0;
+		overflow: hidden;
+		will-change: transform;
+		border-top: 1px solid transparent;
+		transition: .2s;
+	}
+	
+	.qodef-m-dropdown-inner {
+		position: relative;
+		display: inline-block;
+		vertical-align: top;
+		width: 328px;
+		padding: 19px 30px 22px;
+		background-color: #fff;
+		border: 1px solid $border-color;
+	}
+	
+	.qodef-woo-dropdown-items {
+		@include qodefRelativeLayout();
+		padding: 10px 20px 0;
+		
+		@each $key, $values in $wp-widgets-area-map {
+			
+			#{$key} & {
+				@if (map-get($values, 'text-color') != null) {
+					color: map-get($values, 'text-color');
+				}
+				
+				@if (map-get($values, 'link-color') != null) {
+					a {
+						color: map-get($values, 'link-color');
+						opacity: 1;
+						
+						@if (map-get($values, 'link-hover-color') != null) {
+							&:hover {
+								color: map-get($values, 'link-hover-color');
+								opacity: 1;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	.qodef-woo-dropdown-item {
+		position: relative;
+		display: flex;
+		align-items: flex-start;
+		margin-top: 14px;
+		color: $heading-color;
+		
+		&:first-child {
+			margin-top: 0;
+		}
+	}
+	
+	.qodef-e-image {
+		flex-shrink: 0;
+		width: 50px;
+		margin-right: 12px;
+		
+		a, img {
+			display: block;
+		}
+	}
+	
+	.qodef-e-content {
+		@include qodefRelativeLayout();
+		padding-top: 3px;
+		padding-right: 20px;
+	}
+	
+	.qodef-e-title {
+		margin: 0;
+	}
+	
+	.qodef-e-price {
+		margin: 2px 0 0;
+		font-size: 13px;
+	}
+	
+	.qodef-e-remove {
+		position: absolute;
+		top: 0;
+		right: 0;
+		font-size: 15px;
+		line-height: 1;
+	}
+	
+	.qodef-m-order-details {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-top: 15px;
+		padding: 0 20px;
+		
+		> * {
+			margin: 0;
+			font-family: $text-font;
+			font-size: 13px;
+			font-weight: 300;
+			letter-spacing: 0.08em;
+		}
+		
+		@each $key, $values in $wp-widgets-area-map {
+			
+			#{$key} & {
+				@if (map-get($values, 'text-color') != null) {
+					color: map-get($values, 'text-color');
+				}
+			}
+		}
+	}
+
+	.qodef-m-order-label {
+		text-transform: capitalize;
+	}
+	
+	.qodef-m-action {
+		@include qodefRelativeLayout();
+		margin-top: 18px;
+		padding: 0 20px 15px;
+	}
+	
+	.qodef-m-action-link {
+		@include qodefButtonDefaultStyle();
+		@include qodefButtonSize(full-width);
+		@include qodefButtonFilledColor();
+		opacity: 1 !important;
+		
+		&:hover {
+			@include qodefButtonFilledHoverColor();
+			opacity: 1 !important;
+		}
+	}
+	
+	.touchevents & {
+		cursor: pointer;
+	}
+	
+	&:hover {
+		
+		.qodef-m-dropdown {
+			max-height: 100vh;
+			border-top: 1px solid $main-color;
+			transition: .5s cubic-bezier(0.46, 0.03, 0.52, 0.96) .1s;
+		}
+	}
+
+	.qodef-m-posts-not-found {
+		color: $heading-color;
+	}
+}
+
+#qodef-page-header .qodef-widget-holder .widget a.qodef-m-action-link {
+	color: #fff;
+}

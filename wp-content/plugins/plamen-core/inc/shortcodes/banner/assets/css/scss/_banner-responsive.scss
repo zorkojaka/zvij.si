@@ -1,0 +1,19 @@
+/* ==========================================================================
+   Banner shortcode styles
+   ========================================================================== */
+
+.qodef-banner {
+	
+	@include qodefScreenSize768 {
+		span.qodef-m-title {
+			font-size: 52px;
+		}
+	}
+
+	@include qodefScreenSize680 {
+		span.qodef-m-title {
+			font-size: 45px;
+		}
+	}
+
+}

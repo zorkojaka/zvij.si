@@ -1,0 +1,215 @@
+/* ==========================================================================
+   Blog List styles
+   ========================================================================== */
+
+.qodef-blog {
+	
+	article {
+		.qodef-e-media {
+			margin-bottom: 31px;
+		}
+		
+		.qodef-e-info {
+			position: relative;
+			display: flex;
+			align-items: center;
+			width: 100%;
+
+			&.qodef-info--top {
+				display: inline-flex;
+				margin-bottom: 2px;
+				@include qodefHeadingStyle(h6);
+				font-weight: 400;
+
+				@media only (min-width: 681px) and (max-width: 769px) {
+					display: inline-block;
+				}
+
+				a {
+					position: relative;
+					display: inline-block;
+					letter-spacing: inherit;
+
+					&:after {
+						content: '';
+						display: block;
+						width: 100%;
+						height: 1px;
+						position: absolute;
+						background-color: currentColor;
+						left: 0;
+						bottom: 0;
+						transform: scaleX(0);
+						transform-origin: 100% 0;
+						transition: transform .3s cubic-bezier(0.46, 0.03, 0.52, 0.96);
+					}
+
+					&:hover {
+						color: inherit;
+
+						&:after {
+							transform: scaleX(1);
+							transform-origin: 0 0;
+						}
+					}
+				}
+
+				> div:not(:first-child) {
+					&:before {
+						content:'/';
+						margin-left: 5px;
+						display: inline-block;
+						z-index: 2;
+					}
+				}
+			}
+			
+			&.qodef-info--bottom {
+				margin-top: 27px;
+			}
+
+			@media only screen and (min-width: $screen-size-681) {
+				.qodef-e-info-left,
+				.qodef-e-info-right {
+					position: relative;
+					display: flex;
+					align-items: center;
+					width: 100%;
+				}
+
+				.qodef-e-info-right {
+					justify-content: flex-end;
+				}
+			}
+			
+		}
+		
+		.qodef-e-title {
+			margin: 15px 0 13px;
+		}
+		
+		&.format-link,
+		&.format-quote {
+			.qodef-e-inner {
+				position: relative;
+				background: #fff;
+				padding: 42px 40px 27px;
+				margin-bottom: 70px;
+				
+				.qodef-e-info.qodef-info--bottom {
+					margin-bottom: 0;
+					@include qodefHeadingStyle(h6);
+					font-weight: 400;
+					
+					> div:not(:first-child) {
+						&:before {
+							content:'/';
+							margin-left: 5px;
+							display: inline-block;
+						}
+					}
+				}
+				
+				.qodef-e-quote-text,
+				.qodef-e-link-text {
+					@include qodefQuoteScriptStyle(false);
+					display: block;
+					font-weight: 400;
+					text-transform: initial;
+					margin-top: 0;
+				}
+			}
+		}
+		
+		&.format-link {
+			.qodef-e-inner {
+				&:after {
+					content: '';
+					position: absolute;
+					background: url("/wp-content/themes/plamen/assets/img/link.png") no-repeat right;
+					right: 30px;
+					bottom: 30px;
+					display: block;
+					width: 76px;
+					height: 72px; //So link img won't get cut
+				}
+				
+				.qodef-e-link {
+					position: relative;
+					
+					.qodef-e-link-url {
+						@include qodefAbsoluteLayout();
+						z-index: 1;
+					}
+				}
+			}
+		}
+		
+		&.format-quote {
+			.qodef-e-inner {
+				&:after {
+					content: '';
+					position: absolute;
+					background: url("/wp-content/themes/plamen/assets/img/quote-small.png") no-repeat right;
+					right: 30px;
+					bottom: 30px;
+					display: block;
+					width: 80px;
+					height: 55px; //So link img won't get cut
+				}
+				
+				.qodef-e-quote-author {
+					margin-bottom: 48px;
+				}
+				
+				.qodef-e-quote-url {
+					@include qodefAbsoluteLayout();
+					z-index: 1;
+				}
+			}
+		}
+	}
+	
+	&.qodef-item-layout--standard {
+		
+		&.qodef-col-num--1 {
+		
+			article {
+				&:not(:last-child) {
+
+					.qodef-e-info {
+
+						&.qodef-info--bottom {
+							margin-bottom: 67px;
+						}
+					}
+
+					&.format-link,
+					&.format-quote {
+						.qodef-e-info.qodef-info--bottom {
+							margin-top: 0;
+							margin-bottom: 0;
+						}
+					}
+				}
+
+				&:last-child {
+
+					.qodef-e-info {
+
+						&.qodef-info--bottom {
+							margin-bottom: 0;
+						}
+					}
+
+					&.format-link,
+					&.format-quote {
+						.qodef-e-inner {
+							margin-bottom: 0;
+						}
+					}
+				}
+			}
+		}
+	}
+}

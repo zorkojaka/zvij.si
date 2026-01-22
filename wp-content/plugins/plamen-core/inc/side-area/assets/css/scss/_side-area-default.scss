@@ -1,0 +1,122 @@
+/* ==========================================================================
+# Side Area style - begin
+========================================================================== */
+
+#qodef-side-area {
+	position: fixed;
+	top: 0;
+	right: -500px;
+	width: 500px;
+	height: 100%;
+	min-height: 100%;
+	padding: 35px 50px 35px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	background-color: $background-color;
+	color: $heading-color;
+	border-left: 1px solid $main-color;
+	overflow: hidden;
+	visibility: hidden;
+	z-index: 9999;
+	transition: $sliding-area-transition;
+	
+	.qodef-side-area--opened & {
+		right: 0;
+		visibility: visible;
+	}
+	
+	&.qodef-alignment--center {
+		text-align: center;
+	}
+	
+	&.qodef-alignment--right {
+		text-align: right;
+	}
+	
+	&.qodef-alignment--left {
+		text-align: left;
+	}
+
+	#qodef-side-area-bottom {
+		position: absolute;
+		bottom: 10px;
+	}
+}
+
+#qodef-side-area-close {
+	position: absolute;
+	top: 33px;
+	right: 40px;
+	display: block;
+	z-index: 1000;
+	
+	.admin-bar & {
+		top: 65px;
+	}
+	
+	&.qodef-source--predefined {
+		
+		.qodef-m-line {
+			
+			&.qodef--1 {
+				top: 13px;
+				transform: rotate(45deg);
+			}
+			
+			&.qodef--2 {
+				top: 13px;
+				transform: rotate(-45deg);
+			}
+		}
+	}
+
+	&.qodef-source--svg-path {
+
+		.qodef-svg-side-area-close {
+
+			line {
+				stroke-dasharray: 31;
+				stroke-dashoffset: 0;
+				transition: .5s cubic-bezier(0.46, 0.03, 0.52, 0.96);
+
+				&:nth-child(2) {
+					transition-delay: .1s;
+				}
+			}
+		}
+
+		&:hover {
+			color: inherit;
+
+			.qodef-svg-side-area-close {
+
+				line {
+					stroke-dashoffset: -62;
+				}
+			}
+		}
+	}
+}
+
+.qodef-side-area-cover {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+	overflow: hidden;
+	z-index: 0;
+	transition: opacity 0.2s ease-in-out, z-index 0.2s ease-in-out;
+	
+	.qodef-side-area--opened & {
+		opacity: 1;
+		z-index: 1002;
+	}
+}
+
+/* ==========================================================================
+# Side Area style - end
+========================================================================== */

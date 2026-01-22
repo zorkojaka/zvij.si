@@ -1,0 +1,102 @@
+.qodef-vertical-split-slider {
+    height: 100vh;
+    position: relative;
+    
+    .ms-tableCell {
+        height: 100vh !important; // to override inline from js and make sure it will be full height
+    }
+}
+
+.qodef-vertical-split-slider-responsive {
+    display: none;
+}
+
+.qodef-vertical-split-slider,
+.qodef-vertical-split-slider-responsive {
+    
+    .qodef-m {
+
+        &-image {
+            max-height: 40%;
+            width: auto;
+        }
+
+        &-title {
+            display: block;
+            margin: 26px 0 0 0;
+        }
+
+        &-text {
+            margin: 15px 0 0 0;
+        }
+
+        &-button {
+            margin: 22px 0 0 0;
+        }
+    
+        &-slide {
+        
+            &-image {
+                background-size: cover;
+            }
+        
+            &-content {
+                text-align: center;
+                padding: 0 5%;
+            }
+        }
+    }
+}
+
+#multiscroll-nav {
+    display: none;
+    
+    li {
+        width: 11px;
+        height: 11px;
+        margin: 14px;
+    }
+    
+    a {
+        
+        span {
+            top: 0;
+            left: 0;
+            width: 11px;
+            height: 11px;
+            background-color: $text-color;
+            border: none;
+        }
+        
+        &.active {
+            
+            span {
+                background-color: $main-color;
+            }
+        }
+    }
+    
+    &.right {
+        right: 26px;
+    }
+    
+    .qodef-vertical-split-slider--initialized & {
+        display: block;
+    
+        $skins: ('light', 'dark');
+        $skins-color: ('#fff', '#000');
+        
+        @each $skin in $skins {
+    
+            @at-root .qodef-header--#{$skin}#{&} {
+    
+                a:not(.active) {
+        
+                    span {
+                        background-color: #{nth($skins-color, index($skins, $skin))};
+                    }
+                }
+            }
+        }
+    }
+}
