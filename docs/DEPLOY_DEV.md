@@ -34,6 +34,12 @@ Dev web root:
 /var/www/dev.inteligent.si
 ```
 
+Static placeholder document root:
+
+```text
+/var/www/dev.inteligent.si/public
+```
+
 Deploy script:
 
 ```text
@@ -47,6 +53,20 @@ Environment file:
 ```
 
 The `.env` file is intentionally outside the repo.
+
+Nginx server block:
+
+```text
+/etc/nginx/sites-available/dev.inteligent.si
+/etc/nginx/sites-enabled/dev.inteligent.si -> /etc/nginx/sites-available/dev.inteligent.si
+```
+
+Let's Encrypt certificate:
+
+```text
+/etc/letsencrypt/live/dev.inteligent.si/fullchain.pem
+/etc/letsencrypt/live/dev.inteligent.si/privkey.pem
+```
 
 ## Required Environment Variables
 
@@ -92,6 +112,66 @@ ZVIJ_DEPLOY_BRANCH=chore/dev-deploy-script scripts/deploy-dev.sh
 ```
 
 After the dev branch changes, set `ZVIJ_DEPLOY_BRANCH` to the branch that should be deployed.
+
+## Nginx And SSL Setup
+
+Current dev nginx setup is intentionally separate from all production vhosts.
+
+Active behavior:
+
+- `http://dev.inteligent.si/` returns `301` to `https://dev.inteligent.si/`.
+- `https://dev.inteligent.si/` serves the static placeholder page.
+- The placeholder page says `Zvij.si dev environment`.
+- The document root is `/var/www/dev.inteligent.si/public`.
+
+The setup was created in this order:
+
+1. Created `/var/www/dev.inteligent.si/public`.
+2. Added placeholder `/var/www/dev.inteligent.si/public/index.html`.
+3. Added HTTP-only nginx vhost at `/etc/nginx/sites-available/dev.inteligent.si`.
+4. Enabled it with a symlink in `/etc/nginx/sites-enabled/`.
+5. Ran `sudo nginx -t`.
+6. Reloaded nginx.
+7. Verified HTTP placeholder.
+8. Issued the certificate with Certbot webroot mode.
+9. Updated only the `dev.inteligent.si` vhost for HTTPS.
+10. Ran `sudo nginx -t` again.
+11. Reloaded nginx again.
+12. Verified HTTP redirect, HTTPS response, and certificate subject.
+
+Certbot command used:
+
+```bash
+sudo certbot certonly --webroot \
+  -w /var/www/dev.inteligent.si/public \
+  -d dev.inteligent.si \
+  --agree-tos \
+  --non-interactive \
+  --redirect \
+  --email jaka@inteligent.si
+```
+
+The `certonly --webroot` method was used so Certbot would not edit existing nginx production vhosts.
+
+Verification commands:
+
+```bash
+sudo nginx -t
+sudo systemctl reload nginx
+curl -I --max-time 20 http://dev.inteligent.si/
+curl -i --max-time 20 https://dev.inteligent.si/
+echo | openssl s_client -servername dev.inteligent.si -connect dev.inteligent.si:443 2>/dev/null | openssl x509 -noout -subject -issuer -dates
+```
+
+Observed verification result on 2026-06-13:
+
+```text
+http://dev.inteligent.si/ -> 301 Location: https://dev.inteligent.si/
+https://dev.inteligent.si/ -> HTTP/2 200
+certificate subject -> CN = dev.inteligent.si
+certificate issuer -> Let's Encrypt YR1
+certificate expiry -> 2026-09-11
+```
 
 ## GitHub Action SSH Command
 
@@ -150,7 +230,7 @@ The script checks:
 https://dev.inteligent.si
 ```
 
-Before nginx/app setup exists, this may fail without failing the deploy. Once the app is implemented, make this check strict.
+Now that nginx and SSL are configured, the placeholder health check should pass until the real app replaces it. Once the app is implemented, make this check strict.
 
 ## Rollback Plan
 
