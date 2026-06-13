@@ -1,0 +1,39 @@
+name: Deploy dev.inteligent.si
+
+on:
+  push:
+    branches:
+      - "chore/**"
+      - "docs/**"
+      - "dev/**"
+      - "feature/**"
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to deploy"
+        required: true
+        default: "chore/docker-wordpress-dev"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Resolve branch
+        id: branch
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "name=${{ github.event.inputs.branch }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "name=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Deploy on Hetzner
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HETZNER_HOST }}
+          username: ${{ secrets.HETZNER_USER }}
+          key: ${{ secrets.HETZNER_SSH_KEY }}
+          script: |
+            cd /home/jaka/apps/zvijsi/zvij.si
+            ZVIJ_DEPLOY_BRANCH="${{ steps.branch.outputs.name }}" scripts/deploy-dev.sh
