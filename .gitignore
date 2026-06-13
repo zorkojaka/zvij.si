@@ -9,6 +9,7 @@ wp-content/advanced-cache.php
 wp-content/wp-cache-config.php
 
 # Secrets / local config
+.env
 wp-config.php
 wp-config-local.php
 

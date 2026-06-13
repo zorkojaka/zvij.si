@@ -1,0 +1,110 @@
+name: zvij-dev
+
+services:
+  mariadb:
+    image: mariadb:11.4
+    container_name: zvij-dev-mariadb
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${WORDPRESS_DB_NAME:-zvij_dev}
+      MARIADB_USER: ${WORDPRESS_DB_USER:-zvij_dev}
+      MARIADB_PASSWORD: ${WORDPRESS_DB_PASSWORD:-change-me}
+      MARIADB_ROOT_PASSWORD: ${WORDPRESS_DB_ROOT_PASSWORD:-change-root-me}
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - zvij_dev
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "healthcheck.sh --connect --innodb_initialized || exit 1"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  wordpress:
+    image: wordpress:6.5-php8.2-apache
+    container_name: zvij-dev-wordpress
+    restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${WORDPRESS_PORT:-8098}:80"
+    environment:
+      WORDPRESS_DB_HOST: mariadb:3306
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME:-zvij_dev}
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER:-zvij_dev}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD:-change-me}
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_HOME', '${WORDPRESS_URL:-https://dev.inteligent.si}');
+        define('WP_SITEURL', '${WORDPRESS_URL:-https://dev.inteligent.si}');
+        define('WP_ENVIRONMENT_TYPE', 'development');
+        define('WP_DEBUG', true);
+        define('WP_DEBUG_LOG', true);
+        define('DISALLOW_FILE_EDIT', true);
+        if (isset($$_SERVER['HTTP_X_FORWARDED_PROTO']) && $$_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+            $$_SERVER['HTTPS'] = 'on';
+        }
+    volumes:
+      - wordpress_data:/var/www/html
+      - ./wp-content/themes/zvij-theme:/var/www/html/wp-content/themes/zvij-theme:ro
+      - ./wp-content/plugins/zvij-core:/var/www/html/wp-content/plugins/zvij-core:ro
+    networks:
+      - zvij_dev
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "php -r \"exit(@file_get_contents('http://localhost/wp-login.php') === false ? 1 : 0);\""
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  wp-cli:
+    image: wordpress:cli-php8.2
+    container_name: zvij-dev-wp-cli
+    profiles:
+      - tools
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    environment:
+      WORDPRESS_DB_HOST: mariadb:3306
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME:-zvij_dev}
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER:-zvij_dev}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD:-change-me}
+      WORDPRESS_URL: ${WORDPRESS_URL:-https://dev.inteligent.si}
+    volumes:
+      - wordpress_data:/var/www/html
+      - ./wp-content/themes/zvij-theme:/var/www/html/wp-content/themes/zvij-theme:ro
+      - ./wp-content/plugins/zvij-core:/var/www/html/wp-content/plugins/zvij-core:ro
+    networks:
+      - zvij_dev
+
+  adminer:
+    image: adminer:4
+    container_name: zvij-dev-adminer
+    profiles:
+      - tools
+    restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${ADMINER_PORT:-8099}:8080"
+    networks:
+      - zvij_dev
+
+volumes:
+  mariadb_data:
+    name: zvij-dev-mariadb-data
+  wordpress_data:
+    name: zvij-dev-wordpress-data
+
+networks:
+  zvij_dev:
+    name: zvij-dev-network
