@@ -1,0 +1,53 @@
+/*
+Theme Name: Zvij Theme
+Theme URI: https://dev.inteligent.si
+Author: Zvij.si
+Description: Minimal clean development theme for dev.inteligent.si.
+Version: 0.1.0
+Requires at least: 6.5
+Tested up to: 6.5
+Requires PHP: 8.2
+Text Domain: zvij-theme
+*/
+
+:root {
+  --zvij-bg: #f6f4ef;
+  --zvij-text: #161616;
+  --zvij-muted: #5f665f;
+  --zvij-accent: #1f7a5a;
+}
+
+body {
+  margin: 0;
+  background: var(--zvij-bg);
+  color: var(--zvij-text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.5;
+}
+
+a {
+  color: var(--zvij-accent);
+}
+
+.site-main {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 2rem;
+}
+
+.home-panel {
+  max-width: 42rem;
+}
+
+.home-panel h1 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(2rem, 8vw, 4.5rem);
+  line-height: 1;
+}
+
+.home-panel p {
+  margin: 0;
+  color: var(--zvij-muted);
+  font-size: 1.125rem;
+}

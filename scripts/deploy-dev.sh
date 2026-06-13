@@ -6,16 +6,17 @@ set -Eeuo pipefail
 # - only uses /home/jaka/apps/zvijsi/zvij.si and /var/www/dev.inteligent.si
 # - never touches live zvij.si paths
 # - keeps secrets in an external .env file
-# - prepares Docker deploy hooks without inventing app infrastructure before it exists
+# - deploys only the isolated Docker Compose dev app
 
 APP_NAME="zvij-dev"
 APP_DIR="${ZVIJ_APP_DIR:-/home/jaka/apps/zvijsi/zvij.si}"
-BRANCH="${ZVIJ_DEPLOY_BRANCH:-chore/dev-deploy-script}"
+BRANCH="${ZVIJ_DEPLOY_BRANCH:-chore/docker-wordpress-dev}"
 WEB_ROOT="${ZVIJ_WEB_ROOT:-/var/www/dev.inteligent.si}"
 ENV_FILE="${ZVIJ_ENV_FILE:-$WEB_ROOT/.env}"
 URL="https://dev.inteligent.si"
 LOCK_FILE="/tmp/deploy-zvij-dev.lock"
 COMPOSE_PROJECT_NAME="${ZVIJ_COMPOSE_PROJECT_NAME:-zvij-dev}"
+WORDPRESS_PORT="${WORDPRESS_PORT:-8098}"
 
 log() {
   printf '%s %s\n' "[$(date -u '+%Y-%m-%dT%H:%M:%SZ')]" "$*"
@@ -74,15 +75,30 @@ docker_compose() {
 }
 
 health_check() {
-  if command -v curl >/dev/null 2>&1; then
-    log "Health check: $URL"
-    if curl -fsS --max-time 20 "$URL" >/dev/null; then
-      log "Health check passed"
-    else
-      log "Health check did not pass yet. This can be expected before nginx/app config exists."
-    fi
-  else
+  if ! command -v curl >/dev/null 2>&1; then
     log "curl not installed; skipping health check"
+    return 0
+  fi
+
+  log "Health check: http://127.0.0.1:$WORDPRESS_PORT"
+  for attempt in $(seq 1 30); do
+    if curl -fsS --max-time 5 "http://127.0.0.1:$WORDPRESS_PORT/wp-login.php" >/dev/null; then
+      log "Local WordPress health check passed"
+      break
+    fi
+
+    if [ "$attempt" -eq 30 ]; then
+      die "Local WordPress health check failed on port $WORDPRESS_PORT"
+    fi
+
+    sleep 2
+  done
+
+  log "Health check: $URL"
+  if curl -fsS --max-time 20 "$URL" >/dev/null; then
+    log "Public URL health check passed"
+  else
+    die "Public URL health check failed: $URL"
   fi
 }
 
@@ -121,9 +137,10 @@ if [ -f "$ENV_FILE" ]; then
   . "$ENV_FILE"
   set +a
   log "Loaded env file: $ENV_FILE"
+  WORDPRESS_PORT="${WORDPRESS_PORT:-8098}"
 else
   log "No env file found at $ENV_FILE"
-  log "TODO: create it before real app deploy. Keep secrets out of git."
+  log "Using safe Compose defaults. Create $ENV_FILE with real dev secrets before shared use."
 fi
 
 log "5. Docker Compose deploy hook"
@@ -137,10 +154,7 @@ if COMPOSE_FILE="$(find_compose_file)"; then
     run docker_compose --project-name "$COMPOSE_PROJECT_NAME" -f "$COMPOSE_FILE" up -d --build --remove-orphans
   fi
 else
-  log "No Docker Compose file found."
-  log "TODO: add docker-compose.yml/compose.yml when the clean dev app exists."
-  log "TODO: define WordPress/PHP/database services for dev.inteligent.si."
-  log "TODO: keep uploads/database/secrets outside git."
+  die "No Docker Compose file found"
 fi
 
 log "6. Health check"
@@ -148,7 +162,6 @@ health_check
 
 log "7. Rollback note"
 log "Rollback for now: rerun with ZVIJ_DEPLOY_BRANCH=<previous-safe-branch-or-tag>."
-log "Once Docker/app releases exist, add image/tag or release-directory rollback."
 
 log "== DEPLOY ZVIJ DEV DONE =="
 log "Final URL: $URL"

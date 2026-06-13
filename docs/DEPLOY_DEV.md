@@ -73,31 +73,22 @@ Let's Encrypt certificate:
 The deploy script has safe defaults, but GitHub Actions may pass:
 
 ```text
-ZVIJ_DEPLOY_BRANCH=chore/dev-deploy-script
+ZVIJ_DEPLOY_BRANCH=chore/docker-wordpress-dev
 ZVIJ_APP_DIR=/home/jaka/apps/zvijsi/zvij.si
 ZVIJ_WEB_ROOT=/var/www/dev.inteligent.si
 ZVIJ_ENV_FILE=/var/www/dev.inteligent.si/.env
 ZVIJ_COMPOSE_PROJECT_NAME=zvij-dev
 ```
 
-Future app `.env` values should be added only after the clean WordPress/Docker structure exists. Expected future values:
+App `.env` values:
 
 ```text
-WP_ENV=development
-WP_HOME=https://dev.inteligent.si
-WP_SITEURL=https://dev.inteligent.si/wp
-DB_NAME=
-DB_USER=
-DB_PASSWORD=
-DB_HOST=
-WORDPRESS_AUTH_KEY=
-WORDPRESS_SECURE_AUTH_KEY=
-WORDPRESS_LOGGED_IN_KEY=
-WORDPRESS_NONCE_KEY=
-WORDPRESS_AUTH_SALT=
-WORDPRESS_SECURE_AUTH_SALT=
-WORDPRESS_LOGGED_IN_SALT=
-WORDPRESS_NONCE_SALT=
+WORDPRESS_DB_NAME=zvij_dev
+WORDPRESS_DB_USER=zvij_dev
+WORDPRESS_DB_PASSWORD=
+WORDPRESS_DB_ROOT_PASSWORD=
+WORDPRESS_PORT=8098
+WORDPRESS_URL=https://dev.inteligent.si
 ```
 
 Do not put production credentials in this file.
@@ -108,7 +99,7 @@ Run on the Hetzner server:
 
 ```bash
 cd /home/jaka/apps/zvijsi/zvij.si
-ZVIJ_DEPLOY_BRANCH=chore/dev-deploy-script scripts/deploy-dev.sh
+ZVIJ_DEPLOY_BRANCH=chore/docker-wordpress-dev scripts/deploy-dev.sh
 ```
 
 After the dev branch changes, set `ZVIJ_DEPLOY_BRANCH` to the branch that should be deployed.
@@ -117,12 +108,12 @@ After the dev branch changes, set `ZVIJ_DEPLOY_BRANCH` to the branch that should
 
 Current dev nginx setup is intentionally separate from all production vhosts.
 
-Active behavior:
+Active behavior after the Docker dev app is deployed:
 
 - `http://dev.inteligent.si/` returns `301` to `https://dev.inteligent.si/`.
-- `https://dev.inteligent.si/` serves the static placeholder page.
-- The placeholder page says `Zvij.si dev environment`.
-- The document root is `/var/www/dev.inteligent.si/public`.
+- `https://dev.inteligent.si/` proxies to the clean WordPress container.
+- WordPress listens on `127.0.0.1:8098`.
+- The static placeholder root remains available for ACME challenges only.
 
 The setup was created in this order:
 
@@ -159,6 +150,7 @@ Verification commands:
 sudo nginx -t
 sudo systemctl reload nginx
 curl -I --max-time 20 http://dev.inteligent.si/
+curl -i --max-time 20 http://127.0.0.1:8098/
 curl -i --max-time 20 https://dev.inteligent.si/
 echo | openssl s_client -servername dev.inteligent.si -connect dev.inteligent.si:443 2>/dev/null | openssl x509 -noout -subject -issuer -dates
 ```
@@ -178,18 +170,16 @@ certificate expiry -> 2026-09-11
 Jaka can configure the GitHub Action to SSH into the server and run:
 
 ```bash
-cd /home/jaka/apps/zvijsi/zvij.si && ZVIJ_DEPLOY_BRANCH="${GITHUB_REF_NAME:-chore/dev-deploy-script}" scripts/deploy-dev.sh
+cd /home/jaka/apps/zvijsi/zvij.si && ZVIJ_DEPLOY_BRANCH="${GITHUB_REF_NAME:-chore/docker-wordpress-dev}" scripts/deploy-dev.sh
 ```
 
 If the Action already knows the branch name, pass it explicitly:
 
 ```bash
-cd /home/jaka/apps/zvijsi/zvij.si && ZVIJ_DEPLOY_BRANCH="chore/dev-deploy-script" scripts/deploy-dev.sh
+cd /home/jaka/apps/zvijsi/zvij.si && ZVIJ_DEPLOY_BRANCH="chore/docker-wordpress-dev" scripts/deploy-dev.sh
 ```
 
 ## What The Script Does Today
-
-Because the repo does not yet contain Docker Compose or a clean app implementation, the script currently:
 
 1. Locks deploys with `/tmp/deploy-zvij-dev.lock`.
 2. Verifies it is using only the expected dev paths.
@@ -197,28 +187,10 @@ Because the repo does not yet contain Docker Compose or a clean app implementati
 4. Fetches from GitHub.
 5. Resets tracked files to `origin/$ZVIJ_DEPLOY_BRANCH`.
 6. Loads `/var/www/dev.inteligent.si/.env` if present.
-7. Looks for a Compose file.
-8. If Compose exists, runs Docker Compose pull/build/up for this project only.
-9. If Compose does not exist, prints TODOs and exits safely.
+7. Runs Docker Compose pull/build/up for this project only.
+8. Checks `http://127.0.0.1:8098/wp-login.php`.
+9. Checks `https://dev.inteligent.si`.
 10. Prints the final URL.
-
-## Future Docker Hook
-
-When the app structure exists, add one of:
-
-```text
-docker-compose.yml
-docker-compose.yaml
-compose.yml
-compose.yaml
-```
-
-The script will then run:
-
-```text
-docker compose --project-name zvij-dev --env-file /var/www/dev.inteligent.si/.env -f <compose-file> pull
-docker compose --project-name zvij-dev --env-file /var/www/dev.inteligent.si/.env -f <compose-file> up -d --build --remove-orphans
-```
 
 Only containers in Compose project `zvij-dev` should be affected.
 
@@ -227,10 +199,9 @@ Only containers in Compose project `zvij-dev` should be affected.
 The script checks:
 
 ```text
+http://127.0.0.1:8098/wp-login.php
 https://dev.inteligent.si
 ```
-
-Now that nginx and SSL are configured, the placeholder health check should pass until the real app replaces it. Once the app is implemented, make this check strict.
 
 ## Rollback Plan
 
@@ -263,6 +234,6 @@ The dev deploy must never touch:
 ## Current Limitations
 
 - No production deploy is implemented.
-- No Docker app implementation is created in this branch.
 - No legacy WordPress files are deleted.
 - No live `zvij.si` path is modified.
+- The nginx proxy edit must be applied with server privileges because `/etc/nginx` is outside the repository.
