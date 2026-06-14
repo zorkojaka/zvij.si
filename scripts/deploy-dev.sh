@@ -173,10 +173,10 @@ require_docker
 if COMPOSE_FILE="$(find_compose_file)"; then
   log "Compose file found: $COMPOSE_FILE"
   if [ -f "$ENV_FILE" ]; then
-    run docker_compose --project-name "$COMPOSE_PROJECT_NAME" --env-file "$ENV_FILE" -f "$COMPOSE_FILE" config
+    run docker_compose --project-name "$COMPOSE_PROJECT_NAME" --env-file "$ENV_FILE" -f "$COMPOSE_FILE" config --quiet
     run docker_compose --project-name "$COMPOSE_PROJECT_NAME" --env-file "$ENV_FILE" -f "$COMPOSE_FILE" up -d --build --remove-orphans
   else
-    run docker_compose --project-name "$COMPOSE_PROJECT_NAME" -f "$COMPOSE_FILE" config
+    run docker_compose --project-name "$COMPOSE_PROJECT_NAME" -f "$COMPOSE_FILE" config --quiet
     run docker_compose --project-name "$COMPOSE_PROJECT_NAME" -f "$COMPOSE_FILE" up -d --build --remove-orphans
   fi
 else

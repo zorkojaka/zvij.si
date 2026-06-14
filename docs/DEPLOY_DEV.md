@@ -191,7 +191,7 @@ cd /home/jaka/apps/zvijsi/zvij.si && ZVIJ_DEPLOY_BRANCH="chore/docker-wordpress-
 6. Resets tracked files to `origin/$ZVIJ_DEPLOY_BRANCH`.
 7. Loads `/var/www/dev.inteligent.si/.env` if present.
 8. Verifies Docker access for user `jaka`.
-9. Runs Docker Compose config and build/up for this project only.
+9. Runs quiet Docker Compose config validation and build/up for this project only.
 10. Checks `http://127.0.0.1:8098/wp-login.php`.
 11. Checks `https://dev.inteligent.si`.
 12. Prints the final URL.
