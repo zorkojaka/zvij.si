@@ -14,7 +14,8 @@ BRANCH="${ZVIJ_DEPLOY_BRANCH:-chore/docker-wordpress-dev}"
 WEB_ROOT="${ZVIJ_WEB_ROOT:-/var/www/dev.inteligent.si}"
 ENV_FILE="${ZVIJ_ENV_FILE:-$WEB_ROOT/.env}"
 URL="https://dev.inteligent.si"
-LOCK_FILE="/tmp/deploy-zvij-dev.lock"
+LOCK_DIR="$APP_DIR/.deploy"
+LOCK_FILE="$LOCK_DIR/deploy-dev.lock"
 COMPOSE_PROJECT_NAME="${ZVIJ_COMPOSE_PROJECT_NAME:-zvij-dev}"
 WORDPRESS_PORT="${WORDPRESS_PORT:-8098}"
 
@@ -120,11 +121,6 @@ health_check() {
   fi
 }
 
-exec 9>"$LOCK_FILE"
-if ! flock -w 600 9; then
-  die "Another dev deploy is still running (lock busy > 600s)"
-fi
-
 log "== DEPLOY ZVIJ DEV START =="
 log "App dir: $APP_DIR"
 log "Branch: $BRANCH"
@@ -136,9 +132,15 @@ require_safe_paths
 
 [ -d "$APP_DIR/.git" ] || die "Missing git repository at $APP_DIR"
 
-run mkdir -p "$WEB_ROOT"
-
 cd "$APP_DIR"
+
+run mkdir -p .deploy
+exec 9>"$LOCK_FILE"
+if ! flock -w 600 9; then
+  die "Another dev deploy is still running (lock busy > 600s)"
+fi
+
+run mkdir -p "$WEB_ROOT"
 
 log "1. Fetch from git"
 run git fetch origin

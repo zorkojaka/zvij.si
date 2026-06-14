@@ -17,6 +17,7 @@ wp-config-local.php
 error_log
 *.log
 *.tmp
+.deploy/
 
 # OS / editor
 .DS_Store
