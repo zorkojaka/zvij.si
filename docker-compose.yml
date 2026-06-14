@@ -68,6 +68,7 @@ services:
       - wordpress_data:/var/www/html
       - ./wp-content/themes/zvij-theme:/var/www/html/wp-content/themes/zvij-theme:ro
       - ./wp-content/plugins/zvij-core:/var/www/html/wp-content/plugins/zvij-core:ro
+      - ./scripts:/var/www/html/scripts:ro
     networks:
       - zvij_dev
     healthcheck:
@@ -99,6 +100,7 @@ services:
       - wordpress_data:/var/www/html
       - ./wp-content/themes/zvij-theme:/var/www/html/wp-content/themes/zvij-theme:ro
       - ./wp-content/plugins/zvij-core:/var/www/html/wp-content/plugins/zvij-core:ro
+      - ./scripts:/var/www/html/scripts:ro
     networks:
       - zvij_dev
 
