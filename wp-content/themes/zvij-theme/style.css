@@ -3,7 +3,7 @@ Theme Name: Zvij Theme
 Theme URI: https://dev.inteligent.si
 Author: Zvij.si
 Description: Clean development shop prototype for dev.inteligent.si.
-Version: 0.3.0
+Version: 0.4.0
 Requires at least: 6.5
 Tested up to: 6.5
 Requires PHP: 8.2
@@ -431,18 +431,21 @@ a {
   float: none;
   margin: 0;
   width: auto;
-  padding: 1rem;
-  min-height: 260px;
+  padding: 0.85rem;
+  min-height: 340px;
   display: flex;
   flex-direction: column;
 }
 
 .woocommerce ul.products li.product a img {
-  background: linear-gradient(135deg, #efe0c8, #fffaf1);
+  background:
+    linear-gradient(135deg, rgba(49, 95, 73, 0.08), transparent 45%),
+    linear-gradient(135deg, #efe0c8, #fffaf1);
   border-radius: var(--zvij-radius);
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
   margin: 0 0 1rem;
+  padding: 1rem;
 }
 
 .woocommerce ul.products li.product .woocommerce-loop-product__title {
@@ -458,8 +461,19 @@ a {
 }
 
 .woocommerce ul.products li.product .price {
-  color: var(--zvij-muted);
+  color: var(--zvij-text);
+  font-size: 1.05rem;
+  font-weight: 850;
   margin-top: auto;
+}
+
+.woocommerce ul.products li.product .price del {
+  color: var(--zvij-muted);
+  font-weight: 500;
+}
+
+.woocommerce ul.products li.product .price ins {
+  text-decoration: none;
 }
 
 .woocommerce ul.products li.product .button {
@@ -476,15 +490,166 @@ a {
   margin: 0 0.2rem;
 }
 
+.single-product .site-main {
+  max-width: 1240px;
+}
+
+.single-product div.product {
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  grid-template-columns: minmax(280px, 0.95fr) minmax(280px, 1.05fr);
+}
+
+.single-product div.product::before,
+.single-product div.product::after {
+  content: none;
+}
+
+.single-product div.product .woocommerce-product-gallery,
+.single-product div.product .summary {
+  float: none;
+  width: auto;
+}
+
+.single-product div.product .woocommerce-product-gallery {
+  background:
+    linear-gradient(135deg, rgba(49, 95, 73, 0.08), transparent 48%),
+    var(--zvij-panel);
+  border: 1px solid var(--zvij-line);
+  border-radius: var(--zvij-radius);
+  box-shadow: var(--zvij-shadow);
+  padding: clamp(1rem, 3vw, 2rem);
+}
+
+.single-product div.product .woocommerce-product-gallery img {
+  border-radius: var(--zvij-radius);
+}
+
+.single-product div.product .summary {
+  align-self: center;
+  background: rgba(255, 250, 241, 0.75);
+  border: 1px solid var(--zvij-line);
+  border-radius: var(--zvij-radius);
+  padding: clamp(1.25rem, 4vw, 2.25rem);
+}
+
+.single-product .product_title {
+  font-size: clamp(2.3rem, 6vw, 5.2rem);
+  line-height: 0.95;
+  margin: 0 0 1rem;
+}
+
+.single-product .summary .price {
+  color: var(--zvij-text);
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 900;
+}
+
+.single-product .summary .price del {
+  color: var(--zvij-muted);
+  font-size: 0.75em;
+  font-weight: 500;
+}
+
+.single-product .summary .price ins {
+  text-decoration: none;
+}
+
+.single-product__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 1rem;
+}
+
+.single-product__chips span,
+.zvij-dev-note span {
+  background: var(--zvij-panel-alt);
+  border: 1px solid var(--zvij-line);
+  border-radius: 999px;
+  color: var(--zvij-text);
+  display: inline-flex;
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 0.25rem 0.55rem;
+}
+
+.zvij-product-context,
+.zvij-product-video-panel {
+  grid-column: 1 / -1;
+  margin-top: clamp(2rem, 5vw, 4rem);
+}
+
+.zvij-product-context {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.zvij-product-context > div,
+.zvij-product-video-panel,
+.zvij-dev-note {
+  background: rgba(255, 250, 241, 0.86);
+  border: 1px solid var(--zvij-line);
+  border-radius: var(--zvij-radius);
+  padding: clamp(1rem, 3vw, 1.5rem);
+}
+
+.zvij-product-context h2,
+.zvij-product-video-panel h2 {
+  font-size: clamp(1.55rem, 3vw, 2.5rem);
+  line-height: 1;
+  margin: 0 0 0.8rem;
+}
+
+.zvij-product-context p,
+.zvij-product-video-panel p,
+.zvij-dev-note {
+  color: var(--zvij-muted);
+}
+
+.zvij-product-video-panel {
+  align-items: center;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: minmax(0, 0.85fr) minmax(300px, 1.15fr);
+}
+
+.zvij-video-frame,
+.zvij-product-video {
+  aspect-ratio: 16 / 9;
+  background: var(--zvij-bg-deep);
+  border-radius: var(--zvij-radius);
+  overflow: hidden;
+}
+
+.zvij-video-frame iframe,
+.zvij-product-video iframe {
+  border: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.zvij-dev-note {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+
 @media (max-width: 920px) {
   .hero,
-  .split-section {
+  .split-section,
+  .single-product div.product,
+  .zvij-product-video-panel {
     grid-template-columns: 1fr;
   }
 
   .card-grid--four,
   .woocommerce ul.products,
-  .woocommerce-page ul.products {
+  .woocommerce-page ul.products,
+  .zvij-product-context {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -524,7 +689,8 @@ a {
 
   .card-grid--four,
   .woocommerce ul.products,
-  .woocommerce-page ul.products {
+  .woocommerce-page ul.products,
+  .zvij-product-context {
     grid-template-columns: 1fr;
   }
 
