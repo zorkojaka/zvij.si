@@ -10,10 +10,10 @@ if (! defined('ABSPATH')) {
 get_header();
 
 $pillars = [
-    ['DUBI filtri', 'dubi-filtri', 'Osnovni kos za bolj urejen setup in jasen refill ritem.'],
-    ['CBD čaj', 'cbd-caj', 'Konopljini vršički za čaj, ko želiš mirnejši ritual brez THC učinka.'],
-    ['Zvij setup', 'zvij-setup', 'Paketni pogled na pripomočke, rutino in prvo izbiro.'],
-    ['Refill', 'trgovina', 'Ponovi zalogo brez iskanja od začetka.'],
+    ['DUBI filtri', 'dubi-filtri', '42 ali 420 filtrov za urejen setup in jasen refill ritem.'],
+    ['CBD čaj', 'cbd-caj', 'SMOKEY, CHILLY in FRUTTY kot 1 g izbira ali 5 g paket.'],
+    ['Zvij setup', 'zvij-setup', 'Sample in setup paket za prvi dev nakup.'],
+    ['Refill', 'trgovina', '5 g čaj je izpolnjen kot 5 posameznih 1 g pakiranj.'],
 ];
 ?>
 <section class="hero hero--home">
@@ -29,7 +29,7 @@ $pillars = [
   <div class="ritual-note" aria-label="<?php esc_attr_e('Prototype note', 'zvij-theme'); ?>">
     <span><?php esc_html_e('dev prototip', 'zvij-theme'); ?></span>
     <strong><?php esc_html_e('setup pred checkoutom', 'zvij-theme'); ?></strong>
-    <p><?php esc_html_e('Najprej občutek trgovine, potem realni podatki izdelkov, cene in pravna besedila.', 'zvij-theme'); ?></p>
+    <p><?php esc_html_e('Realne dev cene so vnesene. CBD/CBG izdelki ostajajo opisani kot čaj in brez zdravstvenih obljub.', 'zvij-theme'); ?></p>
   </div>
 </section>
 
@@ -64,8 +64,8 @@ $pillars = [
 <section class="feature-band">
   <div class="feature-band__content">
     <p class="eyebrow"><?php esc_html_e('Best starter setup', 'zvij-theme'); ?></p>
-    <h2><?php esc_html_e('DUBI filtri + rolca + refill logika.', 'zvij-theme'); ?></h2>
-    <p><?php esc_html_e('Za prvi nakup naj bo setup jasen: osnovni kos, navada okoli zaloge in pot do naslednjega refilla brez ponovnega brskanja.', 'zvij-theme'); ?></p>
+    <h2><?php esc_html_e('DUBI 42 + rolca + sample čaja.', 'zvij-theme'); ?></h2>
+    <p><?php esc_html_e('Zvij setup paket je dev bundle za preverjanje prvega nakupa. Vsebina je označena kot dev, dokler Jaka ne potrdi končne sestave.', 'zvij-theme'); ?></p>
   </div>
   <a class="button button--light" href="<?php echo esc_url(home_url('/zvij-setup/')); ?>"><?php esc_html_e('Sestavi setup', 'zvij-theme'); ?></a>
 </section>
@@ -76,7 +76,7 @@ $pillars = [
     <h2><?php esc_html_e('Mirnejši ritual brez THC učinka.', 'zvij-theme'); ?></h2>
   </div>
   <div class="text-stack">
-    <p><?php esc_html_e('CBD čaj je predstavljen kot konopljini vršički za čaj. Copy ostaja pri ritualu, meri in občutku nadzora, brez zdravstvenih obljub in brez kajenja.', 'zvij-theme'); ?></p>
+    <p><?php esc_html_e('SMOKEY, CHILLY in FRUTTY so v dev katalogu predstavljeni kot čaj. 1 g je osnovno pakiranje; 5 g paket se izpolni kot 5 posameznih 1 g pakiranj.', 'zvij-theme'); ?></p>
     <a class="text-link" href="<?php echo esc_url(home_url('/cbd-caj/')); ?>"><?php esc_html_e('Preberi o CBD čaju', 'zvij-theme'); ?></a>
   </div>
 </section>

@@ -19,7 +19,7 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.4.0');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.5.0');
 });
 
 add_action('woocommerce_before_shop_loop_item_title', function (): void {
@@ -66,8 +66,14 @@ add_action('woocommerce_after_single_product_summary', function (): void {
     $source_url = (string) get_post_meta($product->get_id(), 'imported_from_live_url', true);
     $needs_review = (string) get_post_meta($product->get_id(), 'legal_copy_review_needed', true);
     $youtube_url = (string) get_post_meta($product->get_id(), '_zvij_dubi_youtube_url', true);
+    $packaging_note = (string) get_post_meta($product->get_id(), '_zvij_packaging_note', true);
     $is_dubi = str_contains(strtolower($product->get_name()), 'dubi');
     ?>
+    <?php if ($packaging_note !== '') : ?>
+      <aside class="zvij-packaging-note">
+        <?php echo esc_html($packaging_note); ?>
+      </aside>
+    <?php endif; ?>
     <section class="zvij-product-context">
       <div>
         <p class="card-kicker"><?php esc_html_e('Zakaj ta izdelek', 'zvij-theme'); ?></p>

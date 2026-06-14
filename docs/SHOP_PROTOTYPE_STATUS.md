@@ -15,18 +15,24 @@
 - Added visible product category labels on product cards.
 - Updated the baseline script to create richer static page copy.
 - Disabled WooCommerce coming-soon mode for dev.
-- Published temporary DEV placeholder products so the public shop is visually reviewable.
+- Published current dev catalog products with real reviewed prices.
 
-## Public DEV Placeholder Products
+## Public Dev Products
 
-The public shop currently uses placeholder products:
+The public shop currently uses active dev products:
 
-- `DEV placeholder: DUBI filtri`
-- `DEV placeholder: CBD čaj`
-- `DEV placeholder: Zvij setup paket`
-- `DEV placeholder: Refill paket`
+- `SMOKEY CBD čaj 1 g`
+- `SMOKEY CBD čaj 5 g`
+- `CHILLY CBG čaj 1 g`
+- `CHILLY CBG čaj 5 g`
+- `FRUTTY CBD čaj 1 g`
+- `FRUTTY CBD čaj 5 g`
+- `DUBI 42 aktivnih ogljikovih filtrov`
+- `DUBI 420 aktivnih ogljikovih filtrov`
+- `Sample paket`
+- `Zvij setup paket`
 
-These are intentionally visible because the visual prototype needs product cards. Prices are unset and copy clearly marks them as dev placeholders. Payments and production shipping are not configured.
+`Sample paket` is marked as a DEV placeholder until contents are confirmed. `Zvij setup paket` is marked as a DEV bundle until contents are confirmed. Payments and production shipping are not configured.
 
 Older draft placeholders may still exist in WordPress; they are not public.
 
@@ -43,10 +49,10 @@ Each has a clear headline, short intro/excerpt, body copy, and CTA buttons throu
 
 ## Still Placeholder
 
-- product names
+- final production product names
 - product photography
-- prices
-- package contents
+- production approval of prices
+- final Sample/Zvij setup package contents
 - refill intervals
 - legal checkout copy
 - shipping rules

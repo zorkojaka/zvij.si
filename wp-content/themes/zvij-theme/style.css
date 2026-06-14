@@ -3,7 +3,7 @@ Theme Name: Zvij Theme
 Theme URI: https://dev.inteligent.si
 Author: Zvij.si
 Description: Clean development shop prototype for dev.inteligent.si.
-Version: 0.4.0
+Version: 0.5.0
 Requires at least: 6.5
 Tested up to: 6.5
 Requires PHP: 8.2
@@ -575,6 +575,7 @@ a {
 }
 
 .zvij-product-context,
+.zvij-packaging-note,
 .zvij-product-video-panel {
   grid-column: 1 / -1;
   margin-top: clamp(2rem, 5vw, 4rem);
@@ -587,6 +588,7 @@ a {
 }
 
 .zvij-product-context > div,
+.zvij-packaging-note,
 .zvij-product-video-panel,
 .zvij-dev-note {
   background: rgba(255, 250, 241, 0.86);
@@ -604,8 +606,16 @@ a {
 
 .zvij-product-context p,
 .zvij-product-video-panel p,
-.zvij-dev-note {
+.zvij-dev-note,
+.zvij-packaging-note {
   color: var(--zvij-muted);
+}
+
+.zvij-packaging-note {
+  border-color: rgba(49, 95, 73, 0.35);
+  color: var(--zvij-text);
+  font-weight: 850;
+  margin-top: 1rem;
 }
 
 .zvij-product-video-panel {
