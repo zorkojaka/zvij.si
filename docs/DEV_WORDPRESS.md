@@ -44,6 +44,7 @@ From the repo checkout:
 docker compose --env-file /var/www/dev.inteligent.si/.env config
 docker compose --env-file /var/www/dev.inteligent.si/.env up -d --build
 WORDPRESS_ADMIN_PASSWORD=<secret> scripts/wp-install-dev.sh
+scripts/wp-baseline-dev.sh
 ```
 
 WordPress listens only on the server loopback interface:
@@ -90,3 +91,15 @@ The server deploy script resets the checkout to the selected branch, loads the e
 cd /home/jaka/apps/zvijsi/zvij.si
 ZVIJ_DEPLOY_BRANCH=chore/docker-wordpress-dev scripts/deploy-dev.sh
 ```
+
+## Baseline Content
+
+After WordPress is installed, `scripts/wp-baseline-dev.sh` can be rerun safely. It:
+
+- forces dev URLs to `https://dev.inteligent.si`
+- disables search engine indexing
+- activates `zvij-theme`, `zvij-core`, and WooCommerce
+- creates the baseline pages and primary menu
+- sets `Domov` as the static homepage
+- sets `Trgovina` as the WooCommerce shop page
+- creates placeholder product categories and draft placeholder products
