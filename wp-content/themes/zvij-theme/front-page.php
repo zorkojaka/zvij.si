@@ -29,7 +29,7 @@ $pillars = [
   <div class="ritual-note" aria-label="<?php esc_attr_e('Prototype note', 'zvij-theme'); ?>">
     <span><?php esc_html_e('dev prototip', 'zvij-theme'); ?></span>
     <strong><?php esc_html_e('setup pred checkoutom', 'zvij-theme'); ?></strong>
-    <p><?php esc_html_e('Realne dev cene so vnesene. CBD/CBG izdelki ostajajo opisani kot čaj in brez zdravstvenih obljub.', 'zvij-theme'); ?></p>
+    <p><?php esc_html_e('Realne dev cene so vnesene. CBD/CBG izdelki ostajajo opisani kot čaj, z jasnim fokusom na ritual in mero.', 'zvij-theme'); ?></p>
   </div>
 </section>
 

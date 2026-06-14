@@ -152,7 +152,7 @@ $catalog = [
         'status' => 'publish',
         'image_source_url' => 'https://zvij.si/wp-content/uploads/2023/06/smokey-frontside.png',
         'excerpt' => '<p>SMOKEY CBD čaj v 1 g pakiranju. ' . $tea_intro . '</p>',
-        'content' => '<p>SMOKEY je preimenovan iz starega izdelka SMOKEY Premium CBD v bolj jasen dev katalog: CBD čaj 1 g.</p><p>Uporaba copyja ostaja pri ritualu, meri in urejeni izbiri. Brez zdravstvenih obljub in brez HHC ponudbe.</p>',
+        'content' => '<p>SMOKEY je preimenovan iz starega izdelka SMOKEY Premium CBD v bolj jasen dev katalog: CBD čaj 1 g.</p><p>Uporaba copyja ostaja pri ritualu, meri in urejeni izbiri. HHC ni del ponudbe.</p>',
         'meta' => [
             '_zvij_former_name' => 'SMOKEY Premium CBD',
             '_zvij_public_mapping' => 'CBD NM = SMOKEY',
