@@ -24,25 +24,28 @@ if ! wp plugin is-installed woocommerce >/dev/null 2>&1; then
   wp plugin install woocommerce
 fi
 wp plugin activate woocommerce
+wp option update woocommerce_coming_soon no
+wp option update woocommerce_store_pages_only no
 
 wp eval '
 $pages = [
-    ["Domov", "domov", "Tvoj ritual. Tvoja mera. Tvoj setup."],
-    ["Trgovina", "trgovina", "Razvojna trgovina za Zvij.si pakete, refille in clanstvo."],
-    ["Član Zvij.si", "clan-zvij-si", "Clanstvo, Zvij koda in dobroimetje bodo tukaj dobili jasno dev osnovo."],
-    ["DUBI filtri", "dubi-filtri", "Placeholder stran za DUBI filtre in setup okoli prvega nakupa."],
-    ["CBD čaj", "cbd-caj", "Posuseni konopljini vrsicki za caj. Brez zdravstvenih obljub in brez kajenja v copyju."],
-    ["Zvij setup", "zvij-setup", "Paketni pogled na pripomocke, refille in miren ritual."],
-    ["Kontakt", "kontakt", "Kontaktna dev stran za Zvij.si."],
+    ["Domov", "domov", "Tvoj ritual. Tvoja mera. Tvoj setup.", "Urejena trgovina za izdelke, refille in članstvo okoli tvojega rituala."],
+    ["Trgovina", "trgovina", "<p>DEV prototip trgovine za DUBI filtre, CBD čaj, setup pakete in refill logiko. Izdelki so začasni placeholderji, dokler niso potrjeni podatki, cene, pravna besedila in checkout pravila.</p>", "Razvojna trgovina za Zvij.si pakete, refille in članstvo."],
+    ["Član Zvij.si", "clan-zvij-si", "<p>Član Zvij.si je prihodnji notranji sloj: Zvij koda, dobroimetje, refilli in ponovitev naročila brez ponovnega iskanja.</p><p>Sistem ostaja brez preprodaje, brez cash payout obljub in brez MLM jezika. Dobroimetje je zamišljeno kot vrednost za naslednji refill.</p>", "Zvij koda, dobroimetje in refill navada kot prihodnji sistem."],
+    ["DUBI filtri", "dubi-filtri", "<p>DUBI filtri so osnova za bolj urejen setup. Stran trenutno služi kot vizualni in vsebinski okvir za produktne podatke, ki jih mora Jaka še potrditi.</p><p>Naslednji korak: realne fotografije, pakiranja, zaloga, cena in refill interval.</p>", "Osnovni kos za bolj urejen setup in refill ritem."],
+    ["CBD čaj", "cbd-caj", "<p>CBD čaj je predstavljen kot konopljini vršički za čaj. Copy ostaja pri ritualu, meri in mirnejšem tempu brez THC učinka.</p><p>Brez zdravstvenih obljub, brez kajenja in brez terapevtskih trditev.</p>", "Konopljini vršički za čaj, brez medicinskih ali kadilskih trditev."],
+    ["Zvij setup", "zvij-setup", "<p>Zvij setup poveže izdelke, refille in navado okoli prvega nakupa. Prototip trenutno kaže smer: DUBI filtri, rolca, jasna zaloga in pot nazaj do refilla.</p>", "Paketni pogled na izdelke, refille in miren ritual."],
+    ["Kontakt", "kontakt", "<p>Kontaktna dev stran za Zvij.si. Produkcijski kontaktni obrazci, pravna besedila in podporni tokovi se dodajo po potrditvi vsebine.</p>", "Kontaktna točka za dev prototip."],
 ];
 
 $page_ids = [];
-foreach ($pages as [$title, $slug, $content]) {
+foreach ($pages as [$title, $slug, $content, $excerpt]) {
     $page = get_page_by_path($slug, OBJECT, "page");
     $postarr = [
         "post_title" => $title,
         "post_name" => $slug,
         "post_content" => $content,
+        "post_excerpt" => $excerpt,
         "post_status" => "publish",
         "post_type" => "page",
     ];
@@ -91,23 +94,37 @@ foreach ($categories as $category) {
 }
 
 $products = [
-    ["DUBI filtri", "DUBI filtri"],
-    ["CBD čaj", "CBD čaj"],
-    ["Zvij setup paket", "Zvij setup"],
+    ["DEV placeholder: DUBI filtri", "DUBI filtri", "DUBI filtri", "Vizualni placeholder za kartico izdelka. Cena, pakiranje in opis niso potrjeni."],
+    ["DEV placeholder: CBD čaj", "CBD čaj", "CBD čaj", "Placeholder za CBD čaj kot konopljine vršičke za čaj. Brez zdravstvenih in kadilskih trditev."],
+    ["DEV placeholder: Zvij setup paket", "Zvij setup", "Zvij setup paket", "Placeholder za začetni setup: DUBI filtri, rolca in kasnejša refill logika."],
+    ["DEV placeholder: Refill paket", "Refill", "Refill paket", "Placeholder za ponovitev zaloge. Realni intervali in vsebina še niso potrjeni."],
 ];
 
-foreach ($products as [$title, $category]) {
+foreach ($products as [$title, $category, $short_description, $description]) {
     $existing = get_page_by_title($title, OBJECT, "product");
-    $product_id = $existing ? $existing->ID : wp_insert_post([
+    $postarr = [
         "post_title" => $title,
-        "post_status" => "draft",
+        "post_status" => "publish",
         "post_type" => "product",
-        "post_content" => "Placeholder dev izdelek. Podrobnosti, cene, pravna besedila in checkout nastavitve se dolocijo kasneje.",
-    ]);
+        "post_excerpt" => $short_description,
+        "post_content" => $description . "\n\nDEV placeholder: izdelek je objavljen samo zato, da javna trgovina pokaže vizualni prototip. Plačila in produkcijska dostava niso nastavljena.",
+    ];
+
+    if ($existing) {
+        $postarr["ID"] = $existing->ID;
+        $product_id = wp_update_post($postarr);
+    } else {
+        $product_id = wp_insert_post($postarr);
+    }
 
     if ($product_id && ! is_wp_error($product_id)) {
         wp_set_object_terms($product_id, "simple", "product_type");
         wp_set_object_terms($product_id, $category, "product_cat");
+        update_post_meta($product_id, "_catalog_visibility", "visible");
+        update_post_meta($product_id, "_stock_status", "instock");
+        update_post_meta($product_id, "_manage_stock", "no");
+        delete_post_meta($product_id, "_regular_price");
+        delete_post_meta($product_id, "_price");
     }
 }
 '
