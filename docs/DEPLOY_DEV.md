@@ -155,7 +155,7 @@ curl -i --max-time 20 https://dev.inteligent.si/
 echo | openssl s_client -servername dev.inteligent.si -connect dev.inteligent.si:443 2>/dev/null | openssl x509 -noout -subject -issuer -dates
 ```
 
-Observed verification result on 2026-06-13:
+Observed verification result on 2026-06-14:
 
 ```text
 http://dev.inteligent.si/ -> 301 Location: https://dev.inteligent.si/
@@ -163,6 +163,8 @@ https://dev.inteligent.si/ -> HTTP/2 200
 certificate subject -> CN = dev.inteligent.si
 certificate issuer -> Let's Encrypt YR1
 certificate expiry -> 2026-09-11
+mixed content grep for http:// -> no matches
+WordPress home/siteurl -> https://dev.inteligent.si
 ```
 
 ## GitHub Action SSH Command
@@ -181,16 +183,18 @@ cd /home/jaka/apps/zvijsi/zvij.si && ZVIJ_DEPLOY_BRANCH="chore/docker-wordpress-
 
 ## What The Script Does Today
 
-1. Locks deploys with `/tmp/deploy-zvij-dev.lock`.
+1. Locks deploys with `.deploy/deploy-dev.lock` inside the project checkout.
 2. Verifies it is using only the expected dev paths.
 3. Creates `/var/www/dev.inteligent.si` if needed.
 4. Fetches from GitHub.
-5. Resets tracked files to `origin/$ZVIJ_DEPLOY_BRANCH`.
-6. Loads `/var/www/dev.inteligent.si/.env` if present.
-7. Runs Docker Compose pull/build/up for this project only.
-8. Checks `http://127.0.0.1:8098/wp-login.php`.
-9. Checks `https://dev.inteligent.si`.
-10. Prints the final URL.
+5. Checks out `$ZVIJ_DEPLOY_BRANCH`.
+6. Resets tracked files to `origin/$ZVIJ_DEPLOY_BRANCH`.
+7. Loads `/var/www/dev.inteligent.si/.env` if present.
+8. Verifies Docker access for user `jaka`.
+9. Runs Docker Compose config and build/up for this project only.
+10. Checks `http://127.0.0.1:8098/wp-login.php`.
+11. Checks `https://dev.inteligent.si`.
+12. Prints the final URL.
 
 Only containers in Compose project `zvij-dev` should be affected.
 
