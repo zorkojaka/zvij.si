@@ -772,6 +772,7 @@ a {
 
 .kit-showcase {
   min-width: 0;
+  scroll-margin-top: 6rem;
 }
 
 /* Image-first product campaign card. */
