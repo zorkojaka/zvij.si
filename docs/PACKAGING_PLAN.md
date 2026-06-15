@@ -48,5 +48,35 @@ Recommended minimum set:
 - one DUBI 420 packshot
 - one Sample paket placeholder or confirmed contents image
 - one Zvij setup paket bundle image after contents are confirmed
+- one Rezervni vžigalnik pack/add-on photo after supplier is confirmed
+- one Clipper standard setup photo after variant strategy is confirmed
+- one Premium Clipper packaging/detail photo after premium format is confirmed
 
 Use consistent warm beige/paper background, centered products, soft shadows, and clear scale.
+
+## Setup Dodatki Packaging
+
+Lighters should support setup culture without feeling childish or cheaply overbranded.
+
+### Rezervni vžigalnik
+
+- Use as a backup / package add-on.
+- Target price: 1.50-2.50 EUR.
+- Branding should be light: Zvij.si sticker or QR/member card in the package.
+- Do not invest in custom print yet.
+
+### Clipper standard
+
+- Use original Clipper identity first.
+- Target price: 2.90-4.20 EUR.
+- Add Zvij.si QR/member card in the package.
+- Treat it as the normal setup lighter, not a novelty object.
+
+### Premium Clipper
+
+- Target price: 14.90-29.90 EUR.
+- Do not put a cheap sticker directly on the premium lighter.
+- Use premium packaging/card if Zvij.si branding is included.
+- Future option: Clipper x Zvij.si limited series.
+
+All lighter products remain draft until Jaka confirms supplier, exact prices, images, packaging, and whether any collaboration language is allowed.

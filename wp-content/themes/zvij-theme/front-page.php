@@ -82,6 +82,18 @@ $pillars = [
 
 <section class="split-section split-section--quiet">
   <div>
+    <p class="eyebrow"><?php esc_html_e('Setup dodatki', 'zvij-theme'); ?></p>
+    <h2><?php esc_html_e('Majhne stvari, ki jih imaš vedno pri sebi.', 'zvij-theme'); ?></h2>
+  </div>
+  <div class="text-stack">
+    <p><?php esc_html_e('Od rezervnega vžigalnika do premium Clipperja — majhne stvari, ki jih imaš vedno pri sebi.', 'zvij-theme'); ?></p>
+    <p><?php esc_html_e('Dodatki ostajajo del setup kulture: uporabni, odrasli in dovolj premišljeni, da podprejo Član Zvij.si sistem.', 'zvij-theme'); ?></p>
+    <a class="text-link" href="<?php echo esc_url(home_url('/trgovina/')); ?>"><?php esc_html_e('Poglej shop prototip', 'zvij-theme'); ?></a>
+  </div>
+</section>
+
+<section class="split-section split-section--quiet">
+  <div>
     <p class="eyebrow"><?php esc_html_e('CBD/CBG vršički', 'zvij-theme'); ?></p>
     <h2><?php esc_html_e('SMOKEY, CHILLY, FRUTTY.', 'zvij-theme'); ?></h2>
   </div>

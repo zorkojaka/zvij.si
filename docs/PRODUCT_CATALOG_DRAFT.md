@@ -57,6 +57,31 @@ Planned setup contents:
 - rolca
 - sample CBD/CBG vršičkov
 
+### Setup dodatki
+
+Draft-only accessory category for small setup objects that belong naturally next to DUBI, vršički, setup bundles, and membership.
+
+Current draft products:
+
+- Rezervni vžigalnik
+- Clipper standard
+- Premium Clipper
+
+Accessory logic:
+
+- Cheap disposable lighter: backup / when needed / package add-on, target 1.50-2.50 EUR.
+- Standard Clipper: main normal lighter, target 2.90-4.20 EUR.
+- Premium Clipper: premium personal setup object / gift / pride item, target 14.90-29.90 EUR.
+
+Keep all accessory products as draft until Jaka confirms supplier, exact prices, images, packaging, and legal/commercial handling.
+
+Brand framing:
+
+- A lighter is an "always with you" object.
+- It belongs to setup culture.
+- It can support the member line `Zvijače za zvijače.`
+- It should feel useful, adult, and domestic, not childish or cheap.
+
 ## Implementation Notes
 
 The repeatable sync script is:

@@ -175,8 +175,8 @@ function zvij_catalog_sync_pages_and_menu(): void {
         'trgovina' => [
             'title' => 'Trgovina',
             'slug' => 'trgovina',
-            'excerpt' => 'DUBI filtri, CBD/CBG vršički, setupi in reload.',
-            'content' => '<p>Dev trgovina za trenutni Zvij.si katalog: DUBI filtri, SMOKEY CBD vršički, CHILLY CBG vršički, FRUTTY CBD vršički, sample paket in Zvij setup paket.</p>',
+            'excerpt' => 'DUBI filtri, CBD/CBG vršički, setupi, setup dodatki in reload.',
+            'content' => '<p>Dev trgovina za trenutni Zvij.si katalog: DUBI filtri, SMOKEY CBD vršički, CHILLY CBG vršički, FRUTTY CBD vršički, sample paket, Zvij setup paket in prihodnji Setup dodatki.</p><p>Setup dodatki so za zdaj draft izdelki, dokler Jaka ne potrdi dobavitelja, cen in fotografij.</p>',
         ],
         'clan-zvij-si' => [
             'title' => 'Član Zvij.si',
@@ -275,6 +275,7 @@ zvij_catalog_sync_pages_and_menu();
 
 $vrsicki_intro = 'Izbrani vršički za urejen ritual, jasno mero in izbiro brez THC učinka. Primerno za čajno uporabo.';
 $five_gram_note = '5 g paket vsebuje 5 posameznih 1 g pakiranj.';
+zvij_catalog_term_id('Setup dodatki', 'setup-dodatki');
 
 $catalog = [
     [
@@ -455,6 +456,57 @@ $catalog = [
         'meta' => [
             '_zvij_dev_bundle' => 'true',
             '_zvij_packaging_logic' => 'DUBI 42 + rolca + sample CBD/CBG vršički',
+        ],
+    ],
+    [
+        'title' => 'Rezervni vžigalnik',
+        'slug' => 'rezervni-vzigalnik',
+        'price' => '',
+        'regular_price' => '',
+        'category' => 'Setup dodatki',
+        'category_slug' => 'setup-dodatki',
+        'status' => 'draft',
+        'excerpt' => '<p>Draft dodatek: poceni rezervni vžigalnik kot backup ali paketni add-on.</p>',
+        'content' => '<p>Rezervni vžigalnik je zamišljen kot praktičen backup kos za paket ali ko ga potrebuješ. Za zdaj brez potrjenega dobavitelja, fotografij in končne cene.</p><p>Branding naj bo lahek: Zvij.si nalepka ali QR/member kartica v paketu, ne custom print.</p>',
+        'meta' => [
+            '_zvij_dev_placeholder' => 'true',
+            '_zvij_price_target' => '1.50-2.50 EUR',
+            '_zvij_accessory_role' => 'backup / when needed / package add-on',
+            '_zvij_packaging_logic' => 'Zvij.si sticker or QR/member card, not custom print yet',
+        ],
+    ],
+    [
+        'title' => 'Clipper standard',
+        'slug' => 'clipper-standard',
+        'price' => '',
+        'regular_price' => '',
+        'category' => 'Setup dodatki',
+        'category_slug' => 'setup-dodatki',
+        'status' => 'draft',
+        'excerpt' => '<p>Draft dodatek: standardni Clipper kot glavni normalni vžigalnik za setup.</p>',
+        'content' => '<p>Standardni Clipper naj najprej ohrani originalno Clipper identiteto. Zvij.si plast pride skozi QR/member kartico v paketu, ne skozi prezgodnje custom brandiranje.</p>',
+        'meta' => [
+            '_zvij_dev_placeholder' => 'true',
+            '_zvij_price_target' => '2.90-4.20 EUR',
+            '_zvij_accessory_role' => 'main normal lighter',
+            '_zvij_packaging_logic' => 'original Clipper identity + Zvij.si QR/member card in package',
+        ],
+    ],
+    [
+        'title' => 'Premium Clipper',
+        'slug' => 'premium-clipper',
+        'price' => '',
+        'regular_price' => '',
+        'category' => 'Setup dodatki',
+        'category_slug' => 'setup-dodatki',
+        'status' => 'draft',
+        'excerpt' => '<p>Draft dodatek: premium Clipper kot osebni setup predmet, darilo ali pride item.</p>',
+        'content' => '<p>Premium Clipper ne sme dobiti poceni nalepke direktno na vžigalnik. Če gre v Zvij.si smer, naj pride skozi boljšo embalažo, kartico ali kasnejšo omejeno serijo.</p><p>Možna prihodnja smer: Clipper x Zvij.si limited series.</p>',
+        'meta' => [
+            '_zvij_dev_placeholder' => 'true',
+            '_zvij_price_target' => '14.90-29.90 EUR',
+            '_zvij_accessory_role' => 'premium personal setup object / gift / pride item',
+            '_zvij_packaging_logic' => 'premium packaging/card; no cheap sticker directly on premium lighter',
         ],
     ],
 ];
