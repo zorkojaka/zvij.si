@@ -97,7 +97,7 @@ Not every customer who uses cannabis culture wants to look like a rasta/Jamaica 
 | Tier | 420 vibe | Bridge / neutral | Quiet setup |
 | --- | --- | --- | --- |
 | Ko zagusti | 3-4 cheap lighters for 4.20; FRUTTY first try signal | no-brand backup lighter; basic pouch | cheap but clean black lighter/grinder only if quality is acceptable |
-| Normalni setup | IRIE / value papers if quality is acceptable | Clipper standard; Smoking/Ziggy rolls; DUBI 42 | Smoking Black/Brown Rolls; JaJa Noir; DUBI 42 |
+| Normalni setup | IRIE / value papers if quality is acceptable | Clipper standard; Smoking/Ziggy rolls; DUBI 42 | Smoking Black/Brown Thinnest Rolls; JaJa Noir; DUBI 42 |
 | Premium setup | limited 420/member drop only if it stays adult | DUBI 420 as organized bulk/reload | Premium Clipper Gold; black metal grinder; gold/black metal tube |
 
 ## Category Application
@@ -114,7 +114,7 @@ Not every customer who uses cannabis culture wants to look like a rasta/Jamaica 
 
 - Ko zagusti: IRIE XTRA Light if value and quality hold.
 - Normalni setup: Smoking/Ziggy rolls.
-- Quiet setup: Smoking Black Rolls, Smoking Brown Rolls, JaJa Noir Black.
+- Quiet setup: Smoking Black Rolls, Smoking Brown Thinnest Rolls (Knistermann ID 8046), JaJa Noir Black.
 - Gold style: SmK Gold Rolls or SmK Gold Papers + Filter Tips.
 - RAW is not part of the first wave.
 

@@ -112,6 +112,74 @@ function zvij_catalog_apply_tags(int $product_id, array $tag_slugs): void {
 }
 
 /**
+ * Read the Knistermann candidate source file as semicolon-separated CSV.
+ *
+ * @return array<string,array<string,string>> keyed by Knistermann ID
+ */
+function zvij_knistermann_catalog(): array {
+    static $catalog = null;
+    if (is_array($catalog)) {
+        return $catalog;
+    }
+
+    $catalog = [];
+    $path = dirname(__DIR__) . '/data/knistermann_kadilski_pribor.csv';
+    if (! is_readable($path)) {
+        return $catalog;
+    }
+
+    $handle = fopen($path, 'r');
+    if (! $handle) {
+        return $catalog;
+    }
+
+    $headers = fgetcsv($handle, 0, ';');
+    if (! is_array($headers)) {
+        fclose($handle);
+        return $catalog;
+    }
+    $headers = array_map(static fn ($header) => trim((string) $header, "\xEF\xBB\xBF \t\n\r\0\x0B"), $headers);
+
+    while (($row = fgetcsv($handle, 0, ';')) !== false) {
+        if (! is_array($row) || $row === []) {
+            continue;
+        }
+        $record = [];
+        foreach ($headers as $index => $header) {
+            $record[$header] = trim((string) ($row[$index] ?? ''));
+        }
+        if (! empty($record['ID'])) {
+            $catalog[$record['ID']] = $record;
+        }
+    }
+    fclose($handle);
+
+    return $catalog;
+}
+
+/**
+ * Build Knistermann metadata from the semicolon CSV, keyed by ID.
+ *
+ * @return array<string,string>
+ */
+function zvij_knistermann_meta(string $id, string $purchase = '', string $fallback_name = ''): array {
+    $row = zvij_knistermann_catalog()[$id] ?? [];
+    $image_url = (string) ($row['Slika_URL'] ?? '');
+    $product_url = (string) ($row['Product_URL'] ?? $row['Produkt_URL'] ?? $row['URL'] ?? '');
+
+    return [
+        '_zvij_supplier' => 'Knistermann',
+        '_zvij_supplier_id' => $id,
+        '_zvij_supplier_sku' => $id,
+        '_zvij_supplier_name' => (string) ($row['Name'] ?? $row['Naziv'] ?? $fallback_name),
+        '_zvij_b2b_price' => $purchase,
+        '_zvij_source_image_url' => $image_url,
+        '_zvij_source_product_url' => $product_url,
+        '_zvij_image_status' => $image_url !== '' ? 'source_url_available' : 'missing_image',
+    ];
+}
+
+/**
  * Build a draft kit-component product with shared defaults.
  *
  * @param array<int,string>   $tags
@@ -131,6 +199,7 @@ function zvij_kit_component(string $title, string $slug, string $category, strin
         'tags' => array_values(array_unique(array_merge($tags, ['kit-component']))),
         'excerpt' => $excerpt,
         'content' => $content,
+        'image_source_url' => (string) ($meta['_zvij_source_image_url'] ?? ''),
         'meta' => array_merge(['_zvij_dev_placeholder' => 'true', '_zvij_kit_component' => 'true'], $meta),
     ];
 }
@@ -140,13 +209,7 @@ function zvij_kit_component(string $title, string $slug, string $category, strin
  * Purchase prices are wholesale and stored in meta only — never as a public price.
  */
 function zvij_kit_components(): array {
-    $kn = static fn (string $sku, string $purchase, string $name): array => [
-        '_zvij_supplier' => 'Knistermann',
-        '_zvij_supplier_sku' => $sku,
-        '_zvij_supplier_name' => $name,
-        '_zvij_b2b_price' => $purchase,
-        '_zvij_image_status' => 'missing_image',
-    ];
+    $kn = static fn (string $id, string $purchase, string $name): array => zvij_knistermann_meta($id, $purchase, $name);
 
     return [
         // --- Vžigalniki ---
@@ -220,8 +283,8 @@ function zvij_kit_components(): array {
         zvij_kit_component('Smoking Brown Rolls', 'smoking-brown-rolls', 'Rolce', 'rolce', ['black-kit', 'silver-kit'],
             '<p>Draft komponenta: nebeljene rjave rolce za normal/quiet setup.</p>',
             '<p>Natural/quiet alternativa. Primerjati s Smoking Black.</p>',
-            $kn('1521', '', 'Smoking Brown Rolls'),
-            '1521',
+            $kn('8046', '', 'Smoking BROWN THINNEST Rolls'),
+            '8046',
             ['rolca-smoking-brown']),
         zvij_kit_component('Smoking Silver Rolls', 'smoking-silver-rolls', 'Rolce', 'rolce', ['silver-kit'],
             '<p>Draft komponenta: srebrne rolce za Silver Kit.</p>',
@@ -356,6 +419,49 @@ function zvij_catalog_featured_image_by_source(string $source_url): int {
     return $ids ? (int) $ids[0] : 0;
 }
 
+function zvij_catalog_import_featured_image_by_source(string $source_url, int $product_id): int {
+    if ($source_url === '') {
+        return 0;
+    }
+
+    $existing_id = zvij_catalog_featured_image_by_source($source_url);
+    if ($existing_id > 0) {
+        return $existing_id;
+    }
+
+    require_once ABSPATH . 'wp-admin/includes/file.php';
+    require_once ABSPATH . 'wp-admin/includes/media.php';
+    require_once ABSPATH . 'wp-admin/includes/image.php';
+
+    $tmp_file = download_url($source_url, 30);
+    if (is_wp_error($tmp_file)) {
+        update_post_meta($product_id, '_zvij_image_status', 'source_url_available');
+        update_post_meta($product_id, '_zvij_image_import_error', $tmp_file->get_error_message());
+        return 0;
+    }
+
+    $path = (string) wp_parse_url($source_url, PHP_URL_PATH);
+    $filename = basename($path) ?: ('zvij-source-' . md5($source_url) . '.jpg');
+    $file = [
+        'name' => sanitize_file_name($filename),
+        'tmp_name' => $tmp_file,
+    ];
+
+    $attachment_id = media_handle_sideload($file, $product_id);
+    if (is_wp_error($attachment_id)) {
+        @unlink($tmp_file);
+        update_post_meta($product_id, '_zvij_image_status', 'source_url_available');
+        update_post_meta($product_id, '_zvij_image_import_error', $attachment_id->get_error_message());
+        return 0;
+    }
+
+    update_post_meta((int) $attachment_id, '_zvij_source_image_url', $source_url);
+    update_post_meta($product_id, '_zvij_image_status', 'imported');
+    delete_post_meta($product_id, '_zvij_image_import_error');
+
+    return (int) $attachment_id;
+}
+
 function zvij_catalog_product(array $data): int {
     $product_id = zvij_catalog_find_product(
         $data['slug'],
@@ -408,16 +514,18 @@ function zvij_catalog_product(array $data): int {
     $product->set_manage_stock(false);
     $product->save();
 
-    if (! empty($data['image_source_url'])) {
-        $attachment_id = zvij_catalog_featured_image_by_source($data['image_source_url']);
-        if ($attachment_id > 0) {
-            set_post_thumbnail($product_id, $attachment_id);
-        }
-    }
-
     foreach (($data['meta'] ?? []) as $key => $value) {
         update_post_meta($product_id, $key, $value);
     }
+
+    if (! empty($data['image_source_url'])) {
+        $attachment_id = zvij_catalog_import_featured_image_by_source((string) $data['image_source_url'], $product_id);
+        if ($attachment_id > 0) {
+            set_post_thumbnail($product_id, $attachment_id);
+            update_post_meta($product_id, '_zvij_image_status', 'imported');
+        }
+    }
+
     update_post_meta($product_id, 'catalog_sync_status', 'synced_' . gmdate('Y-m-d'));
     update_post_meta($product_id, 'legal_copy_review_needed', $data['legal_review'] ?? 'false');
 

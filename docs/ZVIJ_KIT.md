@@ -24,8 +24,11 @@ Data-driven, no cart/builder logic and no payments.
   - `zvij_kit_tag_registry()` — kit/reload product tags: `black-kit`, `silver-kit`, `gold-kit`, `throwie`, `reload`, `kit-addon`, `kit-component`, `dubi`, `vrsicki`.
   - `zvij_catalog_product()` accepts a `tags` key and assigns `product_tag` terms.
   - `zvij_kit_components()` — kit component products created as **draft** (Knistermann-sourced have
-    `_zvij_supplier`, `_zvij_supplier_sku`, `_zvij_b2b_price` in meta; purchase prices
+    `_zvij_supplier`, `_zvij_supplier_id`, `_zvij_supplier_sku`, `_zvij_b2b_price`,
+    `_zvij_source_image_url` and `_zvij_source_product_url` in meta; purchase prices
     are wholesale and never shown publicly). TBD items have `_zvij_supplier = TBD`.
+  - `data/knistermann_kadilski_pribor.csv` — semicolon-separated (`;`) Knistermann source rows,
+    keyed by `ID`, with `Slika_URL` used for product image import.
   - `zvij_kit_definitions()` — the showcase structure (kits, items by product slug, optional add-ons),
     stored in the `zvij_kits` option for the theme.
   - Existing published products (DUBI 42/420, vršički) are tagged via a slug→tags map.
@@ -57,5 +60,6 @@ Idempotent: re-running updates products, tags and the `zvij_kits` option in plac
 
 - Component supplier samples, final margins and photos (components stay draft until confirmed).
 - Silver Clipper, gold/silver grinders, Throwie Bag and rolling tray are still TBD placeholders.
-- Knistermann image URLs were not found in repo import data; products are marked with `missing_image` metadata until real image URLs/photos exist.
+- Knistermann image URLs are sourced from `data/knistermann_kadilski_pribor.csv`. Sync imports them
+  into the WP media library when possible; if import fails, the source URL remains in product meta.
 - Kits are a showcase only; no bundle product, cart bundling or payments.

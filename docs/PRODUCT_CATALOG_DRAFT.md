@@ -95,6 +95,10 @@ Current first-wave kit component groups:
 - Grinderji: Champ High Black Grinder 60 mm, Zvij.si Mini Grinder 5 cm, Silver/Gold grinder placeholders.
 - Tubes/setup: Black/Silver/Gold Metal Joint Tube, Throwie Bag / setup pouch, rolling tray placeholder.
 
+Knistermann candidate images are sourced from semicolon CSV `data/knistermann_kadilski_pribor.csv`.
+Products are mapped by Knistermann `ID`, not by generic SKU. Smoking Brown uses ID `8046`
+(`Smoking BROWN THINNEST Rolls`); ID `1521` is intentionally not used.
+
 All first-wave supplier candidates stay draft until Jaka confirms samples, images, margins, and final kit composition.
 
 ## Implementation Notes
