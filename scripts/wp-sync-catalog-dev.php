@@ -181,8 +181,8 @@ function zvij_catalog_sync_pages_and_menu(): void {
         'clan-zvij-si' => [
             'title' => 'Član Zvij.si',
             'slug' => 'clan-zvij-si',
-            'excerpt' => 'Zvij koda, dobroimetje, refilli in ponovitev naročila.',
-            'content' => '<p>Član Zvij.si je zamišljen kot praktičen sistem za ljudi, ki se vračajo po svoj refill.</p><p>Prvi nakup naj bo lahek preizkus. Naslednja naročila dobijo dobroimetje, ki pomaga graditi bolj urejen refill ritem.</p><p>Zvij koda je osebna oznaka člana. Dobroimetje je namenjeno naslednjemu nakupu v trgovini, ne izplačilu.</p><p>To ni MLM, ni preprodaja in ni lovljenje akcij. Gre za notranji member sistem: manj iskanja, lažja ponovitev naročila, jasnejši setup.</p>',
+            'excerpt' => 'Zvijače za zvijače.',
+            'content' => '<p><strong>Zvijače za zvijače.</strong></p><p>Zvij koda, dobroimetje in refill sistem za tiste, ki želijo svoj setup urejen tudi naslednjič.</p><p>Prvi nakup naj bo lahek preizkus. Naslednja naročila dobijo dobroimetje, ki pomaga graditi bolj urejen refill ritem.</p><p>Zvij koda je osebna oznaka člana. Dobroimetje je namenjeno naslednjemu nakupu v trgovini, ne izplačilu.</p><p>To ni MLM, ni preprodaja in ni lovljenje akcij. Gre za notranji member sistem: manj iskanja, lažja ponovitev naročila, jasnejši setup.</p>',
         ],
         'dubi-filtri' => [
             'title' => 'DUBI filtri',

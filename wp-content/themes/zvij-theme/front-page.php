@@ -61,10 +61,11 @@ $pillars = [
 <section class="split-section">
   <div>
     <p class="eyebrow"><?php esc_html_e('Član Zvij.si', 'zvij-theme'); ?></p>
-    <h2><?php esc_html_e('Prvi nakup je preizkus. Naslednji naj bo refill.', 'zvij-theme'); ?></h2>
+    <h2><?php esc_html_e('Član Zvij.si', 'zvij-theme'); ?></h2>
+    <p class="section-tagline"><?php esc_html_e('Zvijače za zvijače.', 'zvij-theme'); ?></p>
   </div>
   <div class="text-stack">
-    <p><?php esc_html_e('Članstvo je praktičen del sistema: dobiš svojo Zvij kodo, vidiš dobroimetje in lažje prideš nazaj do naslednjega refilla.', 'zvij-theme'); ?></p>
+    <p><?php esc_html_e('Prvi nakup je lahek preizkus. Članstvo je praktičen del sistema: dobiš svojo Zvij kodo, vidiš dobroimetje in lažje prideš nazaj do naslednjega refilla.', 'zvij-theme'); ?></p>
     <p><?php esc_html_e('Cilj ni lovljenje akcij, ampak urejen refill sistem. Brez preprodaje, brez cash payout obljub, brez hrupa.', 'zvij-theme'); ?></p>
     <a class="text-link" href="<?php echo esc_url(home_url('/clan-zvij-si/')); ?>"><?php esc_html_e('Poglej članstvo', 'zvij-theme'); ?></a>
   </div>

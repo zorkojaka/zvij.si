@@ -18,6 +18,16 @@ The QR flow turns a delivered package into membership onboarding. It should be s
    - view refill recommendation
    - repeat last order later
 
+## Package Copy
+
+Possible printed line next to the QR code:
+
+```text
+Zvijače za zvijače.
+```
+
+Use it as a supporting line for the member/refill flow. Keep `Član Zvij.si` as the main membership name.
+
 ## QR URL Shape
 
 Candidate dev paths:
@@ -43,7 +53,7 @@ Possible approaches:
 
 - QR should not expose private order data.
 - QR copy must not imply resale or cash payout.
-- CBD copy must remain tea-only if package includes CBD products.
+- CBD/CBG copy should use `vršički` as the main product identity. Čajna uporaba can be mentioned as one possible use.
 - Token/verification design waits for privacy and commercial decisions.
 
 ## Open Decisions

@@ -18,9 +18,24 @@ Primary promise:
 Postaneš Član Zvij.si, dobiš svojo Zvij koda in zbiranje dobroimetja postane del tvojega rituala.
 ```
 
+Main name:
+
+```text
+Član Zvij.si
+```
+
+Supporting line:
+
+```text
+Zvijače za zvijače.
+```
+
+Use the supporting line as a clever inside-culture phrase for member perks, dobroimetje and refill habits. Do not replace the main membership name with it.
+
 Use:
 
 - `Član Zvij.si`
+- `Zvijače za zvijače.`
 - `Zvij koda`
 - `dobroimetje`
 - `povabi prijatelja`
