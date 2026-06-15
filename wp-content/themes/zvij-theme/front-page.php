@@ -18,20 +18,22 @@ $pillars = [
 ?>
 <section class="hero hero--home">
   <div class="hero__body">
-    <p class="eyebrow"><?php esc_html_e('Zvij.si Dev', 'zvij-theme'); ?></p>
-    <h1><?php esc_html_e('Tvoj ritual. Tvoja mera. Tvoj setup.', 'zvij-theme'); ?></h1>
-    <p class="hero-copy"><?php esc_html_e('Filtri, vršički, setupi in reload za bolj urejen ritual.', 'zvij-theme'); ?></p>
+    <p class="eyebrow"><?php esc_html_e('Zvij.si Kit', 'zvij-theme'); ?></p>
+    <h1><?php esc_html_e('Vse, kar rabiš, da si zviješ.', 'zvij-theme'); ?></h1>
+    <p class="hero-copy"><?php esc_html_e('Black, Silver, Gold ali Throwie — sestavljen setup z DUBI filtri. Vršički po želji.', 'zvij-theme'); ?></p>
     <div class="button-row">
-      <a class="button" href="<?php echo esc_url(home_url('/trgovina/')); ?>"><?php esc_html_e('Poglej trgovino', 'zvij-theme'); ?></a>
-      <a class="button button--ghost" href="<?php echo esc_url(home_url('/clan-zvij-si/')); ?>"><?php esc_html_e('Postani član', 'zvij-theme'); ?></a>
+      <a class="button" href="#kiti"><?php esc_html_e('Poglej kite', 'zvij-theme'); ?></a>
+      <a class="button button--ghost" href="<?php echo esc_url(home_url('/trgovina/')); ?>"><?php esc_html_e('Poglej trgovino', 'zvij-theme'); ?></a>
     </div>
   </div>
   <div class="ritual-note" aria-label="<?php esc_attr_e('Prototype note', 'zvij-theme'); ?>">
-    <span><?php esc_html_e('dev prototip', 'zvij-theme'); ?></span>
-    <strong><?php esc_html_e('setup pred checkoutom', 'zvij-theme'); ?></strong>
-    <p><?php esc_html_e('Vršički, filtri in setupi z jasno mero. Čajna uporaba je opisana kot možnost, ne kot celotna identiteta izdelka.', 'zvij-theme'); ?></p>
+    <span><?php esc_html_e('Zvij.si Kit', 'zvij-theme'); ?></span>
+    <strong><?php esc_html_e('stil, ne cenovni razred', 'zvij-theme'); ?></strong>
+    <p><?php esc_html_e('Black, Silver in Gold so stil. Throwie je utility setup za s sabo. DUBI filtri so v vsakem kitu.', 'zvij-theme'); ?></p>
   </div>
 </section>
+
+<?php zvij_render_kit_showcase(); ?>
 
 <section class="section-block">
   <div class="section-heading">

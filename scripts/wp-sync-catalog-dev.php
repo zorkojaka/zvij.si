@@ -64,6 +64,281 @@ function zvij_catalog_term_id(string $name, string $slug = ''): int {
     return (int) $term['term_id'];
 }
 
+/**
+ * Central registry of product tags used by the Zvij.si Kit system.
+ *
+ * @return array<string,string> slug => display name
+ */
+function zvij_kit_tag_registry(): array {
+    return [
+        'black-kit' => 'Black Kit',
+        'silver-kit' => 'Silver Kit',
+        'gold-kit' => 'Gold Kit',
+        'throwie' => 'Throwie',
+        'reload' => 'Reload',
+        'kit-addon' => 'Kit Add-on',
+        'kit-component' => 'Kit Component',
+        'dubi' => 'DUBI',
+        'vrsicki' => 'Vršički',
+    ];
+}
+
+function zvij_catalog_tag_id(string $slug): int {
+    $names = zvij_kit_tag_registry();
+    $name = $names[$slug] ?? ucfirst(str_replace('-', ' ', $slug));
+
+    $term = term_exists($slug, 'product_tag');
+    if (! $term) {
+        $term = wp_insert_term($name, 'product_tag', ['slug' => $slug]);
+    }
+    if (is_wp_error($term)) {
+        throw new RuntimeException($term->get_error_message());
+    }
+
+    return (int) (is_array($term) ? $term['term_id'] : $term);
+}
+
+/**
+ * Replace a product's kit tags with the given slugs.
+ *
+ * @param array<int,string> $tag_slugs
+ */
+function zvij_catalog_apply_tags(int $product_id, array $tag_slugs): void {
+    if ($product_id <= 0) {
+        return;
+    }
+    $tag_ids = array_map('zvij_catalog_tag_id', array_values(array_unique($tag_slugs)));
+    wp_set_object_terms($product_id, $tag_ids, 'product_tag', false);
+}
+
+/**
+ * Build a draft kit-component product with shared defaults.
+ *
+ * @param array<int,string>   $tags
+ * @param array<string,string> $meta
+ */
+function zvij_kit_component(string $title, string $slug, string $category, string $category_slug, array $tags, string $excerpt, string $content, array $meta = [], string $sku = '', array $legacy_slugs = []): array {
+    return [
+        'title' => $title,
+        'slug' => $slug,
+        'sku' => $sku,
+        'legacy_slugs' => $legacy_slugs,
+        'price' => '',
+        'regular_price' => '',
+        'category' => $category,
+        'category_slug' => $category_slug,
+        'status' => 'draft',
+        'tags' => array_values(array_unique(array_merge($tags, ['kit-component']))),
+        'excerpt' => $excerpt,
+        'content' => $content,
+        'meta' => array_merge(['_zvij_dev_placeholder' => 'true', '_zvij_kit_component' => 'true'], $meta),
+    ];
+}
+
+/**
+ * Knistermann-sourced kit components (draft until supplier/prices/photos confirmed).
+ * Purchase prices are wholesale and stored in meta only — never as a public price.
+ */
+function zvij_kit_components(): array {
+    $kn = static fn (string $sku, string $purchase, string $name): array => [
+        '_zvij_supplier' => 'Knistermann',
+        '_zvij_supplier_sku' => $sku,
+        '_zvij_supplier_name' => $name,
+        '_zvij_b2b_price' => $purchase,
+        '_zvij_image_status' => 'missing_image',
+    ];
+
+    return [
+        // --- Vžigalniki ---
+        zvij_kit_component('Cheap fajrji HEMP 2', 'cheap-fajrji-hemp-2', 'Vžigalniki', 'vzigalniki', ['throwie'],
+            '<p>Draft komponenta: poceni FARO HEMP 2 fajrji za Throwie Kit.</p>',
+            '<p>Ko zagusti: poceni, uporabni fajrji za kit ali paketni add-on. Test kvalitete je obvezen; če hitro crknejo, odpadejo. Potencialno 3-4 vžigalniki za 4,20 €.</p>',
+            $kn('11651', '9.95 EUR per 50 display', 'FARO Elektronikfeuerzeuge, 50er Display, "HEMP 2"'),
+            '11651',
+            ['faro-cheap-lighters']),
+        zvij_kit_component('Clipper Gold', 'clipper-gold', 'Vžigalniki', 'vzigalniki', ['gold-kit'],
+            '<p>Draft komponenta: Clipper METALL GOLD za Gold Kit.</p>',
+            '<p>Gold Kit kandidat. Gold je stil, ne cenovni razred. Ne dodajati poceni nalepke direktno na premium/kakovosten vžigalnik.</p>',
+            $kn('7656', 'from 50.29 EUR per 12 display', 'Clipper Feuerzeuge groß, 12er Display, METALL GOLD'),
+            '7656'),
+        zvij_kit_component('Clipper Black', 'clipper-black', 'Vžigalniki', 'vzigalniki', ['black-kit'],
+            '<p>Draft komponenta: Clipper METAL MATT ALL BLACK za Black Kit.</p>',
+            '<p>Kandidat za Black Kit. Potrebna vizualna potrditev, da deluje dovolj čisto in diskretno.</p>',
+            $kn('11208', '', 'Clipper METAL MATT ALL BLACK'),
+            '11208',
+            ['clipper-black-matt']),
+        zvij_kit_component('Clipper Black Gradient', 'clipper-black-gradient', 'Vžigalniki', 'vzigalniki', ['black-kit'],
+            '<p>Draft komponenta: Clipper BLACK GRADIENT kot alternativa za Black Kit.</p>',
+            '<p>Alternativa, če all-black ne izgleda dovolj dobro ali ni dobavljiv.</p>',
+            $kn('11125', '', 'Clipper BLACK GRADIENT'),
+            '11125'),
+
+        // --- Grinderji ---
+        zvij_kit_component('Champ High Black Grinder 60 mm', 'champ-high-black-grinder-60-mm', 'Grinderji', 'grinderji', ['black-kit'],
+            '<p>Draft komponenta: Champ High črn kovinski grinder za Black Kit.</p>',
+            '<p>Metall Grinder/Polinator "Champ High", 4-part, Ø 60mm. Dobra marža, če kakovost drži. Retail kandidat: 16,90 ali 19,90 €.</p>',
+            array_merge($kn('11528', '4.46-4.95 EUR', 'Metall Grinder/Polinator "Champ High", 4-part, Ø 60mm'), ['_zvij_retail_candidate' => '16.90 or 19.90 EUR']),
+            '11528',
+            ['grinder-champ-black']),
+        zvij_kit_component('Zvij.si Mini Grinder 5 cm', 'zvij-mini-grinder-5-cm', 'Grinderji', 'grinderji', ['throwie', 'black-kit'],
+            '<p>Draft komponenta: naročen mini grinder z logotipom Zvij.si.</p>',
+            '<p>Naročenih 10 kosov z logotipom. Treba je pregledati kakovost logotipa ob prejemu. Če izgleda cheap/promocijsko, ne gre v hero vlogo. Retail kandidat: 9,90 ali 12,90 €.</p>',
+            ['_zvij_supplier' => 'Other / China / Temu order', '_zvij_ordered_qty' => '10', '_zvij_b2b_price' => 'approx 2.25-3.00 EUR unit, based on corrected 60 EUR total order split', '_zvij_retail_candidate' => '9.90 or 12.90 EUR', '_zvij_image_status' => 'missing_image'],
+            'ZVIJ-MINI-GRINDER-5CM',
+            ['grinder-cheap']),
+        zvij_kit_component('Gold grinder', 'gold-grinder-placeholder', 'Grinderji', 'grinderji', ['gold-kit'],
+            '<p>Draft komponenta: zlat grinder za Gold Kit.</p>',
+            '<p>TBD placeholder. Potrebujemo ujemajoč gold grinder. Ne uporabiti slabega modela samo zato, da zapolni kit.</p>',
+            ['_zvij_supplier' => 'TBD', '_zvij_image_status' => 'missing_image'],
+            'TBD-GOLD-GRINDER',
+            ['grinder-gold']),
+        zvij_kit_component('Silver grinder', 'silver-grinder-placeholder', 'Grinderji', 'grinderji', ['silver-kit'],
+            '<p>Draft komponenta: srebrn grinder za Silver Kit.</p>',
+            '<p>TBD placeholder. Potreben samo, če Silver Kit ostane v prvem valu.</p>',
+            ['_zvij_supplier' => 'TBD', '_zvij_image_status' => 'missing_image'],
+            'TBD-SILVER-GRINDER',
+            ['grinder-silver']),
+
+        // --- Rizle in rolce ---
+        zvij_kit_component('IRIE XTRA Light King Size Slim', 'rizla-irie-xtra-light', 'Rizle', 'rizle', ['throwie'],
+            '<p>Draft komponenta: cheap/420 vibe rizle za Throwie Kit.</p>',
+            '<p>420/value kandidat. Bolj Throwie kot Black/Silver/Gold.</p>',
+            $kn('10474', '', 'IRIE XTRA Light King Size Slim'),
+            '10474'),
+        zvij_kit_component('JaJa Noir Black', 'jaja-noir-black', 'Rizle', 'rizle', ['black-kit'],
+            '<p>Draft komponenta: črne XXL rizle za Black Kit (quiet, ne cheap).</p>',
+            '<p>Ni cheap/value. Kandidat za Black/Quiet setup.</p>',
+            $kn('11150', '', 'JaJa Noir Black King Size XXL'),
+            '11150',
+            ['rizla-jaja-noir']),
+        zvij_kit_component('Smoking Black Rolls', 'smoking-black-rolls', 'Rolce', 'rolce', ['black-kit'],
+            '<p>Draft komponenta: črne rolce za Black Kit.</p>',
+            '<p>Core Black/Quiet rolca. Ne mešati z RAW dodatki.</p>',
+            $kn('2623', 'from 14.42 EUR, if confirmed', 'Smoking DeLuxe Slim Rolls Black'),
+            '2623',
+            ['rolca-smoking-deluxe-black']),
+        zvij_kit_component('Smoking Brown Rolls', 'smoking-brown-rolls', 'Rolce', 'rolce', ['black-kit', 'silver-kit'],
+            '<p>Draft komponenta: nebeljene rjave rolce za normal/quiet setup.</p>',
+            '<p>Natural/quiet alternativa. Primerjati s Smoking Black.</p>',
+            $kn('1521', '', 'Smoking Brown Rolls'),
+            '1521',
+            ['rolca-smoking-brown']),
+        zvij_kit_component('Smoking Silver Rolls', 'smoking-silver-rolls', 'Rolce', 'rolce', ['silver-kit'],
+            '<p>Draft komponenta: srebrne rolce za Silver Kit.</p>',
+            '<p>Silver Kit obstaja samo, če najdemo matching Clipper/grinder/tube.</p>',
+            $kn('1094', '', 'Smoking Silver Rolls'),
+            '1094',
+            ['rolca-smoking-master-silver']),
+        zvij_kit_component('SmK Gold Rolls', 'smk-gold-rolls', 'Rolce', 'rolce', ['gold-kit'],
+            '<p>Draft komponenta: zlate rolce za Gold Kit.</p>',
+            '<p>Gold smer. Preveriti količino v paketu in občutek kvalitete.</p>',
+            $kn('10515', '', 'SmK Gold Rolls'),
+            '10515',
+            ['rolca-smk-gold']),
+        zvij_kit_component('SmK Gold Papers + Filter Tips', 'smk-gold-papers-filter-tips', 'Rizle', 'rizle', ['gold-kit'],
+            '<p>Draft komponenta: SmK Gold papirčki s filter tips za Gold Kit.</p>',
+            '<p>Gold Kit paper/filtertips alternativa. Ne mešati z RAW tube.</p>',
+            $kn('10513', '', 'SmK Gold papers + filtertips'),
+            '10513',
+            ['rizla-smk-gold-papers']),
+
+        // --- Embalaža in opcijski dodatki ---
+        zvij_kit_component('Black Metal Joint Tube', 'black-metal-joint-tube', 'Setup dodatki', 'setup-dodatki', ['black-kit', 'kit-addon'],
+            '<p>Draft dodatek: črn kovinski tulec za Black Kit.</p>',
+            '<p>Optional add-on, ne core. Naročenih 5 črnih kovinskih tulcev. Finalno fotografirati skupaj z matching kitom.</p>',
+            ['_zvij_supplier' => 'Other / China / Temu order', '_zvij_ordered_qty' => '5', '_zvij_b2b_price' => 'approx 2.00-2.50 EUR unit', '_zvij_retail_candidate' => '6.90 or 7.90 EUR', '_zvij_image_status' => 'missing_image'],
+            'ZVIJ-TUBE-BLACK'),
+        zvij_kit_component('Silver Metal Joint Tube', 'silver-metal-joint-tube', 'Setup dodatki', 'setup-dodatki', ['silver-kit', 'kit-addon'],
+            '<p>Draft dodatek: srebrn kovinski tulec za Silver Kit.</p>',
+            '<p>Optional add-on. Naročenih 5 srebrnih kovinskih tulcev. Finalno fotografirati skupaj z matching kitom.</p>',
+            ['_zvij_supplier' => 'Other / China / Temu order', '_zvij_ordered_qty' => '5', '_zvij_b2b_price' => 'approx 2.00-2.50 EUR unit', '_zvij_retail_candidate' => '6.90 or 7.90 EUR', '_zvij_image_status' => 'missing_image'],
+            'ZVIJ-TUBE-SILVER'),
+        zvij_kit_component('Gold Metal Joint Tube', 'gold-metal-joint-tube', 'Setup dodatki', 'setup-dodatki', ['gold-kit', 'kit-addon'],
+            '<p>Draft dodatek: zlat kovinski tulec za Gold Kit.</p>',
+            '<p>Optional add-on. Naročenih 5 zlatih kovinskih tulcev. Finalno fotografirati skupaj z matching kitom.</p>',
+            ['_zvij_supplier' => 'Other / China / Temu order', '_zvij_ordered_qty' => '5', '_zvij_b2b_price' => 'approx 2.00-2.50 EUR unit', '_zvij_retail_candidate' => '6.90 or 7.90 EUR', '_zvij_image_status' => 'missing_image'],
+            'ZVIJ-TUBE-GOLD'),
+        zvij_kit_component('Throwie Bag / setup pouch', 'throwie-bag', 'Embalaža', 'embalaza', ['black-kit', 'silver-kit', 'gold-kit', 'throwie'],
+            '<p>Draft komponenta: vrečka z vrvico, ki gre v vsak kit.</p>',
+            '<p>Fizična osnova kita: setup pouch / vrečka z vrvico / vse na enem mestu. Ne komunicirati kot »get rid of evidence«.</p>',
+            ['_zvij_supplier' => 'TBD', '_zvij_image_status' => 'missing_image'],
+            'TBD-THROWIE-BAG'),
+        zvij_kit_component('Silver Clipper', 'clipper-silver', 'Vžigalniki', 'vzigalniki', ['silver-kit'],
+            '<p>Draft komponenta: srebrn Clipper za Silver Kit.</p>',
+            '<p>TBD placeholder. Potreben je matching silver lighter, če Silver Kit ostane v prvem valu.</p>',
+            ['_zvij_supplier' => 'TBD', '_zvij_image_status' => 'missing_image'],
+            'TBD-SILVER-CLIPPER'),
+        zvij_kit_component('Matching rolling tray / podlaga', 'matching-rolling-tray-placeholder', 'Setup dodatki', 'setup-dodatki', ['kit-addon'],
+            '<p>TBD/later placeholder: matching rolling tray ali podlaga.</p>',
+            '<p>Samo če je vizualno čisto in poceni. Trenutni Knistermann trays so zavrnjeni kot preveč random/brand-heavy/dragi.</p>',
+            ['_zvij_supplier' => 'TBD / Later', '_zvij_image_status' => 'missing_image'],
+            'TBD-ROLLING-TRAY'),
+    ];
+}
+
+/**
+ * Showcase definition for the Zvij.si Kit system, consumed by the theme via the
+ * `zvij_kits` option. Items reference products by slug; the theme resolves them.
+ */
+function zvij_kit_definitions(): array {
+    $addons = ['frutty-cbd-vrsicki-1-g', 'smokey-cbd-vrsicki-1-g', 'chilly-cbg-vrsicki-1-g'];
+
+    return [
+        [
+            'key' => 'black', 'name' => 'Black Kit', 'slug' => 'black-kit', 'tag' => 'black-kit',
+            'tagline' => 'Quiet. Diskretno. Nekričeče.',
+            'position' => 'Črn, diskreten setup, ki ne izstopa. Stil, ne cenovni razred.',
+            'items' => [
+                ['slug' => 'black-metal-joint-tube', 'label' => 'Black Metal Joint Tube'],
+                ['slug' => 'clipper-black', 'label' => 'Clipper Black'],
+                ['slug' => 'champ-high-black-grinder-60-mm', 'label' => 'Champ High Black Grinder'],
+                ['slug' => 'smoking-black-rolls', 'label' => 'Smoking Black Rolls'],
+                ['slug' => 'dubi-42-aktivnih-ogljikovih-filtrov', 'label' => 'DUBI 42'],
+            ],
+            'addons' => $addons,
+        ],
+        [
+            'key' => 'silver', 'name' => 'Silver Kit', 'slug' => 'silver-kit', 'tag' => 'silver-kit',
+            'tagline' => 'Čisto. Nevtralno. Varno darilo.',
+            'position' => 'Čist, nevtralen setup — varna izbira za darilo. Stil, ne cenovni razred.',
+            'items' => [
+                ['slug' => 'silver-metal-joint-tube', 'label' => 'Silver Metal Joint Tube'],
+                ['slug' => 'clipper-silver', 'label' => 'Silver Clipper'],
+                ['slug' => 'silver-grinder-placeholder', 'label' => 'Silver grinder'],
+                ['slug' => 'smoking-silver-rolls', 'label' => 'Smoking Silver Rolls'],
+                ['slug' => 'dubi-42-aktivnih-ogljikovih-filtrov', 'label' => 'DUBI 42'],
+            ],
+            'addons' => $addons,
+        ],
+        [
+            'key' => 'gold', 'name' => 'Gold Kit', 'slug' => 'gold-kit', 'tag' => 'gold-kit',
+            'tagline' => 'Toplo. Darilno. Special.',
+            'position' => 'Topel, darilni »special« setup. Stil, ne cenovni razred.',
+            'items' => [
+                ['slug' => 'gold-metal-joint-tube', 'label' => 'Gold Metal Joint Tube'],
+                ['slug' => 'clipper-gold', 'label' => 'Gold Clipper'],
+                ['slug' => 'gold-grinder-placeholder', 'label' => 'Gold grinder'],
+                ['slug' => 'smk-gold-rolls', 'label' => 'SmK Gold Rolls'],
+                ['slug' => 'dubi-42-aktivnih-ogljikovih-filtrov', 'label' => 'DUBI 42'],
+            ],
+            'addons' => $addons,
+        ],
+        [
+            'key' => 'throwie', 'name' => 'Throwie Kit', 'slug' => 'throwie', 'tag' => 'throwie',
+            'tagline' => 'Ko zagusti. Poceni, uporabno, za v torbo.',
+            'position' => 'Setup pouch / utility — poceni in uporaben kit za s sabo.',
+            'items' => [
+                ['slug' => 'throwie-bag', 'label' => 'Throwie Bag'],
+                ['slug' => 'cheap-fajrji-hemp-2', 'label' => 'Cheap fajrji HEMP 2'],
+                ['slug' => 'zvij-mini-grinder-5-cm', 'label' => 'Zvij.si Mini Grinder'],
+                ['slug' => 'rizla-irie-xtra-light', 'label' => 'IRIE XTRA Light'],
+                ['slug' => 'dubi-42-aktivnih-ogljikovih-filtrov', 'label' => 'DUBI 42'],
+            ],
+            'addons' => $addons,
+        ],
+    ];
+}
+
 function zvij_catalog_featured_image_by_source(string $source_url): int {
     if ($source_url === '') {
         return 0;
@@ -110,9 +385,20 @@ function zvij_catalog_product(array $data): int {
     $category_id = zvij_catalog_term_id($data['category'], $data['category_slug'] ?? '');
     wp_set_object_terms($product_id, [$category_id], 'product_cat', false);
 
+    if (isset($data['tags'])) {
+        zvij_catalog_apply_tags($product_id, (array) $data['tags']);
+    }
+
     $product = wc_get_product($product_id);
     if (! $product) {
         $product = new WC_Product_Simple($product_id);
+    }
+    if (! empty($data['sku'])) {
+        try {
+            $product->set_sku((string) $data['sku']);
+        } catch (WC_Data_Exception $e) {
+            update_post_meta($product_id, '_zvij_sku_sync_error', $e->getMessage());
+        }
     }
     $product->set_regular_price($data['regular_price'] ?? $data['price']);
     $product->set_sale_price($data['sale_price'] ?? '');
@@ -281,6 +567,7 @@ $catalog = [
     [
         'title' => 'SMOKEY CBD vršički 1 g',
         'slug' => 'smokey-cbd-vrsicki-1-g',
+        'sku' => 'SMOKEY-CBD-1G',
         'legacy_slugs' => ['smokey-premium-cbd', 'smokey-cbd-caj-1-g'],
         'legacy_source_urls' => ['https://zvij.si/izdelek/smokey-premium-cbd/'],
         'price' => '8.00',
@@ -288,6 +575,7 @@ $catalog = [
         'category' => 'CBD/CBG vršički',
         'category_slug' => 'cbd-cbg-vrsicki',
         'status' => 'publish',
+        'tags' => ['vrsicki', 'reload', 'kit-addon', 'black-kit', 'silver-kit', 'gold-kit'],
         'image_source_url' => 'https://zvij.si/wp-content/uploads/2023/06/smokey-frontside.png',
         'excerpt' => '<p>SMOKEY CBD vršički v 1 g pakiranju. ' . $vrsicki_intro . '</p>',
         'content' => '<p>SMOKEY je linija CBD vršičkov v 1 g pakiranju.</p><p>Pakirano v 1 g enotah. Copy ostaja pri ritualu, meri in urejeni izbiri.</p>',
@@ -301,12 +589,14 @@ $catalog = [
     [
         'title' => 'SMOKEY CBD vršički 5 g',
         'slug' => 'smokey-cbd-vrsicki-5-g',
+        'sku' => 'SMOKEY-CBD-5X1G',
         'legacy_slugs' => ['smokey-cbd-caj-5-g'],
         'price' => '39.90',
         'regular_price' => '39.90',
         'category' => 'CBD/CBG vršički',
         'category_slug' => 'cbd-cbg-vrsicki',
         'status' => 'publish',
+        'tags' => ['vrsicki', 'reload'],
         'image_source_url' => 'https://zvij.si/wp-content/uploads/2023/06/smokey-frontside.png',
         'excerpt' => '<p>SMOKEY CBD vršički v 5 g paketu. ' . $five_gram_note . '</p>',
         'content' => '<p>Večji SMOKEY paket za jasen reload ritem in urejeno zalogo.</p><p><strong>' . $five_gram_note . '</strong></p><p>Primerno za čajno uporabo.</p>',
@@ -319,6 +609,7 @@ $catalog = [
     [
         'title' => 'CHILLY CBG vršički 1 g',
         'slug' => 'chilly-cbg-vrsicki-1-g',
+        'sku' => 'CHILLY-CBG-1G',
         'legacy_slugs' => ['chilly-premium-cbg', 'chilly-cbg-caj-1-g'],
         'legacy_source_urls' => ['https://zvij.si/izdelek/chilly-premium-cbg/'],
         'price' => '7.50',
@@ -326,6 +617,7 @@ $catalog = [
         'category' => 'CBD/CBG vršički',
         'category_slug' => 'cbd-cbg-vrsicki',
         'status' => 'publish',
+        'tags' => ['vrsicki', 'reload', 'kit-addon', 'black-kit', 'silver-kit', 'gold-kit'],
         'image_source_url' => 'https://zvij.si/wp-content/uploads/2023/06/chilly-frontside.png',
         'excerpt' => '<p>CHILLY CBG vršički v 1 g pakiranju. ' . $vrsicki_intro . '</p>',
         'content' => '<p>CHILLY je linija CBG vršičkov v 1 g pakiranju.</p><p>Pakirano v 1 g enotah. Copy ostaja pri ritualu, jasni meri in urejeni izbiri.</p>',
@@ -339,12 +631,14 @@ $catalog = [
     [
         'title' => 'CHILLY CBG vršički 5 g',
         'slug' => 'chilly-cbg-vrsicki-5-g',
+        'sku' => 'CHILLY-CBG-5X1G',
         'legacy_slugs' => ['chilly-cbg-caj-5-g'],
         'price' => '36.90',
         'regular_price' => '36.90',
         'category' => 'CBD/CBG vršički',
         'category_slug' => 'cbd-cbg-vrsicki',
         'status' => 'publish',
+        'tags' => ['vrsicki', 'reload'],
         'image_source_url' => 'https://zvij.si/wp-content/uploads/2023/06/chilly-frontside.png',
         'excerpt' => '<p>CHILLY CBG vršički v 5 g paketu. ' . $five_gram_note . '</p>',
         'content' => '<p>Večji CHILLY paket za jasen reload ritem in urejeno zalogo.</p><p><strong>' . $five_gram_note . '</strong></p><p>Primerno za čajno uporabo.</p>',
@@ -357,6 +651,7 @@ $catalog = [
     [
         'title' => 'FRUTTY CBD vršički 1 g',
         'slug' => 'frutty-cbd-vrsicki-1-g',
+        'sku' => 'FRUTTY-CBD-1G',
         'legacy_slugs' => ['frutty-cbd', 'frutty-cbd-caj-1-g'],
         'legacy_source_urls' => ['https://zvij.si/izdelek/frutty-cbd/'],
         'price' => '4.20',
@@ -365,6 +660,7 @@ $catalog = [
         'category' => 'CBD/CBG vršički',
         'category_slug' => 'cbd-cbg-vrsicki',
         'status' => 'publish',
+        'tags' => ['vrsicki', 'reload', 'kit-addon', 'throwie'],
         'image_source_url' => 'https://zvij.si/wp-content/uploads/2023/06/frutty-frontside.png',
         'excerpt' => '<p>FRUTTY CBD vršički v 1 g pakiranju. Prvi preizkus: 4,20 €.</p>',
         'content' => '<p>FRUTTY je linija CBD vršičkov, prej vezana na ime Bubble Gum.</p><p>Pakirano v 1 g enotah. Prvi FRUTTY je lahek prvi preizkus; naslednji nakup gre v dobroimetje logiko.</p><p>Primerno za čajno uporabo.</p>',
@@ -379,12 +675,14 @@ $catalog = [
     [
         'title' => 'FRUTTY CBD vršički 5 g',
         'slug' => 'frutty-cbd-vrsicki-5-g',
+        'sku' => 'FRUTTY-CBD-5X1G',
         'legacy_slugs' => ['frutty-cbd-caj-5-g'],
         'price' => '24.90',
         'regular_price' => '24.90',
         'category' => 'CBD/CBG vršički',
         'category_slug' => 'cbd-cbg-vrsicki',
         'status' => 'publish',
+        'tags' => ['vrsicki', 'reload'],
         'image_source_url' => 'https://zvij.si/wp-content/uploads/2023/06/frutty-frontside.png',
         'excerpt' => '<p>FRUTTY CBD vršički v 5 g paketu. ' . $five_gram_note . '</p>',
         'content' => '<p>Večji FRUTTY paket za jasen reload ritem in urejeno zalogo.</p><p><strong>' . $five_gram_note . '</strong></p><p>Primerno za čajno uporabo.</p>',
@@ -397,17 +695,20 @@ $catalog = [
     [
         'title' => 'DUBI 42 aktivnih ogljikovih filtrov',
         'slug' => 'dubi-42-aktivnih-ogljikovih-filtrov',
+        'sku' => 'TIP-167',
         'legacy_slugs' => ['dubi-aktivni-ogljikovi-filtri-42-kosov'],
         'legacy_source_urls' => ['https://zvij.si/izdelek/dubi-aktivni-ogljikovi-filtri-42-kosov/'],
-        'price' => '7.75',
-        'regular_price' => '7.75',
+        'price' => '7.99',
+        'regular_price' => '7.99',
         'category' => 'DUBI filtri',
         'status' => 'publish',
+        'tags' => ['dubi', 'reload', 'black-kit', 'silver-kit', 'gold-kit', 'throwie'],
         'image_source_url' => 'https://zvij.si/wp-content/uploads/2023/10/dubi-front.png',
         'excerpt' => '<p>DUBI aktivni ogljikovi filtri v vrečki 42 kosov.</p>',
-        'content' => '<p>Osnovno DUBI pakiranje za urejen setup in jasno zalogo.</p><p>42 filtrov na vrečko.</p>',
+        'content' => '<p>Osnovno DUBI pakiranje za setup in reload.</p><p>42 filtrov. Malo pakiranje za setup in reload.</p>',
         'meta' => [
             '_zvij_packaging_logic' => '42 filters per bag',
+            '_zvij_kit_role' => 'core kit component',
             '_zvij_dubi_youtube_url' => 'https://www.youtube.com/watch?v=5oNlpY17v9w',
             '_zvij_dobroimetje_note' => 'Član prejme 1,25 € za naslednji reload.',
         ],
@@ -415,16 +716,19 @@ $catalog = [
     [
         'title' => 'DUBI 420 aktivnih ogljikovih filtrov',
         'slug' => 'dubi-420-aktivnih-ogljikovih-filtrov',
+        'sku' => 'TIP-194',
         'legacy_source_urls' => ['https://zvij.si/izdelek/dubi-420-aktivnih-ogljikovih-filtrov/'],
         'price' => '75.00',
         'regular_price' => '75.00',
         'category' => 'DUBI filtri',
         'status' => 'publish',
+        'tags' => ['dubi', 'reload'],
         'image_source_url' => 'https://zvij.si/wp-content/uploads/2023/10/dubi-front.png',
         'excerpt' => '<p>DUBI aktivni ogljikovi filtri v večjem paketu 420 kosov.</p>',
-        'content' => '<p>Večji DUBI paket za reload ritem in manj ponovnega naročanja.</p><p>420 filtrov na vrečko.</p>',
+        'content' => '<p>Večji DUBI paket za urejen bulk/reload.</p><p>10 malih pakiranj v enem večjem paketu. Ni premium zato, ker je 420; je bolj urejen bulk/reload.</p>',
         'meta' => [
-            '_zvij_packaging_logic' => '420 filters per bag',
+            '_zvij_packaging_logic' => '10 small packs in one larger package',
+            '_zvij_kit_role' => 'reload/bulk product',
             '_zvij_dubi_youtube_url' => 'https://www.youtube.com/watch?v=5oNlpY17v9w',
             '_zvij_dobroimetje_note' => 'Član prejme 7,50 € za naslednji reload.',
         ],
@@ -511,11 +815,34 @@ $catalog = [
     ],
 ];
 
+$catalog = array_merge($catalog, zvij_kit_components());
+
 $synced = [];
 foreach ($catalog as $product_data) {
     $product_id = zvij_catalog_product($product_data);
     $synced[] = $product_data['title'] . ' #' . $product_id . ' ' . $product_data['price'] . ' EUR';
 }
+
+// Kit / reload tags for existing published products (components are tagged inline above).
+$kit_tag_map = [
+    'dubi-42-aktivnih-ogljikovih-filtrov' => ['dubi', 'reload', 'black-kit', 'silver-kit', 'gold-kit', 'throwie'],
+    'dubi-420-aktivnih-ogljikovih-filtrov' => ['dubi', 'reload'],
+    'smokey-cbd-vrsicki-1-g' => ['vrsicki', 'reload', 'kit-addon', 'black-kit', 'silver-kit', 'gold-kit'],
+    'chilly-cbg-vrsicki-1-g' => ['vrsicki', 'reload', 'kit-addon', 'black-kit', 'silver-kit', 'gold-kit'],
+    'frutty-cbd-vrsicki-1-g' => ['vrsicki', 'reload', 'kit-addon', 'throwie'],
+    'smokey-cbd-vrsicki-5-g' => ['vrsicki', 'reload'],
+    'chilly-cbg-vrsicki-5-g' => ['vrsicki', 'reload'],
+    'frutty-cbd-vrsicki-5-g' => ['vrsicki', 'reload'],
+];
+foreach ($kit_tag_map as $slug => $tags) {
+    $product_id = zvij_catalog_find_product($slug);
+    if ($product_id > 0) {
+        zvij_catalog_apply_tags($product_id, $tags);
+    }
+}
+
+// Persist the kit showcase definition for the theme.
+update_option('zvij_kits', zvij_kit_definitions(), false);
 
 foreach (['smokey-cbd-caj-10-g', 'chilly-cbg-caj-10-g', 'frutty-cbd-caj-10-g', 'smokey-cbd-vrsicki-10-g', 'chilly-cbg-vrsicki-10-g', 'frutty-cbd-vrsicki-10-g'] as $planned_slug) {
     $product_id = zvij_catalog_find_product($planned_slug);

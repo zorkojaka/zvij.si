@@ -15,6 +15,28 @@ get_header();
   <p><?php esc_html_e('DEV prototip trgovine. Izdelki so placeholderji, dokler Jaka ne potrdi podatkov, cen, pravnih besedil in checkout pravil.', 'zvij-theme'); ?></p>
 </section>
 
+<?php
+$kit_filters = [
+    'black-kit' => 'Black Kit',
+    'silver-kit' => 'Silver Kit',
+    'gold-kit' => 'Gold Kit',
+    'throwie' => 'Throwie',
+    'reload' => 'Reload',
+];
+?>
+<nav class="kit-filter" aria-label="<?php esc_attr_e('Filtri kitov', 'zvij-theme'); ?>">
+  <a class="kit-filter__chip<?php echo (is_shop() && ! is_tax('product_tag')) ? ' is--active' : ''; ?>" href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>"><?php esc_html_e('Vse', 'zvij-theme'); ?></a>
+  <?php foreach ($kit_filters as $tag_slug => $tag_label) :
+      $term = get_term_by('slug', $tag_slug, 'product_tag');
+      if (! $term) {
+          continue;
+      }
+      $active = is_tax('product_tag', $tag_slug);
+  ?>
+    <a class="kit-filter__chip<?php echo $active ? ' is--active' : ''; ?>" href="<?php echo esc_url(get_term_link($term)); ?>"><?php echo esc_html($tag_label); ?></a>
+  <?php endforeach; ?>
+</nav>
+
 <?php if (woocommerce_product_loop()) : ?>
   <div class="shop-toolbar">
     <?php woocommerce_result_count(); ?>

@@ -2,6 +2,8 @@
 
 Status: current dev shop catalog.
 
+Commercial product selection is governed by `docs/ZVIJ_PRODUCT_MATRIX.md`. The shop should not become a random accessories list: every product should fit a value tier, an aesthetic pole, or a kit role.
+
 ## Naming Map
 
 - CBD NM = SMOKEY
@@ -81,6 +83,19 @@ Brand framing:
 - It belongs to setup culture.
 - It can support the member line `Zvijače za zvijače.`
 - It should feel useful, adult, and domestic, not childish or cheap.
+
+### Zvij.si Kit Components
+
+The kit component catalog is synced as draft/candidate WooCommerce products from `scripts/wp-sync-catalog-dev.php`.
+
+Current first-wave kit component groups:
+
+- Vžigalniki: Cheap fajrji HEMP 2, Clipper Black, Clipper Black Gradient, Clipper Gold, Silver Clipper placeholder.
+- Rizle/rolce: IRIE XTRA Light, JaJa Noir Black, Smoking Black Rolls, Smoking Brown Rolls, Smoking Silver Rolls, SmK Gold Rolls, SmK Gold Papers + Filter Tips.
+- Grinderji: Champ High Black Grinder 60 mm, Zvij.si Mini Grinder 5 cm, Silver/Gold grinder placeholders.
+- Tubes/setup: Black/Silver/Gold Metal Joint Tube, Throwie Bag / setup pouch, rolling tray placeholder.
+
+All first-wave supplier candidates stay draft until Jaka confirms samples, images, margins, and final kit composition.
 
 ## Implementation Notes
 
