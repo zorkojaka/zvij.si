@@ -15,7 +15,7 @@ The QR flow turns a delivered package into membership onboarding. It should be s
 7. User becomes `Član Zvij.si`.
 8. User sees next-step actions:
    - copy Zvij koda
-   - view refill recommendation
+   - view reload recommendation
    - repeat last order later
 
 ## Package Copy
@@ -26,7 +26,7 @@ Possible printed line next to the QR code:
 Zvijače za zvijače.
 ```
 
-Use it as a supporting line for the member/refill flow. Keep `Član Zvij.si` as the main membership name.
+Use it as a supporting line for the member/reload flow. Keep `Član Zvij.si` as the main membership name.
 
 ## QR URL Shape
 

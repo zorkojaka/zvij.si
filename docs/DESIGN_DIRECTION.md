@@ -39,9 +39,9 @@ The homepage now includes:
    - DUBI filtri
    - CBD čaj
    - Zvij setup
-   - Refill
+   - Reload
 3. `Član Zvij.si` section for future Zvij koda / dobroimetje / repeat-order logic.
-4. Starter setup section around DUBI filtri, rolca, and refill logic.
+4. Starter setup section around DUBI filtri, rolca, and reload logic.
 5. CBD čaj section with careful tea-only copy.
 6. Footer CTA: `Začni s svojim setupom.`
 
@@ -84,7 +84,7 @@ Take screenshots after each meaningful design iteration:
 ## Next Design Steps
 
 1. Replace WooCommerce placeholder images with real product or generated dev-safe visuals.
-2. Confirm product hierarchy, package names, and refill intervals.
+2. Confirm product hierarchy, package names, and reload intervals.
 3. Add product detail page styling once product content is known.
 4. Add account/membership panel mockup after membership decisions are approved.
 5. Review mobile navigation with real menu length and future account/cart links.

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-`Član Zvij.si` is the account layer that turns a first purchase into a repeatable ritual, refill, and dobroimetje loop. It should feel practical and internal to Zvij.si, not like a resale program or hype club.
+`Član Zvij.si` is the account layer that turns a first purchase into a repeatable ritual, reload, and dobroimetje loop. It should feel practical and internal to Zvij.si, not like a resale program or hype club.
 
 Source of truth:
 
@@ -30,7 +30,7 @@ Supporting line:
 Zvijače za zvijače.
 ```
 
-Use the supporting line as a clever inside-culture phrase for member perks, dobroimetje and refill habits. Do not replace the main membership name with it.
+Use the supporting line as a clever inside-culture phrase for member perks, dobroimetje and reload habits. Do not replace the main membership name with it.
 
 Use:
 
@@ -39,7 +39,7 @@ Use:
 - `Zvij koda`
 - `dobroimetje`
 - `povabi prijatelja`
-- `refill`
+- `reload`
 
 Avoid:
 
@@ -68,7 +68,7 @@ Minimum future data model:
 - dobroimetje balance
 - source order ID
 - setup/product preference
-- refill reminder preference
+- reload reminder preference
 - created date
 
 ## MVP Behavior
@@ -79,7 +79,7 @@ For dev baseline:
 2. User logs in or creates account.
 3. System marks user as `Član Zvij.si`.
 4. System assigns a unique Zvij koda.
-5. Account area explains dobroimetje and refill loop.
+5. Account area explains dobroimetje and reload loop.
 
 No cash payouts. Dobroimetje is store credit only.
 
@@ -88,7 +88,7 @@ No cash payouts. Dobroimetje is store credit only.
 Product cards and product pages may show:
 
 ```text
-Član prejme X € za naslednji refill.
+Član prejme X € za naslednji reload.
 ```
 
 Current dev values are documented in `docs/DOBROIMETJE_STRATEGY.md`.
@@ -97,7 +97,7 @@ The member story should stay simple:
 
 - first purchase = low-friction try
 - next orders = dobroimetje
-- goal = refill rhythm, not action hunting
+- goal = reload rhythm, not action hunting
 - no MLM, no reselling, no payout promise
 
 ## Open Decisions

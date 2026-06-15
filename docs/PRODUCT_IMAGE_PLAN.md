@@ -13,7 +13,7 @@ Needs replacement:
 
 - DUBI 42 and DUBI 420 need separate packshots or quantity/scale images.
 - CBD/CBG vršički need clearer packshots; tea-use imagery can be secondary.
-- Refill and membership products need dedicated visuals.
+- Reload and membership products need dedicated visuals.
 - The old graph image can support product detail pages but should not be the primary card image.
 
 ## Photo Style
@@ -33,13 +33,13 @@ Needs replacement:
 - square packshot on warm paper
 - hand-scale or desk-scale shot
 - macro of filter texture/ends
-- setup shot with rolca/refill context, no medical claims
+- setup shot with rolca/reload context, no medical claims
 
 ### DUBI 420
 
-- square packshot showing bulk/refill quantity
+- square packshot showing bulk/reload quantity
 - comparison next to DUBI 42
-- storage/refill drawer shot
+- storage/reload drawer shot
 - detail shot of packaging
 
 ### CBD/CBG vršički
@@ -53,12 +53,12 @@ Needs replacement:
 
 - full kit flat lay
 - compact everyday setup shot
-- refill slot/detail shot
-- comparison of starter vs refill
+- reload slot/detail shot
+- comparison of starter vs reload
 
-### Refill paket
+### Reload paket
 
-- refill quantity packshot
+- reload quantity packshot
 - calendar/reminder ritual shot
 - storage detail
 - comparison with starter setup

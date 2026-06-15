@@ -21,13 +21,13 @@ Status: imported as drafts only.
 - Treat HHC as archived/historical context only.
 - Use CBD wording around `CBD čaj`, ritual, verified origin, and `brez THC učinka` only when supported by product analysis.
 - Link future rewritten CBD articles to the CBD čaj page, not to flower-style product pages.
-- Link DUBI-related articles to DUBI filters and refill logic where relevant.
+- Link DUBI-related articles to DUBI filters and reload logic where relevant.
 
 ## Internal Links To Add Later
 
 - DUBI product articles -> DUBI 42 and DUBI 420 products.
 - CBD educational articles -> CBD čaj page after copy approval.
-- Membership/refill articles -> Član Zvij.si page after the referral/refill logic exists.
+- Membership/reload articles -> Član Zvij.si page after the referral/reload logic exists.
 
 ## Publication Rule
 

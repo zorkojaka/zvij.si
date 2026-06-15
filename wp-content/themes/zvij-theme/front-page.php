@@ -10,17 +10,17 @@ if (! defined('ABSPATH')) {
 get_header();
 
 $pillars = [
-    ['DUBI filtri', 'dubi-filtri', '42 ali 420 filtrov za urejen setup in jasen refill ritem.'],
+    ['DUBI filtri', 'dubi-filtri', '42 ali 420 filtrov za urejen setup in jasen reload ritem.'],
     ['CBD/CBG vršički', 'cbd-vrsicki', 'SMOKEY, CHILLY in FRUTTY kot 1 g izbira ali 5 g paket.'],
     ['Zvij setup', 'zvij-setup', 'DUBI 42, rolca in sample za prvi dev nakup.'],
-    ['Refill', 'trgovina', '5 g paket vršičkov vsebuje 5 posameznih 1 g pakiranj.'],
+    ['Reload', 'trgovina', '5 g paket vršičkov vsebuje 5 posameznih 1 g pakiranj.'],
 ];
 ?>
 <section class="hero hero--home">
   <div class="hero__body">
     <p class="eyebrow"><?php esc_html_e('Zvij.si Dev', 'zvij-theme'); ?></p>
     <h1><?php esc_html_e('Tvoj ritual. Tvoja mera. Tvoj setup.', 'zvij-theme'); ?></h1>
-    <p class="hero-copy"><?php esc_html_e('Filtri, vršički, setupi in refilli za bolj urejen ritual.', 'zvij-theme'); ?></p>
+    <p class="hero-copy"><?php esc_html_e('Filtri, vršički, setupi in reload za bolj urejen ritual.', 'zvij-theme'); ?></p>
     <div class="button-row">
       <a class="button" href="<?php echo esc_url(home_url('/trgovina/')); ?>"><?php esc_html_e('Poglej trgovino', 'zvij-theme'); ?></a>
       <a class="button button--ghost" href="<?php echo esc_url(home_url('/clan-zvij-si/')); ?>"><?php esc_html_e('Postani član', 'zvij-theme'); ?></a>
@@ -65,8 +65,8 @@ $pillars = [
     <p class="section-tagline"><?php esc_html_e('Zvijače za zvijače.', 'zvij-theme'); ?></p>
   </div>
   <div class="text-stack">
-    <p><?php esc_html_e('Prvi nakup je lahek preizkus. Članstvo je praktičen del sistema: dobiš svojo Zvij kodo, vidiš dobroimetje in lažje prideš nazaj do naslednjega refilla.', 'zvij-theme'); ?></p>
-    <p><?php esc_html_e('Cilj ni lovljenje akcij, ampak urejen refill sistem. Brez preprodaje, brez cash payout obljub, brez hrupa.', 'zvij-theme'); ?></p>
+    <p><?php esc_html_e('Prvi nakup je lahek preizkus. Članstvo je praktičen del sistema: dobiš svojo Zvij kodo, vidiš dobroimetje in lažje prideš nazaj na naslednji reload.', 'zvij-theme'); ?></p>
+    <p><?php esc_html_e('Cilj ni lovljenje akcij, ampak urejen reload sistem. Brez preprodaje, brez cash payout obljub, brez hrupa.', 'zvij-theme'); ?></p>
     <a class="text-link" href="<?php echo esc_url(home_url('/clan-zvij-si/')); ?>"><?php esc_html_e('Poglej članstvo', 'zvij-theme'); ?></a>
   </div>
 </section>

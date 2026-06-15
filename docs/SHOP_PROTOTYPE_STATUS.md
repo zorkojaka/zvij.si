@@ -55,7 +55,7 @@ Each has a clear headline, short intro/excerpt, body copy, and CTA buttons throu
 - product photography
 - production approval of prices
 - final Sample/Zvij setup package contents
-- refill intervals
+- reload intervals
 - legal checkout copy
 - shipping rules
 - payment provider
@@ -81,5 +81,5 @@ Review the public prototype in an incognito browser and decide:
 
 1. Which product placeholders should become real first.
 2. Whether the visual tone is warm enough or needs more product-culture edge.
-3. Which images to use for DUBI filters, CBD/CBG vršički, setup, and refill.
+3. Which images to use for DUBI filters, CBD/CBG vršički, setup, and reload.
 4. Whether placeholder products should remain public while product data is being gathered.

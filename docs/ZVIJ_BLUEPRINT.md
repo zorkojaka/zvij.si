@@ -14,7 +14,7 @@ first purchase
 -> invite friend
 -> both get dobroimetje
 -> repeat order
--> refill reminder
+-> reload reminder
 ```
 
 The product is the entry point. Membership is the loop.
@@ -33,7 +33,7 @@ Meaning:
 - Tvoja mera: the user decides what works for them.
 - Tvoj setup: the product mix supports the user's preferred way of preparing and using their ritual.
 
-The brand does not tell users who they are. It gives them better tools, better refills, and a cleaner system around what they already do.
+The brand does not tell users who they are. It gives them better tools, better reloads, and a cleaner system around what they already do.
 
 ## Brand Voice
 
@@ -62,7 +62,7 @@ The brand does not moralize. It does not present cannabis users as broken, wrong
 The tone should show by example:
 
 - cleaner setup
-- smarter refills
+- smarter reloads
 - calmer choices
 - more control
 - better ritual
@@ -74,7 +74,7 @@ Hero products:
 1. DUBI filters
 2. DUBI + rolca setup
 3. CBD vršički sold as CBD tea
-4. Refill packages
+4. Reload packages
 5. Member packages
 
 Product roles:
@@ -82,7 +82,7 @@ Product roles:
 - DUBI filters: the signature utility product.
 - DUBI + rolca setup: the starter setup for a cleaner first purchase.
 - CBD tea: the calm, controlled ritual option.
-- Refill packages: the repeat-order engine.
+- Reload packages: the repeat-order engine.
 - Member packages: the membership value layer.
 
 ## Membership System
@@ -121,8 +121,8 @@ The first purchase should lead into a membership loop:
 6. User shares the code with a friend.
 7. Friend receives a first-order benefit.
 8. Original member receives `dobroimetje`.
-9. User receives refill reminders based on the purchased setup.
-10. User repeats with refill or member package.
+9. User receives reload reminders based on the purchased setup.
+10. User repeats with reload or member package.
 
 This loop must stay simple. The user should understand it in one pass.
 
@@ -161,9 +161,9 @@ The site must do three jobs:
 
 1. Sell the first package.
 2. Explain the setup clearly.
-3. Move buyers into membership and refill behavior.
+3. Move buyers into membership and reload behavior.
 
-The homepage should not feel like a generic webshop grid. It should introduce the ritual/setup idea, then route users into packages, DUBI filters, CBD teas, refills, and membership.
+The homepage should not feel like a generic webshop grid. It should introduce the ritual/setup idea, then route users into packages, DUBI filters, CBD teas, reloads, and membership.
 
 ## Strategic Guardrails
 
@@ -171,7 +171,7 @@ Do:
 
 - speak to adults
 - keep wording calm and direct
-- frame products around ritual, setup, refill, and control
+- frame products around ritual, setup, reload, and control
 - make membership concrete
 - use CBD tea language consistently
 - make repeat purchase easy

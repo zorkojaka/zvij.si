@@ -21,7 +21,7 @@ Lahek prvi preizkus. Če ti sede naš ritual, se naslednjič vrneš z dobroimetj
 - Product: FRUTTY CBD vršički 1 g
 - Public price: 5.00 EUR
 - First-purchase offer price: 4.20 EUR
-- Dobroimetje note: 0.80 EUR for next refill
+- Dobroimetje note: 0.80 EUR for next reload
 
 ## Tone
 

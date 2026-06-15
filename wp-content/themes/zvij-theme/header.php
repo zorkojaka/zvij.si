@@ -19,7 +19,7 @@ if (! defined('ABSPATH')) {
 <header class="site-header">
   <a class="site-brand" href="<?php echo esc_url(home_url('/')); ?>">
     <span class="site-brand__mark">Zvij</span>
-    <span class="site-brand__meta">ritual / setup / refill</span>
+    <span class="site-brand__meta">ritual / setup / reload</span>
   </a>
   <nav class="site-nav" aria-label="<?php esc_attr_e('Main menu', 'zvij-theme'); ?>">
     <?php

@@ -127,7 +127,7 @@ Do not use:
 Allowed membership copy:
 
 ```text
-Postani Član Zvij.si, deli svojo Zvij kodo in zbiraj dobroimetje za naslednji refill.
+Postani Član Zvij.si, deli svojo Zvij kodo in zbiraj dobroimetje za naslednji reload.
 ```
 
 ```text

@@ -8,7 +8,7 @@ Paketi
 DUBI + filtri
 CBD čaji
 Rolce / rizle
-Refill
+Reload
 Članstvo
 Vodiči
 Moj račun
@@ -26,10 +26,10 @@ Key sections:
 
 - Hero: positioning and primary product path.
 - Starter setup: DUBI + rolca setup.
-- Refill logic: buy once, refill smarter.
+- Reload logic: buy once, reload smarter.
 - CBD tea entry: ritual with less THC and more control.
 - Membership loop: QR, Član Zvij.si, Zvij koda, dobroimetje.
-- Product routes: Paketi, DUBI filters, CBD čaji, Refill.
+- Product routes: Paketi, DUBI filters, CBD čaji, Reload.
 
 Primary CTAs:
 
@@ -49,13 +49,13 @@ Page content:
 - Starter packages
 - DUBI + rolca setup
 - CBD tea packages
-- Refill packages
+- Reload packages
 - Member packages
 
 Decision filters:
 
 - prvi nakup
-- refill
+- reload
 - CBD čaj
 - DUBI filter setup
 - darilo / za prijatelja
@@ -72,14 +72,14 @@ Page content:
 - DUBI filters
 - bundle options
 - setup recommendations
-- refill prompts
+- reload prompts
 - related rolce/rizle
 
 Copy direction:
 
 - practical
 - cleaner setup
-- reliable refill
+- reliable reload
 - no moralizing
 
 ## CBD čaji
@@ -114,9 +114,9 @@ Page content:
 - rolce
 - rizle
 - bundle suggestions
-- refill reminders
+- reload reminders
 
-## Refill
+## Reload
 
 Purpose:
 
@@ -125,14 +125,14 @@ Purpose:
 
 Page content:
 
-- refill packages
+- reload packages
 - recently bought setup prompt
 - membership dobroimetje prompt
 - reminder signup
 
 Primary CTAs:
 
-- Naredi refill
+- Naredi reload
 - Uporabi dobroimetje
 
 ## Članstvo
@@ -168,7 +168,7 @@ Purpose:
 Guide topics:
 
 - Kako izbrati svoj setup
-- DUBI filter refill
+- DUBI filter reload
 - CBD čaj kot mirnejši ritual
 - Tvoja mera: kako razmišljati o količini
 - Kako deluje Zvij koda
@@ -186,7 +186,7 @@ Account areas:
 - addresses
 - dobroimetje
 - Zvij koda
-- refill reminders
+- reload reminders
 - membership status
 
 ## Utility Pages

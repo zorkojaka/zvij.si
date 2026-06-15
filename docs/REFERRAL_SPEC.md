@@ -2,7 +2,7 @@
 
 ## Purpose
 
-`Zvij koda` lets a `Član Zvij.si` invite a friend while keeping the system framed as dobroimetje for future refills, not resale or commission.
+`Zvij koda` lets a `Član Zvij.si` invite a friend while keeping the system framed as dobroimetje for future reloads, not resale or commission.
 
 ## Core Flow
 

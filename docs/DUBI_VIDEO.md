@@ -23,6 +23,6 @@ Use the DUBI-specific YouTube video for now. Replace it later with a short produ
 - packshot
 - filter detail
 - simple setup context
-- refill quantity comparison between 42 and 420
+- reload quantity comparison between 42 and 420
 
 Avoid claims about health, medical effects, or CBD use in the video copy.

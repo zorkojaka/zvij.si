@@ -54,7 +54,7 @@ Success state:
 - Member receives dobroimetje.
 - No part of the flow sounds like resale.
 
-## Flow 3: Refill Reminder
+## Flow 3: Reload Reminder
 
 Goal:
 
@@ -63,10 +63,10 @@ Goal:
 Steps:
 
 1. User buys DUBI filters, setup, or package.
-2. System records product type and expected refill interval.
-3. User receives refill reminder.
-4. Reminder routes to `Refill`.
-5. User sees relevant refill package.
+2. System records product type and expected reload interval.
+3. User receives reload reminder.
+4. Reminder routes to `Reload`.
+5. User sees relevant reload package.
 6. User applies available dobroimetje.
 7. User completes repeat order.
 
@@ -113,13 +113,13 @@ Steps:
 1. Member logs into `Moj račun`.
 2. Member sees previous setup.
 3. Member sees available dobroimetje.
-4. Member sees refill recommendation.
+4. Member sees reload recommendation.
 5. Member reorders or chooses a member package.
 6. Member can share Zvij koda again.
 
 Success state:
 
-- Account area becomes the user's ritual/refill hub.
+- Account area becomes the user's ritual/reload hub.
 
 ## Flow 6: Guide To Product
 
@@ -131,7 +131,7 @@ Steps:
 
 1. User opens `Vodiči`.
 2. User reads a practical guide.
-3. Guide explains setup, measure, refill, or CBD tea clearly.
+3. Guide explains setup, measure, reload, or CBD tea clearly.
 4. Guide links to relevant package or category.
 5. User chooses product or saves guide.
 

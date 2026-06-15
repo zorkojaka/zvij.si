@@ -1,8 +1,8 @@
-# Repeat Order And Refill Spec
+# Repeat Order And Reload Spec
 
 ## Purpose
 
-Repeat order and refill logic should make the next purchase easier without over-automating before product quantities, prices, and legal checkout rules are known.
+Repeat order and reload logic should make the next purchase easier without over-automating before product quantities, prices, and legal checkout rules are known.
 
 ## Core Flows
 
@@ -16,12 +16,12 @@ Repeat order and refill logic should make the next purchase easier without over-
 6. Member applies available dobroimetje.
 7. Member checks out.
 
-### Refill Reminder
+### Reload Reminder
 
 1. User buys DUBI filters, setup, or package.
-2. System records product type and expected refill interval.
+2. System records product type and expected reload interval.
 3. User receives a reminder.
-4. Reminder routes to `Refill` or relevant product/category.
+4. Reminder routes to `Reload` or relevant product/category.
 5. User can reorder without searching from scratch.
 
 ## Future Data Model
@@ -29,7 +29,7 @@ Repeat order and refill logic should make the next purchase easier without over-
 - user ID
 - source order ID
 - product/setup type
-- refill interval
+- reload interval
 - next reminder date
 - reminder status: `pending`, `sent`, `paused`, `completed`
 - last repeated order ID
@@ -37,8 +37,8 @@ Repeat order and refill logic should make the next purchase easier without over-
 ## Product Inputs Needed
 
 - package contents
-- expected refill interval per package
-- refill SKU/product mapping
+- expected reload interval per package
+- reload SKU/product mapping
 - pricing
 - whether subscriptions are in scope later
 - email/SMS consent requirements
@@ -48,13 +48,14 @@ Repeat order and refill logic should make the next purchase easier without over-
 - Do not create production reminders without consent rules.
 - Do not configure payment gateways yet.
 - Do not configure production shipping yet.
-- Keep CBD copy as tea-only and without medical claims.
+- CBD/CBG copy should use `vršički` as the main product identity. Čajna uporaba can be mentioned as one possible use.
+- Do not use `refill` as the main public term or imply returned packaging gets filled again.
 
 ## MVP Recommendation
 
 For dev:
 
-- create `Refill` product category
+- create `Reload` product category
 - create draft placeholder products
 - write account-area copy
 - avoid automated reminder sending until product and consent rules are approved

@@ -15,7 +15,7 @@
    - DUBI filters
    - DUBI + rolca setup
    - CBD čaji
-   - Refill packages
+   - Reload packages
    - Member packages
 3. Confirm membership mechanics:
    - QR in package
@@ -23,7 +23,7 @@
    - Zvij koda
    - friend benefit
    - dobroimetje
-   - refill reminders
+   - reload reminders
 4. Confirm CBD copy rules before product copy is written.
 5. Decide whether the rebuild keeps Plamen/Elementor or moves to a cleaner custom theme.
 
@@ -35,11 +35,11 @@ Create draft copy for:
 - package category pages
 - DUBI filter product pages
 - CBD tea product pages
-- refill landing page
+- reload landing page
 - membership onboarding page
 - QR landing page
 - account membership panel copy
-- first refill reminder email
+- first reload reminder email
 - referral/dobroimetje email
 
 Each CBD page must follow `LEGAL_CBD_COPY_RULES.md`.
@@ -52,7 +52,7 @@ Collect:
 - product photos
 - package contents
 - pricing
-- refill intervals
+- reload intervals
 - member package rules
 - shipping rules
 - payment provider decision
@@ -68,7 +68,7 @@ Decide:
 - whether existing customers can become members
 - how QR onboarding verifies purchase
 - whether guest checkout can later become membership
-- how refill reminders are scheduled
+- how reload reminders are scheduled
 
 ## Infrastructure Comes After This
 

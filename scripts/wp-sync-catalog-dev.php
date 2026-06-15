@@ -170,25 +170,25 @@ function zvij_catalog_sync_pages_and_menu(): void {
             'title' => 'Domov',
             'slug' => 'domov',
             'excerpt' => 'Tvoj ritual. Tvoja mera. Tvoj setup.',
-            'content' => 'Urejena trgovina za filtre, vršičke, setup pakete in refille.',
+            'content' => 'Urejena trgovina za filtre, vršičke, setup pakete in reload.',
         ],
         'trgovina' => [
             'title' => 'Trgovina',
             'slug' => 'trgovina',
-            'excerpt' => 'DUBI filtri, CBD/CBG vršički, setupi in refilli.',
+            'excerpt' => 'DUBI filtri, CBD/CBG vršički, setupi in reload.',
             'content' => '<p>Dev trgovina za trenutni Zvij.si katalog: DUBI filtri, SMOKEY CBD vršički, CHILLY CBG vršički, FRUTTY CBD vršički, sample paket in Zvij setup paket.</p>',
         ],
         'clan-zvij-si' => [
             'title' => 'Član Zvij.si',
             'slug' => 'clan-zvij-si',
             'excerpt' => 'Zvijače za zvijače.',
-            'content' => '<p><strong>Zvijače za zvijače.</strong></p><p>Zvij koda, dobroimetje in refill sistem za tiste, ki želijo svoj setup urejen tudi naslednjič.</p><p>Prvi nakup naj bo lahek preizkus. Naslednja naročila dobijo dobroimetje, ki pomaga graditi bolj urejen refill ritem.</p><p>Zvij koda je osebna oznaka člana. Dobroimetje je namenjeno naslednjemu nakupu v trgovini, ne izplačilu.</p><p>To ni MLM, ni preprodaja in ni lovljenje akcij. Gre za notranji member sistem: manj iskanja, lažja ponovitev naročila, jasnejši setup.</p>',
+            'content' => '<p><strong>Zvijače za zvijače.</strong></p><p>Zvij koda, dobroimetje in reload sistem za tiste, ki želijo svoj setup urejen tudi naslednjič.</p><p>Prvi nakup naj bo lahek preizkus. Naslednja naročila dobijo dobroimetje, ki pomaga graditi bolj urejen reload ritem.</p><p>Zvij koda je osebna oznaka člana. Dobroimetje je namenjeno naslednjemu nakupu v trgovini, ne izplačilu.</p><p>To ni MLM, ni preprodaja in ni lovljenje akcij. Gre za notranji member sistem: manj iskanja, lažja ponovitev naročila, jasnejši setup.</p>',
         ],
         'dubi-filtri' => [
             'title' => 'DUBI filtri',
             'slug' => 'dubi-filtri',
             'excerpt' => 'DUBI 42 in DUBI 420 za bolj urejen setup.',
-            'content' => '<p>DUBI 42 je osnovna vrečka za prvi setup ali manjšo zalogo. DUBI 420 je večji refill paket za ljudi, ki nočejo stalno preverjati, koliko filtrov je še ostalo.</p><p>Logika je preprosta: manj improvizacije, jasna količina in bolj urejen ritem naročanja.</p><h2>Video predstavitev filtrov</h2><p><iframe title="DUBI filtri video predstavitev" src="https://www.youtube.com/embed/5oNlpY17v9w" width="560" height="315" frameborder="0" allowfullscreen="allowfullscreen"></iframe></p>',
+            'content' => '<p>DUBI 42 je osnovna vrečka za prvi setup ali manjšo zalogo. DUBI 420 je večji reload paket za ljudi, ki nočejo stalno preverjati, koliko filtrov je še ostalo.</p><p>Logika je preprosta: manj improvizacije, jasna količina in bolj urejen ritem naročanja.</p><h2>Video predstavitev filtrov</h2><p><iframe title="DUBI filtri video predstavitev" src="https://www.youtube.com/embed/5oNlpY17v9w" width="560" height="315" frameborder="0" allowfullscreen="allowfullscreen"></iframe></p>',
         ],
         'cbd-vrsicki' => [
             'title' => 'CBD vršički',
@@ -200,8 +200,8 @@ function zvij_catalog_sync_pages_and_menu(): void {
         'zvij-setup' => [
             'title' => 'Zvij setup',
             'slug' => 'zvij-setup',
-            'excerpt' => 'Starter setup: filtri, vršički in refill razmišljanje.',
-            'content' => '<p>Zvij setup poveže prvi nakup z bolj jasnim ritmom: DUBI 42, rolca, sample vršičkov in pot do naslednjega refilla.</p><p>Cilj ni kaos v košarici, ampak preprost začetek: izbereš osnovo, vidiš mero, naslednjič se vrneš z dobroimetjem.</p>',
+            'excerpt' => 'Starter setup: filtri, vršički in reload razmišljanje.',
+            'content' => '<p>Zvij setup poveže prvi nakup z bolj jasnim ritmom: DUBI 42, rolca, sample vršičkov in pot na naslednji reload.</p><p>Cilj ni kaos v košarici, ampak preprost začetek: izbereš osnovo, vidiš mero, naslednjič se vrneš z dobroimetjem.</p>',
         ],
         'kontakt' => [
             'title' => 'Kontakt',
@@ -251,6 +251,14 @@ if ($old_cbd_term) {
     ]);
 }
 
+$old_refill_term = get_term_by('slug', 'refill', 'product_cat') ?: get_term_by('name', 'Refill', 'product_cat');
+if ($old_refill_term) {
+    wp_update_term((int) $old_refill_term->term_id, 'product_cat', [
+        'name' => 'Reload',
+        'slug' => 'reload',
+    ]);
+}
+
 zvij_catalog_sync_pages_and_menu();
 
 $vrsicki_intro = 'Izbrani vršički za urejen ritual, jasno mero in izbiro brez THC učinka. Primerno za čajno uporabo.';
@@ -274,7 +282,7 @@ $catalog = [
             '_zvij_former_name' => 'SMOKEY Premium CBD',
             '_zvij_public_mapping' => 'CBD NM = SMOKEY',
             '_zvij_packaging_logic' => '1 x 1 g package',
-            '_zvij_dobroimetje_note' => 'Član prejme 0,80 € za naslednji refill.',
+            '_zvij_dobroimetje_note' => 'Član prejme 0,80 € za naslednji reload.',
         ],
     ],
     [
@@ -288,11 +296,11 @@ $catalog = [
         'status' => 'publish',
         'image_source_url' => 'https://zvij.si/wp-content/uploads/2023/06/smokey-frontside.png',
         'excerpt' => '<p>SMOKEY CBD vršički v 5 g paketu. ' . $five_gram_note . '</p>',
-        'content' => '<p>Večji SMOKEY paket za jasen refill ritem in urejeno zalogo.</p><p><strong>' . $five_gram_note . '</strong></p><p>Primerno za čajno uporabo.</p>',
+        'content' => '<p>Večji SMOKEY paket za jasen reload ritem in urejeno zalogo.</p><p><strong>' . $five_gram_note . '</strong></p><p>Primerno za čajno uporabo.</p>',
         'meta' => [
             '_zvij_packaging_logic' => '5 x 1 g packages',
             '_zvij_packaging_note' => $five_gram_note,
-            '_zvij_dobroimetje_note' => 'Član prejme 4,00 € za naslednji refill.',
+            '_zvij_dobroimetje_note' => 'Član prejme 4,00 € za naslednji reload.',
         ],
     ],
     [
@@ -312,7 +320,7 @@ $catalog = [
             '_zvij_former_name' => 'CHILLY Premium CBG',
             '_zvij_public_mapping' => 'CBG NM = CHILLY',
             '_zvij_packaging_logic' => '1 x 1 g package',
-            '_zvij_dobroimetje_note' => 'Član prejme 1,00 € za naslednji refill.',
+            '_zvij_dobroimetje_note' => 'Član prejme 1,00 € za naslednji reload.',
         ],
     ],
     [
@@ -326,11 +334,11 @@ $catalog = [
         'status' => 'publish',
         'image_source_url' => 'https://zvij.si/wp-content/uploads/2023/06/chilly-frontside.png',
         'excerpt' => '<p>CHILLY CBG vršički v 5 g paketu. ' . $five_gram_note . '</p>',
-        'content' => '<p>Večji CHILLY paket za jasen refill ritem in urejeno zalogo.</p><p><strong>' . $five_gram_note . '</strong></p><p>Primerno za čajno uporabo.</p>',
+        'content' => '<p>Večji CHILLY paket za jasen reload ritem in urejeno zalogo.</p><p><strong>' . $five_gram_note . '</strong></p><p>Primerno za čajno uporabo.</p>',
         'meta' => [
             '_zvij_packaging_logic' => '5 x 1 g packages',
             '_zvij_packaging_note' => $five_gram_note,
-            '_zvij_dobroimetje_note' => 'Član prejme 4,50 € za naslednji refill.',
+            '_zvij_dobroimetje_note' => 'Član prejme 4,50 € za naslednji reload.',
         ],
     ],
     [
@@ -352,7 +360,7 @@ $catalog = [
             '_zvij_public_mapping' => 'Bubble Gum = FRUTTY',
             '_zvij_packaging_logic' => '1 x 1 g package',
             '_zvij_first_purchase_badge' => 'Prvič 4,20 €',
-            '_zvij_dobroimetje_note' => 'Član prejme 0,80 € za naslednji refill.',
+            '_zvij_dobroimetje_note' => 'Član prejme 0,80 € za naslednji reload.',
         ],
     ],
     [
@@ -366,11 +374,11 @@ $catalog = [
         'status' => 'publish',
         'image_source_url' => 'https://zvij.si/wp-content/uploads/2023/06/frutty-frontside.png',
         'excerpt' => '<p>FRUTTY CBD vršički v 5 g paketu. ' . $five_gram_note . '</p>',
-        'content' => '<p>Večji FRUTTY paket za jasen refill ritem in urejeno zalogo.</p><p><strong>' . $five_gram_note . '</strong></p><p>Primerno za čajno uporabo.</p>',
+        'content' => '<p>Večji FRUTTY paket za jasen reload ritem in urejeno zalogo.</p><p><strong>' . $five_gram_note . '</strong></p><p>Primerno za čajno uporabo.</p>',
         'meta' => [
             '_zvij_packaging_logic' => '5 x 1 g packages',
             '_zvij_packaging_note' => $five_gram_note,
-            '_zvij_dobroimetje_note' => 'Član prejme 3,50 € za naslednji refill.',
+            '_zvij_dobroimetje_note' => 'Član prejme 3,50 € za naslednji reload.',
         ],
     ],
     [
@@ -388,7 +396,7 @@ $catalog = [
         'meta' => [
             '_zvij_packaging_logic' => '42 filters per bag',
             '_zvij_dubi_youtube_url' => 'https://www.youtube.com/watch?v=5oNlpY17v9w',
-            '_zvij_dobroimetje_note' => 'Član prejme 1,25 € za naslednji refill.',
+            '_zvij_dobroimetje_note' => 'Član prejme 1,25 € za naslednji reload.',
         ],
     ],
     [
@@ -401,11 +409,11 @@ $catalog = [
         'status' => 'publish',
         'image_source_url' => 'https://zvij.si/wp-content/uploads/2023/10/dubi-front.png',
         'excerpt' => '<p>DUBI aktivni ogljikovi filtri v večjem paketu 420 kosov.</p>',
-        'content' => '<p>Večji DUBI paket za refill ritem in manj ponovnega naročanja.</p><p>420 filtrov na vrečko.</p>',
+        'content' => '<p>Večji DUBI paket za reload ritem in manj ponovnega naročanja.</p><p>420 filtrov na vrečko.</p>',
         'meta' => [
             '_zvij_packaging_logic' => '420 filters per bag',
             '_zvij_dubi_youtube_url' => 'https://www.youtube.com/watch?v=5oNlpY17v9w',
-            '_zvij_dobroimetje_note' => 'Član prejme 7,50 € za naslednji refill.',
+            '_zvij_dobroimetje_note' => 'Član prejme 7,50 € za naslednji reload.',
         ],
     ],
     [

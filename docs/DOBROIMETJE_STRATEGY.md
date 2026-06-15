@@ -4,12 +4,12 @@ Status: dev strategy draft.
 
 ## Purpose
 
-Dobroimetje should make the next refill feel natural. The goal is not a discount-hunting store, but a member loop:
+Dobroimetje should make the next reload feel natural. The goal is not a discount-hunting store, but a member loop:
 
 1. first purchase is a low-friction try
 2. membership gives a clear Zvij koda
 3. repeat orders return with dobroimetje
-4. refill becomes easier than rebuilding the cart
+4. reload becomes easier than rebuilding the cart
 
 Dobroimetje is store credit only. No cash payout, no reseller framing, no MLM.
 
@@ -31,7 +31,7 @@ Dobroimetje is store credit only. No cash payout, no reseller framing, no MLM.
 Use:
 
 ```text
-Član prejme X € za naslednji refill.
+Član prejme X € za naslednji reload.
 ```
 
 Avoid:

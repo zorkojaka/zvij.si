@@ -102,7 +102,7 @@ add_action('woocommerce_after_single_product_summary', function (): void {
       <div>
         <p class="card-kicker"><?php esc_html_e('Zakaj ta izdelek', 'zvij-theme'); ?></p>
         <h2><?php echo $is_dubi ? esc_html__('Urejen filter za vsakdanji setup.', 'zvij-theme') : esc_html__('Izbrani vršički, jasna mera.', 'zvij-theme'); ?></h2>
-        <p><?php echo $is_dubi ? esc_html__('DUBI izdelki pokrijejo osnovo: dovolj zaloge, jasen namen in enostaven refill ritem.', 'zvij-theme') : esc_html__('SMOKEY, CHILLY in FRUTTY so postavljeni kot premium vršički z jasno količino, brez THC učinka in možnostjo čajne uporabe.', 'zvij-theme'); ?></p>
+        <p><?php echo $is_dubi ? esc_html__('DUBI izdelki pokrijejo osnovo: dovolj zaloge, jasen namen in enostaven reload ritem.', 'zvij-theme') : esc_html__('SMOKEY, CHILLY in FRUTTY so postavljeni kot premium vršički z jasno količino, brez THC učinka in možnostjo čajne uporabe.', 'zvij-theme'); ?></p>
       </div>
       <div>
         <p class="card-kicker"><?php esc_html_e('Za koga je', 'zvij-theme'); ?></p>
@@ -111,7 +111,7 @@ add_action('woocommerce_after_single_product_summary', function (): void {
       </div>
       <div>
         <p class="card-kicker"><?php esc_html_e('Kako se vključi v setup', 'zvij-theme'); ?></p>
-        <h2><?php esc_html_e('Setup, refill, ponovi.', 'zvij-theme'); ?></h2>
+        <h2><?php esc_html_e('Setup, reload, ponovi.', 'zvij-theme'); ?></h2>
         <p><?php esc_html_e('To je osnova za prihodnji sistem članstva, Zvij kode, dobroimetja in ponovitve zadnjega naročila.', 'zvij-theme'); ?></p>
       </div>
     </section>
