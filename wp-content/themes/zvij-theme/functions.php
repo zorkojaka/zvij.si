@@ -19,14 +19,14 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.8.0');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.8.1');
 
     if (is_front_page() || is_page('zvij-kit')) {
         wp_enqueue_script(
             'zvij-kits',
             get_template_directory_uri() . '/assets/kits.js',
             [],
-            '0.8.0',
+            '0.8.1',
             true
         );
     }
@@ -269,31 +269,11 @@ function zvij_render_kit_showcase(): void {
             <?php endif; ?>
           </header>
 
-          <div class="kit-row__body">
-            <div class="kit-row__main">
+          <div class="kit-top">
               <div class="kit-visual kit-visual--<?php echo esc_attr($kit_key); ?>" role="img" aria-label="<?php echo esc_attr(sprintf(__('%s — sestavljena slika kita', 'zvij-theme'), (string) ($kit['name'] ?? ''))); ?>">
                 <span class="kit-visual__tag"><?php echo esc_html($kit['name'] ?? ''); ?></span>
                 <span class="kit-visual__note"><?php esc_html_e('Sestavljena slika kita — kmalu', 'zvij-theme'); ?></span>
               </div>
-
-              <p class="kit-products__hint"><?php esc_html_e('Izdelki na sliki. Klikni, da kateri ni vključen.', 'zvij-theme'); ?></p>
-              <div class="kit-products" role="group" aria-label="<?php esc_attr_e('Izdelki v kitu', 'zvij-theme'); ?>">
-                <?php foreach ($core_items as $item) :
-                    $label = (string) ($item['label'] ?? '');
-                    $view = zvij_kit_item_view((string) ($item['slug'] ?? ''));
-                    echo zvij_kit_chip_markup($label, $view, true); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                endforeach; ?>
-              </div>
-
-              <?php if ($addon_views !== []) : ?>
-                <p class="kit-products__hint kit-products__hint--addons"><?php esc_html_e('Opcijski vršički — klikni, da jih dodaš', 'zvij-theme'); ?></p>
-                <div class="kit-products kit-products--addons" role="group" aria-label="<?php esc_attr_e('Opcijski vršički', 'zvij-theme'); ?>">
-                  <?php foreach ($addon_views as $addon) :
-                      echo zvij_kit_chip_markup($addon['title'], $addon, false); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                  endforeach; ?>
-                </div>
-              <?php endif; ?>
-            </div>
 
             <aside class="kit-order-panel">
               <div class="kit-order-panel__inner">
@@ -305,6 +285,28 @@ function zvij_render_kit_showcase(): void {
               </div>
             </aside>
           </div>
+
+          <div class="kit-products-row">
+            <p class="kit-products__hint"><?php esc_html_e('Izdelki na sliki. Klikni, da kateri ni vključen.', 'zvij-theme'); ?></p>
+            <div class="kit-products" role="group" aria-label="<?php esc_attr_e('Izdelki v kitu', 'zvij-theme'); ?>">
+              <?php foreach ($core_items as $item) :
+                  $label = (string) ($item['label'] ?? '');
+                  $view = zvij_kit_item_view((string) ($item['slug'] ?? ''));
+                  echo zvij_kit_chip_markup($label, $view, true); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+              endforeach; ?>
+            </div>
+          </div>
+
+          <?php if ($addon_views !== []) : ?>
+            <div class="kit-addons-row">
+              <p class="kit-products__hint kit-products__hint--addons"><?php esc_html_e('Opcijski vršički — klikni, da jih dodaš', 'zvij-theme'); ?></p>
+              <div class="kit-products kit-products--addons" role="group" aria-label="<?php esc_attr_e('Opcijski vršički', 'zvij-theme'); ?>">
+                <?php foreach ($addon_views as $addon) :
+                    echo zvij_kit_chip_markup($addon['title'], $addon, false); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                endforeach; ?>
+              </div>
+            </div>
+          <?php endif; ?>
         </article>
       <?php endforeach; ?>
 
