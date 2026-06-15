@@ -259,6 +259,18 @@ if ($old_refill_term) {
     ]);
 }
 
+$old_refill_placeholder = get_page_by_title('DEV placeholder: Refill paket', OBJECT, 'product');
+if ($old_refill_placeholder) {
+    wp_update_post([
+        'ID' => $old_refill_placeholder->ID,
+        'post_title' => 'DEV placeholder: Reload paket',
+        'post_name' => 'dev-placeholder-reload-paket',
+        'post_excerpt' => 'Reload paket',
+        'post_content' => 'Placeholder za ponovitev zaloge. Realni intervali in vsebina še niso potrjeni.',
+    ]);
+    wp_set_object_terms((int) $old_refill_placeholder->ID, 'Reload', 'product_cat', false);
+}
+
 zvij_catalog_sync_pages_and_menu();
 
 $vrsicki_intro = 'Izbrani vršički za urejen ritual, jasno mero in izbiro brez THC učinka. Primerno za čajno uporabo.';
