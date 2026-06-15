@@ -3,7 +3,7 @@ Theme Name: Zvij Theme
 Theme URI: https://dev.inteligent.si
 Author: Zvij.si
 Description: Clean development shop prototype for dev.inteligent.si.
-Version: 0.5.0
+Version: 0.6.0
 Requires at least: 6.5
 Tested up to: 6.5
 Requires PHP: 8.2
@@ -347,6 +347,14 @@ a {
   max-width: 620px;
 }
 
+.feature-band--warm {
+  background: var(--zvij-accent-warm);
+}
+
+.feature-band--warm p {
+  color: #fff2e3;
+}
+
 .page-hero,
 .shop-hero {
   max-width: 820px;
@@ -460,11 +468,22 @@ a {
   margin-bottom: 0.6rem;
 }
 
+.product-card__badge {
+  background: var(--zvij-accent-warm);
+  border-radius: 999px;
+  color: var(--zvij-panel);
+  display: inline-flex;
+  font-size: 0.78rem;
+  font-weight: 900;
+  margin: 0 0 0.75rem 0.45rem;
+  padding: 0.25rem 0.6rem;
+}
+
 .woocommerce ul.products li.product .price {
   color: var(--zvij-text);
   font-size: 1.05rem;
   font-weight: 850;
-  margin-top: auto;
+  margin: 0.55rem 0 0;
 }
 
 .woocommerce ul.products li.product .price del {
@@ -478,7 +497,15 @@ a {
 
 .woocommerce ul.products li.product .button {
   align-self: flex-start;
-  margin-top: 1rem;
+  margin-top: auto;
+}
+
+.product-card__credit {
+  color: var(--zvij-muted);
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0.4rem 0 1rem;
 }
 
 .woocommerce nav.woocommerce-pagination ul {
@@ -575,6 +602,7 @@ a {
 }
 
 .zvij-product-context,
+.zvij-credit-note,
 .zvij-packaging-note,
 .zvij-product-video-panel {
   grid-column: 1 / -1;
@@ -588,6 +616,7 @@ a {
 }
 
 .zvij-product-context > div,
+.zvij-credit-note,
 .zvij-packaging-note,
 .zvij-product-video-panel,
 .zvij-dev-note {
@@ -607,8 +636,17 @@ a {
 .zvij-product-context p,
 .zvij-product-video-panel p,
 .zvij-dev-note,
+.zvij-credit-note,
 .zvij-packaging-note {
   color: var(--zvij-muted);
+}
+
+.zvij-credit-note {
+  background: rgba(49, 95, 73, 0.1);
+  border-color: rgba(49, 95, 73, 0.35);
+  color: var(--zvij-text);
+  font-weight: 900;
+  margin-top: 1rem;
 }
 
 .zvij-packaging-note {

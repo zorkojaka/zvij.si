@@ -19,7 +19,7 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.5.0');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.6.0');
 });
 
 add_action('woocommerce_before_shop_loop_item_title', function (): void {
@@ -35,7 +35,25 @@ add_action('woocommerce_before_shop_loop_item_title', function (): void {
     }
 
     echo '<span class="product-card__cat">' . esc_html($terms[0]->name) . '</span>';
+
+    $first_purchase_badge = (string) get_post_meta($product->get_id(), '_zvij_first_purchase_badge', true);
+    if ($first_purchase_badge !== '') {
+        echo '<span class="product-card__badge">' . esc_html($first_purchase_badge) . '</span>';
+    }
 }, 9);
+
+add_action('woocommerce_after_shop_loop_item', function (): void {
+    global $product;
+
+    if (! $product instanceof WC_Product) {
+        return;
+    }
+
+    $dobroimetje_note = (string) get_post_meta($product->get_id(), '_zvij_dobroimetje_note', true);
+    if ($dobroimetje_note !== '') {
+        echo '<p class="product-card__credit">' . esc_html($dobroimetje_note) . '</p>';
+    }
+}, 7);
 
 add_action('woocommerce_single_product_summary', function (): void {
     global $product;
@@ -67,8 +85,14 @@ add_action('woocommerce_after_single_product_summary', function (): void {
     $needs_review = (string) get_post_meta($product->get_id(), 'legal_copy_review_needed', true);
     $youtube_url = (string) get_post_meta($product->get_id(), '_zvij_dubi_youtube_url', true);
     $packaging_note = (string) get_post_meta($product->get_id(), '_zvij_packaging_note', true);
+    $dobroimetje_note = (string) get_post_meta($product->get_id(), '_zvij_dobroimetje_note', true);
     $is_dubi = str_contains(strtolower($product->get_name()), 'dubi');
     ?>
+    <?php if ($dobroimetje_note !== '') : ?>
+      <aside class="zvij-credit-note">
+        <?php echo esc_html($dobroimetje_note); ?>
+      </aside>
+    <?php endif; ?>
     <?php if ($packaging_note !== '') : ?>
       <aside class="zvij-packaging-note">
         <?php echo esc_html($packaging_note); ?>
@@ -77,8 +101,8 @@ add_action('woocommerce_after_single_product_summary', function (): void {
     <section class="zvij-product-context">
       <div>
         <p class="card-kicker"><?php esc_html_e('Zakaj ta izdelek', 'zvij-theme'); ?></p>
-        <h2><?php echo $is_dubi ? esc_html__('Urejen filter za vsakdanji setup.', 'zvij-theme') : esc_html__('Izdelek za nadaljnji copy review.', 'zvij-theme'); ?></h2>
-        <p><?php echo $is_dubi ? esc_html__('DUBI izdelki pokrijejo osnovo: dovolj zaloge, jasen namen in enostaven refill ritem. Copy ostaja trezen in brez nepotrjenih obljub.', 'zvij-theme') : esc_html__('Ta izdelek je uvožen iz stare strani kot zgodovinski dev material. Pred javno prodajo potrebuje potrjene podatke, analize in pravno varen opis.', 'zvij-theme'); ?></p>
+        <h2><?php echo $is_dubi ? esc_html__('Urejen filter za vsakdanji setup.', 'zvij-theme') : esc_html__('Izbrani vršički, jasna mera.', 'zvij-theme'); ?></h2>
+        <p><?php echo $is_dubi ? esc_html__('DUBI izdelki pokrijejo osnovo: dovolj zaloge, jasen namen in enostaven refill ritem.', 'zvij-theme') : esc_html__('SMOKEY, CHILLY in FRUTTY so postavljeni kot premium vršički z jasno količino, brez THC učinka in možnostjo čajne uporabe.', 'zvij-theme'); ?></p>
       </div>
       <div>
         <p class="card-kicker"><?php esc_html_e('Za koga je', 'zvij-theme'); ?></p>

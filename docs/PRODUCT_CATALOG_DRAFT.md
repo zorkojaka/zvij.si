@@ -8,32 +8,37 @@ Status: current dev shop catalog.
 - CBG NM = CHILLY
 - Bubble Gum = FRUTTY
 
-Public product names should use `SMOKEY`, `CHILLY`, and `FRUTTY`.
+Public names should use `SMOKEY`, `CHILLY`, and `FRUTTY`.
 
 ## Active Product Families
 
-### CBD čaj
+### CBD/CBG vršički
 
-- SMOKEY CBD čaj 1 g
-- SMOKEY CBD čaj 5 g
-- FRUTTY CBD čaj 1 g
-- FRUTTY CBD čaj 5 g
-- CHILLY CBG čaj 1 g
-- CHILLY CBG čaj 5 g
+- SMOKEY CBD vršički 1 g
+- SMOKEY CBD vršički 5 g
+- CHILLY CBG vršički 1 g
+- CHILLY CBG vršički 5 g
+- FRUTTY CBD vršički 1 g
+- FRUTTY CBD vršički 5 g
 
-Copy direction:
+Product framing:
 
-- ritual
+- premium vršički
+- izbrani vršički
+- 1 g packaging
+- 5 g = 5 x 1 g packages
+- čajna uporaba as one possible use
 - brez THC učinka
 - jasna mera
-- urejena izbira
-- mirnejši setup
+- ritual
 
 Avoid:
 
-- smoking references
+- `CBD čaj` as a primary product or category name
+- smoking instructions
 - medical claims
 - anxiety, sleep, pain, stress relief, treatment, illness, or similar
+- legal high language
 - HHC as an offer
 
 ### DUBI filtri
@@ -50,7 +55,7 @@ Planned setup contents:
 
 - DUBI 42
 - rolca
-- sample CBD/CBG čaja
+- sample CBD/CBG vršičkov
 
 ## Implementation Notes
 
@@ -60,4 +65,4 @@ The repeatable sync script is:
 scripts/wp-sync-catalog-dev.sh
 ```
 
-It updates WooCommerce products, categories, prices, statuses, product copy, and packaging metadata for dev.
+It updates WooCommerce products, categories, prices, sale price for FRUTTY first offer, page/menu terminology, product copy, dobroimetje metadata, and packaging metadata for dev.

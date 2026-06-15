@@ -68,9 +68,26 @@ For dev baseline:
 
 No cash payouts. Dobroimetje is store credit only.
 
+## Current Dev Dobroimetje Copy
+
+Product cards and product pages may show:
+
+```text
+Član prejme X € za naslednji refill.
+```
+
+Current dev values are documented in `docs/DOBROIMETJE_STRATEGY.md`.
+
+The member story should stay simple:
+
+- first purchase = low-friction try
+- next orders = dobroimetje
+- goal = refill rhythm, not action hunting
+- no MLM, no reselling, no payout promise
+
 ## Open Decisions
 
-- How much dobroimetje each side receives.
+- Whether current dobroimetje values are final.
 - Whether dobroimetje expires.
 - Whether every customer can become a member.
 - Whether QR code proves purchase or only routes to onboarding.

@@ -16,17 +16,19 @@
 - Updated the baseline script to create richer static page copy.
 - Disabled WooCommerce coming-soon mode for dev.
 - Published current dev catalog products with real reviewed prices.
+- Corrected main public terminology from `CBD čaj` to `CBD/CBG vršički`.
+- Added dobroimetje notes and first FRUTTY offer badge.
 
 ## Public Dev Products
 
 The public shop currently uses active dev products:
 
-- `SMOKEY CBD čaj 1 g`
-- `SMOKEY CBD čaj 5 g`
-- `CHILLY CBG čaj 1 g`
-- `CHILLY CBG čaj 5 g`
-- `FRUTTY CBD čaj 1 g`
-- `FRUTTY CBD čaj 5 g`
+- `SMOKEY CBD vršički 1 g`
+- `SMOKEY CBD vršički 5 g`
+- `CHILLY CBG vršički 1 g`
+- `CHILLY CBG vršički 5 g`
+- `FRUTTY CBD vršički 1 g`
+- `FRUTTY CBD vršički 5 g`
 - `DUBI 42 aktivnih ogljikovih filtrov`
 - `DUBI 420 aktivnih ogljikovih filtrov`
 - `Sample paket`
@@ -40,7 +42,7 @@ Older draft placeholders may still exist in WordPress; they are not public.
 
 - `Član Zvij.si`
 - `DUBI filtri`
-- `CBD čaj`
+- `CBD vršički`
 - `Zvij setup`
 - `Kontakt`
 - `Trgovina`
@@ -68,7 +70,7 @@ Public prototype checks should include:
 ```bash
 curl -I https://dev.inteligent.si
 curl -sL https://dev.inteligent.si | grep -i "http://" || true
-curl -sL https://dev.inteligent.si/trgovina/ | grep "DEV placeholder"
+curl -sL https://dev.inteligent.si/trgovina/ | grep "CBD/CBG vršički"
 ```
 
 Use browser screenshots for final design review because CSS layout quality cannot be fully judged from curl output.
@@ -79,5 +81,5 @@ Review the public prototype in an incognito browser and decide:
 
 1. Which product placeholders should become real first.
 2. Whether the visual tone is warm enough or needs more product-culture edge.
-3. Which images to use for DUBI filters, CBD čaj, setup, and refill.
+3. Which images to use for DUBI filters, CBD/CBG vršički, setup, and refill.
 4. Whether placeholder products should remain public while product data is being gathered.

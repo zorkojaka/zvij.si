@@ -2,13 +2,13 @@
 
 ## Current CBD/CBG Packaging
 
-Current CBD/CBG packaging is 1 g.
+Current CBD/CBG vršički packaging is 1 g.
 
 The active 1 g products are:
 
-- SMOKEY CBD čaj 1 g
-- CHILLY CBG čaj 1 g
-- FRUTTY CBD čaj 1 g
+- SMOKEY CBD vršički 1 g
+- CHILLY CBG vršički 1 g
+- FRUTTY CBD vršički 1 g
 
 ## 5 g Fulfillment
 
@@ -16,9 +16,9 @@ The active 1 g products are:
 
 This applies to:
 
-- SMOKEY CBD čaj 5 g
-- CHILLY CBG čaj 5 g
-- FRUTTY CBD čaj 5 g
+- SMOKEY CBD vršički 5 g
+- CHILLY CBG vršički 5 g
+- FRUTTY CBD vršički 5 g
 
 Visible product note:
 
@@ -32,9 +32,9 @@ This avoids new packaging work for now.
 
 Do not publish these yet:
 
-- SMOKEY CBD čaj 10 g
-- CHILLY CBG čaj 10 g
-- FRUTTY CBD čaj 10 g
+- SMOKEY CBD vršički 10 g
+- CHILLY CBG vršički 10 g
+- FRUTTY CBD vršički 10 g
 
 ## Product Photography
 

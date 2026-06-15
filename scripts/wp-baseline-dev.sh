@@ -30,10 +30,10 @@ wp option update woocommerce_store_pages_only no
 wp eval '
 $pages = [
     ["Domov", "domov", "Tvoj ritual. Tvoja mera. Tvoj setup.", "Urejena trgovina za izdelke, refille in članstvo okoli tvojega rituala."],
-    ["Trgovina", "trgovina", "<p>DEV prototip trgovine za DUBI filtre, CBD čaj, setup pakete in refill logiko. Izdelki so začasni placeholderji, dokler niso potrjeni podatki, cene, pravna besedila in checkout pravila.</p>", "Razvojna trgovina za Zvij.si pakete, refille in članstvo."],
+    ["Trgovina", "trgovina", "<p>DEV prototip trgovine za DUBI filtre, CBD/CBG vršičke, setup pakete in refill logiko. Izdelki so začasni placeholderji, dokler niso potrjeni podatki, cene, pravna besedila in checkout pravila.</p>", "Razvojna trgovina za Zvij.si pakete, refille in članstvo."],
     ["Član Zvij.si", "clan-zvij-si", "<p>Član Zvij.si je prihodnji notranji sloj: Zvij koda, dobroimetje, refilli in ponovitev naročila brez ponovnega iskanja.</p><p>Sistem ostaja brez preprodaje, brez cash payout obljub in brez MLM jezika. Dobroimetje je zamišljeno kot vrednost za naslednji refill.</p>", "Zvij koda, dobroimetje in refill navada kot prihodnji sistem."],
     ["DUBI filtri", "dubi-filtri", "<p>DUBI filtri so osnova za bolj urejen setup. Stran trenutno služi kot vizualni in vsebinski okvir za produktne podatke, ki jih mora Jaka še potrditi.</p><p>Naslednji korak: realne fotografije, pakiranja, zaloga, cena in refill interval.</p>", "Osnovni kos za bolj urejen setup in refill ritem."],
-    ["CBD čaj", "cbd-caj", "<p>CBD čaj je predstavljen kot konopljini vršički za čaj. Copy ostaja pri ritualu, meri in mirnejšem tempu brez THC učinka.</p><p>Brez zdravstvenih obljub, brez kajenja in brez terapevtskih trditev.</p>", "Konopljini vršički za čaj, brez medicinskih ali kadilskih trditev."],
+    ["CBD vršički", "cbd-vrsicki", "<p>CBD/CBG vršički so predstavljeni kot izbrani vršički z jasno mero. Čajna uporaba je lahko omenjena kot ena možnost, ne kot celotna identiteta izdelka.</p><p>Copy ostaja pri ritualu, meri in brez THC učinka.</p>", "SMOKEY, CHILLY in FRUTTY kot izbrani vršički."],
     ["Zvij setup", "zvij-setup", "<p>Zvij setup poveže izdelke, refille in navado okoli prvega nakupa. Prototip trenutno kaže smer: DUBI filtri, rolca, jasna zaloga in pot nazaj do refilla.</p>", "Paketni pogled na izdelke, refille in miren ritual."],
     ["Kontakt", "kontakt", "<p>Kontaktna dev stran za Zvij.si. Produkcijski kontaktni obrazci, pravna besedila in podporni tokovi se dodajo po potrditvi vsebine.</p>", "Kontaktna točka za dev prototip."],
 ];
@@ -73,7 +73,7 @@ foreach ((array) wp_get_nav_menu_items($menu_id) as $item) {
     wp_delete_post($item->ID, true);
 }
 
-foreach (["domov", "trgovina", "clan-zvij-si", "dubi-filtri", "cbd-caj", "zvij-setup", "kontakt"] as $slug) {
+foreach (["domov", "trgovina", "clan-zvij-si", "dubi-filtri", "cbd-vrsicki", "zvij-setup", "kontakt"] as $slug) {
     wp_update_nav_menu_item($menu_id, 0, [
         "menu-item-object-id" => $page_ids[$slug],
         "menu-item-object" => "page",
@@ -86,7 +86,7 @@ $locations = get_theme_mod("nav_menu_locations", []);
 $locations["primary"] = $menu_id;
 set_theme_mod("nav_menu_locations", $locations);
 
-$categories = ["DUBI filtri", "CBD čaj", "Zvij setup", "Refill", "Član Zvij.si"];
+$categories = ["DUBI filtri", "CBD/CBG vršički", "Zvij setup", "Refill", "Član Zvij.si"];
 foreach ($categories as $category) {
     if (! term_exists($category, "product_cat")) {
         wp_insert_term($category, "product_cat");
@@ -95,7 +95,7 @@ foreach ($categories as $category) {
 
 $products = [
     ["DEV placeholder: DUBI filtri", "DUBI filtri", "DUBI filtri", "Vizualni placeholder za kartico izdelka. Cena, pakiranje in opis niso potrjeni."],
-    ["DEV placeholder: CBD čaj", "CBD čaj", "CBD čaj", "Placeholder za CBD čaj kot konopljine vršičke za čaj. Brez zdravstvenih in kadilskih trditev."],
+    ["DEV placeholder: CBD/CBG vršički", "CBD/CBG vršički", "CBD/CBG vršički", "Placeholder za izbrane vršičke. Čajna uporaba je lahko omenjena kot ena možnost."],
     ["DEV placeholder: Zvij setup paket", "Zvij setup", "Zvij setup paket", "Placeholder za začetni setup: DUBI filtri, rolca in kasnejša refill logika."],
     ["DEV placeholder: Refill paket", "Refill", "Refill paket", "Placeholder za ponovitev zaloge. Realni intervali in vsebina še niso potrjeni."],
 ];

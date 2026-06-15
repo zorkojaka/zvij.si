@@ -9,9 +9,9 @@ $source_base = 'https://zvij.si';
 $price_map = [
     'dubi-420-aktivnih-ogljikovih-filtrov' => ['regular' => '75.00', 'sale' => '67.50', 'status' => 'publish', 'category' => 'DUBI filtri', 'legal_review' => 'false'],
     'dubi-aktivni-ogljikovi-filtri-42-kosov' => ['regular' => '7.75', 'sale' => '6.50', 'status' => 'publish', 'category' => 'DUBI filtri', 'legal_review' => 'false'],
-    'chilly-premium-cbg' => ['regular' => '7.50', 'sale' => '6.50', 'status' => 'draft', 'category' => 'CBD čaj', 'legal_review' => 'true'],
-    'smokey-premium-cbd' => ['regular' => '8.00', 'sale' => '7.20', 'status' => 'draft', 'category' => 'CBD čaj', 'legal_review' => 'true'],
-    'frutty-cbd' => ['regular' => '5.00', 'sale' => '4.20', 'status' => 'draft', 'category' => 'CBD čaj', 'legal_review' => 'true'],
+    'chilly-premium-cbg' => ['regular' => '7.50', 'sale' => '6.50', 'status' => 'draft', 'category' => 'CBD/CBG vršički', 'legal_review' => 'true'],
+    'smokey-premium-cbd' => ['regular' => '8.00', 'sale' => '7.20', 'status' => 'draft', 'category' => 'CBD/CBG vršički', 'legal_review' => 'true'],
+    'frutty-cbd' => ['regular' => '5.00', 'sale' => '4.20', 'status' => 'draft', 'category' => 'CBD/CBG vršički', 'legal_review' => 'true'],
 ];
 
 function zvij_live_get_json(string $url): array {

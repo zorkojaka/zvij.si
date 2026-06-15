@@ -12,7 +12,7 @@ Usable now:
 Needs replacement:
 
 - DUBI 42 and DUBI 420 need separate packshots or quantity/scale images.
-- CBD/CBG flower-style images should be replaced if the product direction is CBD čaj.
+- CBD/CBG vršički need clearer packshots; tea-use imagery can be secondary.
 - Refill and membership products need dedicated visuals.
 - The old graph image can support product detail pages but should not be the primary card image.
 
@@ -42,11 +42,11 @@ Needs replacement:
 - storage/refill drawer shot
 - detail shot of packaging
 
-### CBD čaj
+### CBD/CBG vršički
 
-- tea packshot, not flower-smoking imagery
+- 1 g packshot for SMOKEY, CHILLY, and FRUTTY
 - cup/infusion ritual shot
-- loose tea macro
+- loose vršički macro
 - certificate/lab-analysis support shot if available
 
 ### Zvij setup paket
@@ -87,7 +87,7 @@ Use these as creative briefs, not final legal copy:
 
 ## Next Decisions Needed From Jaka
 
-- final CBD product form: čaj, flower archive, or remove old flower products
+- final CBD/CBG product photography direction and whether tea-use images are secondary or separate
 - whether old CHILLY/SMOKEY/FRUTTY visuals remain as archive material
 - confirmed product packaging for DUBI quantities
 - whether to commission real photography or use AI-assisted placeholders first
