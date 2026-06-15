@@ -19,14 +19,14 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.8.1');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.8.4');
 
     if (is_front_page() || is_page('zvij-kit')) {
         wp_enqueue_script(
             'zvij-kits',
             get_template_directory_uri() . '/assets/kits.js',
             [],
-            '0.8.1',
+            '0.8.4',
             true
         );
     }
@@ -194,8 +194,8 @@ function zvij_kit_item_view(string $slug): array {
  *
  * @param array{title:string,url:string,image:string,available:bool,price:float,sku:string,id:int} $view
  */
-function zvij_kit_chip_markup(string $label, array $view, bool $selected): string {
-    $classes = 'kit-chip' . ($selected ? ' is--selected' : '') . ($view['available'] ? '' : ' kit-chip--soon');
+function zvij_kit_chip_markup(string $label, array $view, bool $selected, bool $addon = false): string {
+    $classes = 'kit-chip' . ($selected ? ' is--selected' : '') . ($view['available'] ? '' : ' kit-chip--soon') . ($addon ? ' kit-chip--addon' : '');
     $sku = $view['sku'] !== '' ? $view['sku'] : (string) $view['id'];
 
     $out = '<button type="button" class="' . esc_attr($classes) . '"'
@@ -206,11 +206,7 @@ function zvij_kit_chip_markup(string $label, array $view, bool $selected): strin
         . ' data-sku="' . esc_attr($sku) . '"'
         . ' data-price="' . esc_attr((string) $view['price']) . '"'
         . ' aria-pressed="' . ($selected ? 'true' : 'false') . '">';
-    $out .= zvij_kit_media_markup($view, $label);
     $out .= '<span class="kit-chip__label">' . esc_html($label) . '</span>';
-    if (! $view['available']) {
-        $out .= '<span class="kit-chip__soon">' . esc_html__('kmalu', 'zvij-theme') . '</span>';
-    }
     $out .= '<span class="kit-chip__state" aria-hidden="true"></span>';
     $out .= '</button>';
 
@@ -257,56 +253,60 @@ function zvij_render_kit_showcase(): void {
               array_map('zvij_kit_item_view', (array) ($kit['addons'] ?? [])),
               static fn ($v) => $v['available'] || $v['id'] > 0
           );
-          // Core products are selected by default; optional add-ons are opt-in.
+          $headline = (string) ($kit['headline'] ?? $kit['tagline'] ?? '');
+          $subline = (string) ($kit['subline'] ?? $kit['position'] ?? '');
           $default_count = count($core_items);
       ?>
         <article class="kit-row kit-row--<?php echo esc_attr($kit_key); ?>" data-kit="<?php echo esc_attr($kit['slug'] ?? ''); ?>">
-          <header class="kit-row__head">
-            <span class="card-kicker"><?php echo esc_html($kit['name'] ?? ''); ?></span>
-            <h3><?php echo esc_html($kit['tagline'] ?? ''); ?></h3>
-            <?php if (! empty($kit['position'])) : ?>
-              <p><?php echo esc_html($kit['position']); ?></p>
-            <?php endif; ?>
-          </header>
-
-          <div class="kit-top">
-              <div class="kit-visual kit-visual--<?php echo esc_attr($kit_key); ?>" role="img" aria-label="<?php echo esc_attr(sprintf(__('%s — sestavljena slika kita', 'zvij-theme'), (string) ($kit['name'] ?? ''))); ?>">
-                <span class="kit-visual__tag"><?php echo esc_html($kit['name'] ?? ''); ?></span>
-                <span class="kit-visual__note"><?php esc_html_e('Sestavljena slika kita — kmalu', 'zvij-theme'); ?></span>
-              </div>
-
-            <aside class="kit-order-panel">
-              <div class="kit-order-panel__inner">
-                <p class="kit-order__count"><span data-kit-count><?php echo (int) $default_count; ?></span> <?php esc_html_e('izbranih izdelkov', 'zvij-theme'); ?></p>
-                <p class="kit-order__total"><?php esc_html_e('Cena se izračuna iz izbranih izdelkov.', 'zvij-theme'); ?></p>
-                <button type="button" class="button kit-order__cta" data-kit-order><?php esc_html_e('Naroči kit', 'zvij-theme'); ?></button>
-                <button type="button" class="text-link kit-order__reset" data-kit-reset><?php esc_html_e('Ponastavi kit', 'zvij-theme'); ?></button>
-                <p class="kit-order__status" data-kit-status role="status" hidden></p>
-              </div>
-            </aside>
+          <div class="kit-visual kit-visual--<?php echo esc_attr($kit_key); ?>" role="img" aria-label="<?php echo esc_attr(sprintf(__('%s — sestavljena slika kita', 'zvij-theme'), (string) ($kit['name'] ?? ''))); ?>">
+            <span class="kit-visual__shape kit-visual__shape--one"></span>
+            <span class="kit-visual__shape kit-visual__shape--two"></span>
+            <span class="kit-visual__shape kit-visual__shape--three"></span>
+            <span class="kit-visual__note"><?php echo esc_html(sprintf(__('%s image coming soon', 'zvij-theme'), (string) ($kit['name'] ?? 'Kit'))); ?></span>
           </div>
 
-          <div class="kit-products-row">
-            <p class="kit-products__hint"><?php esc_html_e('Izdelki na sliki. Klikni, da kateri ni vključen.', 'zvij-theme'); ?></p>
-            <div class="kit-products" role="group" aria-label="<?php esc_attr_e('Izdelki v kitu', 'zvij-theme'); ?>">
-              <?php foreach ($core_items as $item) :
-                  $label = (string) ($item['label'] ?? '');
-                  $view = zvij_kit_item_view((string) ($item['slug'] ?? ''));
-                  echo zvij_kit_chip_markup($label, $view, true); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-              endforeach; ?>
+          <div class="kit-info">
+            <div class="kit-copy">
+              <span class="card-kicker"><?php echo esc_html($kit['name'] ?? ''); ?></span>
+              <h3><?php echo esc_html($headline); ?></h3>
+              <?php if ($subline !== '') : ?>
+                <p><?php echo esc_html($subline); ?></p>
+              <?php endif; ?>
+              <p class="kit-order__count"><span data-kit-count><?php echo (int) $default_count; ?></span> <?php esc_html_e('izbranih izdelkov', 'zvij-theme'); ?></p>
+
+              <div class="kit-products-row">
+                <span class="kit-row-label"><?php esc_html_e('Vključuje:', 'zvij-theme'); ?></span>
+                <div class="kit-products" role="group" aria-label="<?php esc_attr_e('Izdelki v kitu', 'zvij-theme'); ?>">
+                  <?php foreach ($core_items as $item) :
+                      $label = (string) ($item['label'] ?? '');
+                      $view = zvij_kit_item_view((string) ($item['slug'] ?? ''));
+                      echo zvij_kit_chip_markup($label, $view, true); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                  endforeach; ?>
+                </div>
+              </div>
+
+              <?php if ($addon_views !== []) : ?>
+                <div class="kit-addons-row">
+                  <span class="kit-row-label"><?php esc_html_e('Dodaj:', 'zvij-theme'); ?></span>
+                  <div class="kit-products kit-products--addons" role="group" aria-label="<?php esc_attr_e('Opcijski vršički', 'zvij-theme'); ?>">
+                    <?php foreach ($addon_views as $addon) :
+                        $addon_label = preg_replace('/\s+vršički\s+/', ' ', $addon['title']);
+                        $addon_label = preg_replace('/\s+(CBD|CBG)\s+/', ' ', (string) $addon_label);
+                        $addon_label = preg_replace('/\s+1\s+g$/', ' 1g', (string) $addon_label);
+                        echo zvij_kit_chip_markup((string) $addon_label, $addon, false, true); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                    endforeach; ?>
+                  </div>
+                </div>
+              <?php endif; ?>
+            </div>
+
+            <div class="kit-actions">
+              <button type="button" class="button kit-order__cta" data-kit-order><?php esc_html_e('Naroči kit', 'zvij-theme'); ?></button>
+              <button type="button" class="text-link kit-order__reset" data-kit-reset><?php esc_html_e('Ponastavi', 'zvij-theme'); ?></button>
+              <p class="kit-order__status" data-kit-status role="status" hidden></p>
+              <p class="kit-order__total"><?php esc_html_e('Cena se izračuna iz izbranih izdelkov.', 'zvij-theme'); ?></p>
             </div>
           </div>
-
-          <?php if ($addon_views !== []) : ?>
-            <div class="kit-addons-row">
-              <p class="kit-products__hint kit-products__hint--addons"><?php esc_html_e('Opcijski vršički — klikni, da jih dodaš', 'zvij-theme'); ?></p>
-              <div class="kit-products kit-products--addons" role="group" aria-label="<?php esc_attr_e('Opcijski vršički', 'zvij-theme'); ?>">
-                <?php foreach ($addon_views as $addon) :
-                    echo zvij_kit_chip_markup($addon['title'], $addon, false); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                endforeach; ?>
-              </div>
-            </div>
-          <?php endif; ?>
         </article>
       <?php endforeach; ?>
 
