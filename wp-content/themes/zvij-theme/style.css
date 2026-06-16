@@ -798,6 +798,15 @@ a {
   width: 100%;
 }
 
+.kit-visual img {
+  display: block;
+  height: 100%;
+  inset: 0;
+  object-fit: cover;
+  position: absolute;
+  width: 100%;
+}
+
 .kit-visual--black { background: radial-gradient(circle at 25% 30%, rgba(255,255,255,0.08), transparent 22rem), linear-gradient(135deg, #171411, #302923); }
 .kit-visual--silver { background: radial-gradient(circle at 30% 35%, rgba(255,255,255,0.42), transparent 20rem), linear-gradient(135deg, #aeb3b8, #e0e0dd); color: #1f1b17; }
 .kit-visual--gold { background: radial-gradient(circle at 24% 28%, rgba(255,255,255,0.28), transparent 22rem), linear-gradient(135deg, #805725, #e5bd67); }

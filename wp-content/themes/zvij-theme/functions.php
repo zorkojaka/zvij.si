@@ -19,14 +19,14 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.8.4');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.8.5');
 
     if (is_front_page() || is_page('zvij-kit')) {
         wp_enqueue_script(
             'zvij-kits',
             get_template_directory_uri() . '/assets/kits.js',
             [],
-            '0.8.4',
+            '0.8.5',
             true
         );
     }
@@ -237,6 +237,13 @@ function zvij_render_kit_showcase(): void {
     if (! is_array($kits) || $kits === []) {
         return;
     }
+
+    $kit_images = [
+        'black' => 'black-kit-flatlay.png',
+        'silver' => 'silver-kit-flatlay.png',
+        'gold' => 'gold-kit-flatlay.png',
+        'throwie' => 'throwie-kit-flatlay.png',
+    ];
     ?>
     <section class="section-block kit-showcase" id="kiti" aria-labelledby="kit-showcase-title">
       <div class="section-heading">
@@ -256,13 +263,22 @@ function zvij_render_kit_showcase(): void {
           $headline = (string) ($kit['headline'] ?? $kit['tagline'] ?? '');
           $subline = (string) ($kit['subline'] ?? $kit['position'] ?? '');
           $default_count = count($core_items);
+          $image_file = $kit_images[$kit_key] ?? '';
+          $image_path = $image_file !== '' ? get_template_directory() . '/assets/images/kits/' . $image_file : '';
+          $image_url = ($image_path !== '' && file_exists($image_path))
+              ? get_template_directory_uri() . '/assets/images/kits/' . $image_file
+              : '';
       ?>
         <article class="kit-row kit-row--<?php echo esc_attr($kit_key); ?>" data-kit="<?php echo esc_attr($kit['slug'] ?? ''); ?>">
-          <div class="kit-visual kit-visual--<?php echo esc_attr($kit_key); ?>" role="img" aria-label="<?php echo esc_attr(sprintf(__('%s — sestavljena slika kita', 'zvij-theme'), (string) ($kit['name'] ?? ''))); ?>">
-            <span class="kit-visual__shape kit-visual__shape--one"></span>
-            <span class="kit-visual__shape kit-visual__shape--two"></span>
-            <span class="kit-visual__shape kit-visual__shape--three"></span>
-            <span class="kit-visual__note"><?php echo esc_html(sprintf(__('%s image coming soon', 'zvij-theme'), (string) ($kit['name'] ?? 'Kit'))); ?></span>
+          <div class="kit-visual kit-visual--<?php echo esc_attr($kit_key); ?><?php echo $image_url !== '' ? ' kit-visual--has-image' : ''; ?>" role="img" aria-label="<?php echo esc_attr(sprintf(__('%s — sestavljena slika kita', 'zvij-theme'), (string) ($kit['name'] ?? ''))); ?>">
+            <?php if ($image_url !== '') : ?>
+              <img src="<?php echo esc_url($image_url); ?>" alt="" loading="lazy" />
+            <?php else : ?>
+              <span class="kit-visual__shape kit-visual__shape--one"></span>
+              <span class="kit-visual__shape kit-visual__shape--two"></span>
+              <span class="kit-visual__shape kit-visual__shape--three"></span>
+              <span class="kit-visual__note"><?php echo esc_html(sprintf(__('%s image coming soon', 'zvij-theme'), (string) ($kit['name'] ?? 'Kit'))); ?></span>
+            <?php endif; ?>
           </div>
 
           <div class="kit-info">
