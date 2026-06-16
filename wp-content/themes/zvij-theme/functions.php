@@ -19,14 +19,14 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.8.5');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.8.6');
 
     if (is_front_page() || is_page('zvij-kit')) {
         wp_enqueue_script(
             'zvij-kits',
             get_template_directory_uri() . '/assets/kits.js',
             [],
-            '0.8.5',
+            '0.8.6',
             true
         );
     }
@@ -163,6 +163,9 @@ function zvij_kit_item_view(string $slug): array {
     $view = ['title' => $slug, 'url' => '', 'image' => '', 'available' => false, 'price' => 0.0, 'sku' => '', 'id' => 0];
 
     $page = get_page_by_path($slug, OBJECT, 'product');
+    if (! $page) {
+        $page = get_page_by_path($slug, OBJECT, 'product_variation');
+    }
     if (! $page) {
         return $view;
     }

@@ -52,6 +52,18 @@ function zvij_catalog_find_product(string $slug, array $legacy_slugs = [], array
     return 0;
 }
 
+function zvij_catalog_find_post_by_slug(string $slug, string $post_type): int {
+    $ids = get_posts([
+        'post_type' => $post_type,
+        'post_status' => ['publish', 'draft', 'private', 'pending'],
+        'name' => $slug,
+        'fields' => 'ids',
+        'posts_per_page' => 1,
+    ]);
+
+    return $ids ? (int) $ids[0] : 0;
+}
+
 function zvij_catalog_term_id(string $name, string $slug = ''): int {
     $term = $slug !== '' ? term_exists($slug, 'product_cat') : term_exists($name, 'product_cat');
     if (! $term) {
@@ -532,6 +544,139 @@ function zvij_catalog_product(array $data): int {
     return (int) $product_id;
 }
 
+/**
+ * @param array<string,mixed> $data
+ */
+function zvij_catalog_variable_product(array $data): int {
+    $product_id = zvij_catalog_find_product(
+        (string) $data['slug'],
+        $data['legacy_slugs'] ?? [],
+        $data['legacy_source_urls'] ?? []
+    );
+
+    $post_data = [
+        'post_type' => 'product',
+        'post_status' => $data['status'],
+        'post_title' => $data['title'],
+        'post_name' => $data['slug'],
+        'post_excerpt' => $data['excerpt'],
+        'post_content' => $data['content'],
+    ];
+
+    if ($product_id > 0) {
+        $post_data['ID'] = $product_id;
+        wp_update_post($post_data);
+    } else {
+        $product_id = wp_insert_post($post_data, true);
+        if (is_wp_error($product_id)) {
+            throw new RuntimeException($product_id->get_error_message());
+        }
+    }
+
+    $category_id = zvij_catalog_term_id($data['category'], $data['category_slug'] ?? '');
+    wp_set_object_terms($product_id, [$category_id], 'product_cat', false);
+
+    if (isset($data['tags'])) {
+        zvij_catalog_apply_tags($product_id, (array) $data['tags']);
+    }
+
+    wp_set_object_terms($product_id, 'variable', 'product_type', false);
+
+    $attribute = new WC_Product_Attribute();
+    $attribute->set_id(0);
+    $attribute->set_name('Pakiranje');
+    $attribute->set_options(array_map(static fn ($variation) => (string) $variation['option'], (array) $data['variations']));
+    $attribute->set_position(0);
+    $attribute->set_visible(true);
+    $attribute->set_variation(true);
+
+    $product = new WC_Product_Variable($product_id);
+    $product->set_name((string) $data['title']);
+    $product->set_status((string) $data['status']);
+    $product->set_catalog_visibility('visible');
+    $product->set_sku((string) ($data['sku'] ?? ''));
+    $product->set_attributes([$attribute]);
+    $product->set_manage_stock(false);
+    $product->save();
+
+    foreach (($data['meta'] ?? []) as $key => $value) {
+        update_post_meta($product_id, $key, $value);
+    }
+
+    if (! empty($data['image_source_url'])) {
+        $attachment_id = zvij_catalog_import_featured_image_by_source((string) $data['image_source_url'], $product_id);
+        if ($attachment_id > 0) {
+            set_post_thumbnail($product_id, $attachment_id);
+            update_post_meta($product_id, '_zvij_image_status', 'imported');
+        }
+    }
+
+    foreach ((array) ($data['retire_simple_slugs'] ?? []) as $simple_slug) {
+        $simple_id = zvij_catalog_find_product((string) $simple_slug);
+        if ($simple_id > 0 && $simple_id !== $product_id) {
+            $simple = wc_get_product($simple_id);
+            if ($simple instanceof WC_Product) {
+                $simple->set_sku('');
+                $simple->set_catalog_visibility('hidden');
+                $simple->save();
+            }
+            wp_update_post(['ID' => $simple_id, 'post_status' => 'draft']);
+            update_post_meta($simple_id, 'catalog_sync_status', 'retired_into_variable_' . gmdate('Y-m-d'));
+        }
+    }
+
+    foreach ((array) ($data['variations'] ?? []) as $variation_data) {
+        $variation_id = zvij_catalog_find_post_by_slug((string) $variation_data['slug'], 'product_variation');
+        if ($variation_id <= 0) {
+            $variation_id = wp_insert_post([
+                'post_type' => 'product_variation',
+                'post_status' => 'publish',
+                'post_parent' => $product_id,
+                'post_title' => $data['title'] . ' - ' . $variation_data['option'],
+                'post_name' => $variation_data['slug'],
+            ], true);
+            if (is_wp_error($variation_id)) {
+                throw new RuntimeException($variation_id->get_error_message());
+            }
+        } else {
+            wp_update_post([
+                'ID' => $variation_id,
+                'post_status' => 'publish',
+                'post_parent' => $product_id,
+                'post_title' => $data['title'] . ' - ' . $variation_data['option'],
+                'post_name' => $variation_data['slug'],
+            ]);
+        }
+
+        $variation = new WC_Product_Variation($variation_id);
+        $variation->set_parent_id($product_id);
+        $variation->set_attributes(['pakiranje' => (string) $variation_data['option']]);
+        $variation->set_regular_price((string) $variation_data['regular_price']);
+        $variation->set_sale_price((string) ($variation_data['sale_price'] ?? ''));
+        $variation->set_price((string) (($variation_data['sale_price'] ?? '') !== '' ? $variation_data['sale_price'] : $variation_data['regular_price']));
+        $variation->set_stock_status('instock');
+        $variation->set_manage_stock(false);
+        try {
+            $variation->set_sku((string) $variation_data['sku']);
+        } catch (WC_Data_Exception $e) {
+            update_post_meta($variation_id, '_zvij_sku_sync_error', $e->getMessage());
+        }
+        $variation->save();
+
+        foreach (($variation_data['meta'] ?? []) as $key => $value) {
+            update_post_meta($variation_id, $key, $value);
+        }
+        update_post_meta($variation_id, 'catalog_sync_status', 'synced_variation_' . gmdate('Y-m-d'));
+    }
+
+    WC_Product_Variable::sync($product_id);
+    wc_delete_product_transients($product_id);
+    update_post_meta($product_id, 'catalog_sync_status', 'synced_variable_' . gmdate('Y-m-d'));
+    update_post_meta($product_id, 'legal_copy_review_needed', $data['legal_review'] ?? 'false');
+
+    return (int) $product_id;
+}
+
 function zvij_catalog_page(array $data): int {
     $page = null;
     foreach (array_merge([$data['slug']], $data['legacy_slugs'] ?? []) as $slug) {
@@ -923,12 +1068,168 @@ $catalog = [
     ],
 ];
 
+$variable_vrsicki_slugs = [
+    'smokey-cbd-vrsicki-1-g',
+    'smokey-cbd-vrsicki-5-g',
+    'chilly-cbg-vrsicki-1-g',
+    'chilly-cbg-vrsicki-5-g',
+    'frutty-cbd-vrsicki-1-g',
+    'frutty-cbd-vrsicki-5-g',
+];
+$catalog = array_values(array_filter(
+    $catalog,
+    static fn (array $product_data): bool => ! in_array((string) ($product_data['slug'] ?? ''), $variable_vrsicki_slugs, true)
+));
+
 $catalog = array_merge($catalog, zvij_kit_components());
+
+$variable_catalog = [
+    [
+        'title' => 'SMOKEY CBD vršički',
+        'slug' => 'smokey-cbd-vrsicki',
+        'sku' => 'SMOKEY-CBD',
+        'legacy_slugs' => ['smokey-cbd-vrsicki-1-g', 'smokey-premium-cbd', 'smokey-cbd-caj-1-g'],
+        'legacy_source_urls' => ['https://zvij.si/izdelek/smokey-premium-cbd/'],
+        'category' => 'CBD/CBG vršički',
+        'category_slug' => 'cbd-cbg-vrsicki',
+        'status' => 'publish',
+        'tags' => ['vrsicki', 'reload', 'kit-addon', 'black-kit', 'silver-kit', 'gold-kit'],
+        'image_source_url' => 'https://zvij.si/wp-content/uploads/2023/06/smokey-frontside.png',
+        'excerpt' => '<p>SMOKEY CBD vršički v izbiri 1 g ali 5 g. ' . $vrsicki_intro . '</p>',
+        'content' => '<p>SMOKEY je linija CBD vršičkov za jasen ritual in urejeno mero.</p><p>Izberi 1 g ali 5 g. 5 g paket vsebuje 5 posameznih 1 g pakiranj. Primerno za čajno uporabo.</p>',
+        'retire_simple_slugs' => ['smokey-cbd-vrsicki-5-g'],
+        'meta' => [
+            '_zvij_former_name' => 'SMOKEY Premium CBD',
+            '_zvij_public_mapping' => 'CBD NM = SMOKEY',
+            '_zvij_variable_packaging' => '1 g / 5 g',
+        ],
+        'variations' => [
+            [
+                'option' => '1 g',
+                'slug' => 'smokey-cbd-vrsicki-1-g',
+                'sku' => 'SMOKEY-CBD-1G',
+                'regular_price' => '8.00',
+                'meta' => [
+                    '_zvij_packaging_logic' => '1 x 1 g package',
+                    '_zvij_kit_addon_default' => 'true',
+                    '_zvij_dobroimetje_note' => 'Član prejme 0,80 € za naslednji reload.',
+                ],
+            ],
+            [
+                'option' => '5 g',
+                'slug' => 'smokey-cbd-vrsicki-5-g',
+                'sku' => 'SMOKEY-CBD-5X1G',
+                'regular_price' => '39.90',
+                'meta' => [
+                    '_zvij_packaging_logic' => '5 x 1 g packages',
+                    '_zvij_packaging_note' => $five_gram_note,
+                    '_zvij_dobroimetje_note' => 'Član prejme 4,00 € za naslednji reload.',
+                ],
+            ],
+        ],
+    ],
+    [
+        'title' => 'CHILLY CBG vršički',
+        'slug' => 'chilly-cbg-vrsicki',
+        'sku' => 'CHILLY-CBG',
+        'legacy_slugs' => ['chilly-cbg-vrsicki-1-g', 'chilly-premium-cbg', 'chilly-cbg-caj-1-g'],
+        'legacy_source_urls' => ['https://zvij.si/izdelek/chilly-premium-cbg/'],
+        'category' => 'CBD/CBG vršički',
+        'category_slug' => 'cbd-cbg-vrsicki',
+        'status' => 'publish',
+        'tags' => ['vrsicki', 'reload', 'kit-addon', 'black-kit', 'silver-kit', 'gold-kit'],
+        'image_source_url' => 'https://zvij.si/wp-content/uploads/2023/06/chilly-frontside.png',
+        'excerpt' => '<p>CHILLY CBG vršički v izbiri 1 g ali 5 g. ' . $vrsicki_intro . '</p>',
+        'content' => '<p>CHILLY je linija CBG vršičkov za jasen ritual in urejeno mero.</p><p>Izberi 1 g ali 5 g. 5 g paket vsebuje 5 posameznih 1 g pakiranj. Primerno za čajno uporabo.</p>',
+        'retire_simple_slugs' => ['chilly-cbg-vrsicki-5-g'],
+        'meta' => [
+            '_zvij_former_name' => 'CHILLY Premium CBG',
+            '_zvij_public_mapping' => 'CBG NM = CHILLY',
+            '_zvij_variable_packaging' => '1 g / 5 g',
+        ],
+        'variations' => [
+            [
+                'option' => '1 g',
+                'slug' => 'chilly-cbg-vrsicki-1-g',
+                'sku' => 'CHILLY-CBG-1G',
+                'regular_price' => '7.50',
+                'meta' => [
+                    '_zvij_packaging_logic' => '1 x 1 g package',
+                    '_zvij_kit_addon_default' => 'true',
+                    '_zvij_dobroimetje_note' => 'Član prejme 1,00 € za naslednji reload.',
+                ],
+            ],
+            [
+                'option' => '5 g',
+                'slug' => 'chilly-cbg-vrsicki-5-g',
+                'sku' => 'CHILLY-CBG-5X1G',
+                'regular_price' => '36.90',
+                'meta' => [
+                    '_zvij_packaging_logic' => '5 x 1 g packages',
+                    '_zvij_packaging_note' => $five_gram_note,
+                    '_zvij_dobroimetje_note' => 'Član prejme 4,50 € za naslednji reload.',
+                ],
+            ],
+        ],
+    ],
+    [
+        'title' => 'FRUTTY CBD vršički',
+        'slug' => 'frutty-cbd-vrsicki',
+        'sku' => 'FRUTTY-CBD',
+        'legacy_slugs' => ['frutty-cbd-vrsicki-1-g', 'frutty-cbd', 'frutty-cbd-caj-1-g'],
+        'legacy_source_urls' => ['https://zvij.si/izdelek/frutty-cbd/'],
+        'category' => 'CBD/CBG vršički',
+        'category_slug' => 'cbd-cbg-vrsicki',
+        'status' => 'publish',
+        'tags' => ['vrsicki', 'reload', 'kit-addon', 'throwie'],
+        'image_source_url' => 'https://zvij.si/wp-content/uploads/2023/06/frutty-frontside.png',
+        'excerpt' => '<p>FRUTTY CBD vršički v izbiri 1 g ali 5 g. Prvi preizkus: 4,20 €.</p>',
+        'content' => '<p>FRUTTY je linija CBD vršičkov, prej vezana na ime Bubble Gum.</p><p>Izberi 1 g ali 5 g. 5 g paket vsebuje 5 posameznih 1 g pakiranj. Primerno za čajno uporabo.</p>',
+        'retire_simple_slugs' => ['frutty-cbd-vrsicki-5-g'],
+        'meta' => [
+            '_zvij_former_name' => 'FRUTTY CBD / Bubble Gum',
+            '_zvij_public_mapping' => 'Bubble Gum = FRUTTY',
+            '_zvij_variable_packaging' => '1 g / 5 g',
+            '_zvij_first_purchase_badge' => 'Prvič 4,20 €',
+        ],
+        'variations' => [
+            [
+                'option' => '1 g',
+                'slug' => 'frutty-cbd-vrsicki-1-g',
+                'sku' => 'FRUTTY-CBD-1G',
+                'regular_price' => '5.00',
+                'sale_price' => '4.20',
+                'meta' => [
+                    '_zvij_packaging_logic' => '1 x 1 g package',
+                    '_zvij_kit_addon_default' => 'true',
+                    '_zvij_first_purchase_badge' => 'Prvič 4,20 €',
+                    '_zvij_dobroimetje_note' => 'Član prejme 0,80 € za naslednji reload.',
+                ],
+            ],
+            [
+                'option' => '5 g',
+                'slug' => 'frutty-cbd-vrsicki-5-g',
+                'sku' => 'FRUTTY-CBD-5X1G',
+                'regular_price' => '24.90',
+                'meta' => [
+                    '_zvij_packaging_logic' => '5 x 1 g packages',
+                    '_zvij_packaging_note' => $five_gram_note,
+                    '_zvij_dobroimetje_note' => 'Član prejme 3,50 € za naslednji reload.',
+                ],
+            ],
+        ],
+    ],
+];
 
 $synced = [];
 foreach ($catalog as $product_data) {
     $product_id = zvij_catalog_product($product_data);
     $synced[] = $product_data['title'] . ' #' . $product_id . ' ' . $product_data['price'] . ' EUR';
+}
+
+foreach ($variable_catalog as $product_data) {
+    $product_id = zvij_catalog_variable_product($product_data);
+    $synced[] = $product_data['title'] . ' #' . $product_id . ' variable';
 }
 
 // Kit / reload tags for existing published products (components are tagged inline above).

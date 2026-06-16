@@ -22,7 +22,7 @@ Text Domain: zvij-theme
   --zvij-line: #d8c9b5;
   --zvij-shadow: 0 24px 80px rgba(39, 30, 20, 0.12);
   --zvij-radius: 6px;
-  --zvij-max: 1180px;
+  --zvij-max: 1280px;
 }
 
 * {
@@ -116,14 +116,14 @@ a {
 
 .hero {
   display: grid;
-  gap: clamp(1.5rem, 5vw, 4rem);
-  grid-template-columns: minmax(0, 1.45fr) minmax(240px, 0.55fr);
-  min-height: min(78vh, 760px);
+  gap: clamp(2rem, 6vw, 5.5rem);
+  grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.62fr);
+  min-height: min(84vh, 860px);
   align-items: center;
 }
 
 .hero__body {
-  max-width: 820px;
+  max-width: 920px;
 }
 
 .eyebrow,
@@ -142,16 +142,16 @@ a {
 .shop-hero h1,
 .footer-cta h2 {
   margin: 0;
-  font-size: clamp(3rem, 11vw, 7.6rem);
+  font-size: clamp(3.4rem, 10vw, 8.8rem);
   letter-spacing: 0;
   line-height: 0.9;
 }
 
 .hero-copy {
   color: var(--zvij-muted);
-  font-size: clamp(1.1rem, 2vw, 1.45rem);
-  max-width: 680px;
-  margin: 1.4rem 0 0;
+  font-size: clamp(1.18rem, 2vw, 1.6rem);
+  max-width: 760px;
+  margin: 1.6rem 0 0;
 }
 
 .button-row {
@@ -203,7 +203,7 @@ a {
   box-shadow: var(--zvij-shadow);
   color: var(--zvij-bg);
   padding: 1.25rem;
-  min-height: 260px;
+  min-height: 320px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -588,6 +588,79 @@ a {
 
 .single-product .summary .price ins {
   text-decoration: none;
+}
+
+.single-product form.cart {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 1.4rem;
+}
+
+.single-product form.variations_form {
+  display: block;
+}
+
+.single-product table.variations {
+  border: 0;
+  margin: 1.2rem 0 1rem;
+  width: 100%;
+}
+
+.single-product table.variations th,
+.single-product table.variations td {
+  background: transparent;
+  border: 0;
+  display: block;
+  padding: 0;
+  text-align: left;
+}
+
+.single-product table.variations label {
+  display: block;
+  font-weight: 900;
+  margin-bottom: 0.35rem;
+}
+
+.single-product table.variations select,
+.single-product form.cart .qty {
+  background: var(--zvij-panel);
+  border: 1px solid var(--zvij-line);
+  border-radius: var(--zvij-radius);
+  color: var(--zvij-text);
+  font: inherit;
+  min-height: 46px;
+  padding: 0.7rem 0.8rem;
+}
+
+.single-product table.variations select {
+  min-width: min(100%, 260px);
+}
+
+.single-product .single_variation_wrap {
+  margin-top: 1rem;
+}
+
+.single-product .woocommerce-variation-price {
+  margin-bottom: 0.9rem;
+}
+
+.single-product form.cart .quantity {
+  margin: 0;
+}
+
+.single-product form.cart .single_add_to_cart_button {
+  background: var(--zvij-text);
+  border-color: var(--zvij-text);
+  color: var(--zvij-bg);
+}
+
+.single-product form.cart .single_add_to_cart_button.disabled,
+.single-product form.cart .single_add_to_cart_button:disabled {
+  background: var(--zvij-muted);
+  border-color: var(--zvij-muted);
+  color: var(--zvij-bg);
+  opacity: 0.55;
 }
 
 .single-product__chips {
