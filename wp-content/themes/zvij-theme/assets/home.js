@@ -60,8 +60,20 @@
         return;
       }
       var entry = map[s.getAttribute('data-sorta') + '|' + k.getAttribute('data-kol')];
-      if (entry) {
-        setBuy(card, entry.id, entry.price);
+      if (!entry) {
+        return;
+      }
+      var out = card.querySelector('[data-price-out]');
+      if (out && entry.price) {
+        out.textContent = entry.price;
+      }
+      var link = card.querySelector('[data-vrs-link]');
+      if (link && entry.url) {
+        link.setAttribute('href', entry.url);
+      }
+      var img = card.querySelector('[data-vrs-img]');
+      if (img && entry.img) {
+        img.setAttribute('src', entry.img);
       }
     }
 

@@ -15,21 +15,47 @@ get_header();
 $d42  = zvij_home_product('dubi-42-aktivnih-ogljikovih-filtrov');
 $d420 = zvij_home_product('dubi-420-aktivnih-ogljikovih-filtrov');
 
-$vrs_slugs = [
-    'SMOKEY' => ['1g' => 'smokey-cbd-vrsicki-1-g', '5g' => 'smokey-cbd-vrsicki-5-g'],
-    'CHILLY' => ['1g' => 'chilly-cbg-vrsicki-1-g', '5g' => 'chilly-cbg-vrsicki-5-g'],
-    'FRUTTY' => ['1g' => 'frutty-cbd-vrsicki-1-g', '5g' => 'frutty-cbd-vrsicki-5-g'],
+// CBD/CBG vršički are variable products (sorta = product, pakiranje 1 g / 5 g = variation).
+// Variable products can't use simple AJAX add-to-cart, so the homepage selector resolves the
+// variation and links to the product page with the size preselected.
+$vrs_parents = [
+    'SMOKEY' => 'smokey-cbd-vrsicki',
+    'CHILLY' => 'chilly-cbg-vrsicki',
+    'FRUTTY' => 'frutty-cbd-vrsicki',
 ];
 $vrs_map = [];
-foreach ($vrs_slugs as $sorta => $kols) {
-    foreach ($kols as $kol => $slug) {
-        $p = zvij_home_product($slug);
-        if ($p) {
-            $vrs_map[$sorta . '|' . $kol] = ['id' => $p->get_id(), 'price' => zvij_home_money($p->get_price())];
+$vrs_default_img = '';
+$vrs_default_price = '—';
+foreach ($vrs_parents as $sorta => $slug) {
+    $parent = zvij_home_product($slug);
+    if (! $parent) {
+        continue;
+    }
+    $permalink = (string) get_permalink($parent->get_id());
+    foreach ($parent->get_children() as $vid) {
+        $v = wc_get_product($vid);
+        if (! $v) {
+            continue;
+        }
+        $attrs = $v->get_variation_attributes();
+        $pak = trim((string) ($attrs['attribute_pakiranje'] ?? ''));
+        $kol = (strpos($pak, '5') !== false) ? '5g' : '1g';
+        $img = zvij_home_product_img_url($v);
+        if ($img === '') {
+            $img = zvij_home_product_img_url($parent);
+        }
+        $vrs_map[$sorta . '|' . $kol] = [
+            'url'   => esc_url_raw(add_query_arg('attribute_pakiranje', $pak, $permalink)),
+            'price' => zvij_home_money($v->get_price()),
+            'img'   => $img,
+        ];
+        if ($sorta === 'FRUTTY' && $kol === '1g') {
+            $vrs_default_img = $img;
+            $vrs_default_price = zvij_home_money($v->get_price());
         }
     }
 }
-$vrs_default = zvij_home_product('frutty-cbd-vrsicki-1-g');
+$vrs_default_url = $vrs_map['FRUTTY|1g']['url'] ?? home_url('/product/frutty-cbd-vrsicki/');
 
 $kits = (array) get_option('zvij_kits', []);
 $kit_by_key = [];
@@ -112,8 +138,7 @@ $buy_btn = static function (?WC_Product $product): string {
 
     <div class="zh-card" data-zh-vrs>
       <div class="zh-shot">
-        <?php $vimg = zvij_home_product_img_url($vrs_default); ?>
-        <?php if ($vimg !== '') : ?><img src="<?php echo esc_url($vimg); ?>" alt="CBD/CBG vršički" loading="lazy" /><?php else : ?><i class="ti ti-leaf" aria-hidden="true"></i><?php endif; ?>
+        <?php if ($vrs_default_img !== '') : ?><img data-vrs-img src="<?php echo esc_url($vrs_default_img); ?>" alt="CBD/CBG vršički" loading="lazy" /><?php else : ?><i class="ti ti-leaf" aria-hidden="true"></i><?php endif; ?>
       </div>
       <div class="zh-cardbody">
         <h3><?php esc_html_e('CBD/CBG vršički', 'zvij-theme'); ?></h3>
@@ -130,8 +155,8 @@ $buy_btn = static function (?WC_Product $product): string {
           <button type="button" class="zh-opt" data-kol="5g">5 g</button>
         </div>
         <div class="zh-buy">
-          <span class="zh-price" data-price-out><?php echo esc_html($vrs_default ? zvij_home_money($vrs_default->get_price()) : '—'); ?></span>
-          <a href="#" data-product_id="<?php echo esc_attr($vrs_default ? $vrs_default->get_id() : ''); ?>" data-quantity="1" rel="nofollow" class="zh-add ajax_add_to_cart add_to_cart_button"><i class="ti ti-shopping-bag-plus" aria-hidden="true"></i> <?php esc_html_e('Dodaj', 'zvij-theme'); ?></a>
+          <span class="zh-price" data-price-out><?php echo esc_html($vrs_default_price); ?></span>
+          <a class="zh-add" data-vrs-link href="<?php echo esc_url($vrs_default_url); ?>"><i class="ti ti-shopping-bag-plus" aria-hidden="true"></i> <?php esc_html_e('Izberi', 'zvij-theme'); ?></a>
         </div>
         <script type="application/json" id="zh-vrs-map"><?php echo wp_json_encode($vrs_map); ?></script>
       </div>
