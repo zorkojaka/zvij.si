@@ -19,16 +19,17 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.8.6');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.0');
 
-    if (is_front_page() || is_page('zvij-kit')) {
-        wp_enqueue_script(
-            'zvij-kits',
-            get_template_directory_uri() . '/assets/kits.js',
-            [],
-            '0.8.6',
-            true
-        );
+    if (is_page('zvij-kit')) {
+        wp_enqueue_script('zvij-kits', get_template_directory_uri() . '/assets/kits.js', [], '0.9.0', true);
+    }
+
+    if (is_front_page()) {
+        if (function_exists('WC')) {
+            wp_enqueue_script('wc-add-to-cart');
+        }
+        wp_enqueue_script('zvij-home', get_template_directory_uri() . '/assets/home.js', [], '0.9.0', true);
     }
 });
 
@@ -332,4 +333,42 @@ function zvij_render_kit_showcase(): void {
       <p class="kit-showcase__note"><?php esc_html_e('Komponente kitov so v dev fazi označene kot »kmalu«, dokler niso potrjeni dobavitelj, cene in fotografije. Naročanje kita je placeholder, dokler checkout ni pripravljen.', 'zvij-theme'); ?></p>
     </section>
     <?php
+}
+
+/* ---------------------------------------------------------------------------
+   Homepage (front page) helpers — variant A, izdelek-first
+--------------------------------------------------------------------------- */
+
+function zvij_home_product(string $slug): ?WC_Product {
+    $page = get_page_by_path($slug, OBJECT, 'product');
+    if (! $page) {
+        return null;
+    }
+    $product = function_exists('wc_get_product') ? wc_get_product($page->ID) : null;
+    return $product instanceof WC_Product ? $product : null;
+}
+
+function zvij_home_money($amount): string {
+    if (! function_exists('wc_price')) {
+        return number_format((float) $amount, 2, ',', '.') . ' €';
+    }
+    return trim(html_entity_decode(wp_strip_all_tags(wc_price((float) $amount))));
+}
+
+function zvij_home_product_img_url(?WC_Product $product): string {
+    if (! $product instanceof WC_Product) {
+        return '';
+    }
+    $image_id = $product->get_image_id();
+    return $image_id ? (string) wp_get_attachment_image_url($image_id, 'woocommerce_thumbnail') : '';
+}
+
+/**
+ * URL of a temporary kit flat-lay image, only if the file actually exists.
+ * key: black|silver|gold|throwie
+ */
+function zvij_kit_flatlay_url(string $key): string {
+    $file = $key . '-kit-flatlay.png';
+    $path = get_template_directory() . '/assets/images/kits/' . $file;
+    return file_exists($path) ? get_template_directory_uri() . '/assets/images/kits/' . $file : '';
 }

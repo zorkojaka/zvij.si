@@ -1,5 +1,21 @@
 # Zvij.si Blueprint
 
+## Locked decisions — homepage v1 (2026-06-18)
+
+These supersede any conflicting older notes below.
+
+- Site spine is **izdelek-first**: the two hero products are **DUBI filtri** and
+  **CBD/CBG vršički**. Kits are bundled convenience; membership drives repeat purchase.
+- Single primary line: **`Tvoj ritual. Tvoja mera. Tvoj setup.`** The kit slogan
+  `Vse, kar rabiš, da si zviješ.` is used only inside the Kit visual/section.
+- Naming: use **`CBD/CBG vršički`** everywhere. Do not use `CBD čaj` as a product name.
+- **Zvij.si Kit = one setup in three colours** (Black / Silver / Gold) — colour/style only,
+  not different meanings. **Throwie** is a separate, simpler utility kit.
+- Homepage section order: hero → DUBI + CBD/CBG → Zvij.si Kit (colour selector) →
+  Throwie → Reload → Član Zvij.si teaser → FRUTTY 4,20 € → zaključni CTA.
+- Member mechanics (QR, Zvij koda, dobroimetje) are shown only once implemented; until
+  then the homepage member block is a `v pripravi` teaser linking to the info page.
+
 ## Purpose
 
 Zvij.si is not just a webshop. It is a membership system for people with their own ritual, setup, rhythm, and culture.

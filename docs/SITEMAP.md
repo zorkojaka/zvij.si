@@ -1,5 +1,13 @@
 # Zvij.si Sitemap
 
+## Locked — homepage v1 (2026-06-18)
+
+Supersedes conflicting notes below. Homepage is izdelek-first; section order:
+hero → DUBI + CBD/CBG vršički → Zvij.si Kit (Black/Silver/Gold colour selector) →
+Throwie → Reload → Član Zvij.si teaser → FRUTTY 4,20 € → zaključni CTA.
+Use `CBD/CBG vršički` (never `CBD čaj`). Primary nav working set:
+`Domov · DUBI filtri · CBD vršički · Kiti · Reload · Član Zvij.si · Vodiči`.
+
 ## Primary Navigation
 
 ```text

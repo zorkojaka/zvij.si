@@ -9,6 +9,8 @@ update_option('woocommerce_currency_pos', 'right_space');
 update_option('woocommerce_price_thousand_sep', '.');
 update_option('woocommerce_price_decimal_sep', ',');
 update_option('woocommerce_price_num_decimals', '2');
+update_option('woocommerce_enable_ajax_add_to_cart', 'yes');
+update_option('woocommerce_cart_redirect_after_add', 'no');
 
 function zvij_catalog_find_product(string $slug, array $legacy_slugs = [], array $legacy_source_urls = []): int {
     $ids = get_posts([

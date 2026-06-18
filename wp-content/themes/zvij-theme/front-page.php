@@ -1,6 +1,9 @@
 <?php
 /**
- * Front page.
+ * Front page — Zvij.si homepage, variant A (izdelek-first).
+ *
+ * Order: hero, DUBI + CBD/CBG vršički, Zvij.si Kit (en setup, tri barve),
+ * Throwie, Reload, Član teaser, FRUTTY, zaključni CTA.
  */
 
 if (! defined('ABSPATH')) {
@@ -9,104 +12,216 @@ if (! defined('ABSPATH')) {
 
 get_header();
 
-$pillars = [
-    ['DUBI filtri', 'dubi-filtri', '42 ali 420 filtrov za urejen setup in jasen reload ritem.'],
-    ['CBD/CBG vršički', 'cbd-vrsicki', 'SMOKEY, CHILLY in FRUTTY kot 1 g izbira ali 5 g paket.'],
-    ['Zvij setup', 'zvij-setup', 'DUBI 42, rolca in sample za prvi dev nakup.'],
-    ['Reload', 'trgovina', '5 g paket vršičkov vsebuje 5 posameznih 1 g pakiranj.'],
+$d42  = zvij_home_product('dubi-42-aktivnih-ogljikovih-filtrov');
+$d420 = zvij_home_product('dubi-420-aktivnih-ogljikovih-filtrov');
+
+$vrs_slugs = [
+    'SMOKEY' => ['1g' => 'smokey-cbd-vrsicki-1-g', '5g' => 'smokey-cbd-vrsicki-5-g'],
+    'CHILLY' => ['1g' => 'chilly-cbg-vrsicki-1-g', '5g' => 'chilly-cbg-vrsicki-5-g'],
+    'FRUTTY' => ['1g' => 'frutty-cbd-vrsicki-1-g', '5g' => 'frutty-cbd-vrsicki-5-g'],
 ];
+$vrs_map = [];
+foreach ($vrs_slugs as $sorta => $kols) {
+    foreach ($kols as $kol => $slug) {
+        $p = zvij_home_product($slug);
+        if ($p) {
+            $vrs_map[$sorta . '|' . $kol] = ['id' => $p->get_id(), 'price' => zvij_home_money($p->get_price())];
+        }
+    }
+}
+$vrs_default = zvij_home_product('frutty-cbd-vrsicki-1-g');
+
+$kits = (array) get_option('zvij_kits', []);
+$kit_by_key = [];
+foreach ($kits as $k) {
+    if (! empty($k['key'])) {
+        $kit_by_key[$k['key']] = $k;
+    }
+}
+$colors = [];
+foreach (['black' => '#1f1b17', 'silver' => '#c9ccd0', 'gold' => '#d2a24f'] as $key => $swatch) {
+    $kit = $kit_by_key[$key] ?? null;
+    $term = function_exists('get_term_by') ? get_term_by('slug', ($kit['tag'] ?? $key . '-kit'), 'product_tag') : null;
+    $colors[] = [
+        'key'   => $key,
+        'name'  => $kit['name'] ?? ucfirst($key) . ' Kit',
+        'swatch' => $swatch,
+        'img'   => zvij_kit_flatlay_url($key),
+        'href'  => ($term && ! is_wp_error($term)) ? get_term_link($term) : home_url('/trgovina/'),
+    ];
+}
+$throwie_term = function_exists('get_term_by') ? get_term_by('slug', 'throwie', 'product_tag') : null;
+$throwie_href = ($throwie_term && ! is_wp_error($throwie_term)) ? get_term_link($throwie_term) : home_url('/trgovina/');
+$hero_img = zvij_kit_flatlay_url('black');
+
+/**
+ * Render a buy button wired for WooCommerce AJAX add-to-cart.
+ */
+$buy_btn = static function (?WC_Product $product): string {
+    if (! $product instanceof WC_Product) {
+        return '<span class="zh-add zh-add--off">Kmalu</span>';
+    }
+    $id = $product->get_id();
+    return '<a href="?add-to-cart=' . esc_attr($id) . '" data-product_id="' . esc_attr($id) . '" data-quantity="1" rel="nofollow" class="zh-add ajax_add_to_cart add_to_cart_button"><i class="ti ti-shopping-bag-plus" aria-hidden="true"></i> ' . esc_html__('Dodaj', 'zvij-theme') . '</a>';
+};
 ?>
-<section class="hero hero--home">
-  <div class="hero__body">
-    <p class="eyebrow"><?php esc_html_e('Zvij.si Kit', 'zvij-theme'); ?></p>
-    <h1><?php esc_html_e('Vse, kar rabiš, da si zviješ.', 'zvij-theme'); ?></h1>
-    <p class="hero-copy"><?php esc_html_e('Black, Silver, Gold ali Throwie — sestavljen setup z DUBI filtri. Vršički po želji.', 'zvij-theme'); ?></p>
+
+<section class="zh-hero">
+  <div class="zh-hero-text">
+    <p class="eyebrow"><?php esc_html_e('Zvij.si', 'zvij-theme'); ?></p>
+    <h1><?php esc_html_e('Tvoj ritual.', 'zvij-theme'); ?><br><?php esc_html_e('Tvoja mera.', 'zvij-theme'); ?><br><?php esc_html_e('Tvoj setup.', 'zvij-theme'); ?></h1>
+    <p class="hero-copy"><?php esc_html_e('Urejen setup za tvoj ritual — DUBI filtri, CBD/CBG vršički in vse okrog, z lažjim reloadom.', 'zvij-theme'); ?></p>
     <div class="button-row">
-      <a class="button" href="#kiti"><?php esc_html_e('Poglej kite', 'zvij-theme'); ?></a>
-      <a class="button button--ghost" href="<?php echo esc_url(home_url('/trgovina/')); ?>"><?php esc_html_e('Poglej trgovino', 'zvij-theme'); ?></a>
+      <a class="button" href="#ponudba"><?php esc_html_e('Poglej ponudbo', 'zvij-theme'); ?></a>
+      <a class="button button--member" href="<?php echo esc_url(home_url('/clan-zvij-si/')); ?>"><?php esc_html_e('Postani član', 'zvij-theme'); ?></a>
     </div>
   </div>
-  <div class="ritual-note" aria-label="<?php esc_attr_e('Prototype note', 'zvij-theme'); ?>">
-    <span><?php esc_html_e('Zvij.si Kit', 'zvij-theme'); ?></span>
-    <strong><?php esc_html_e('stil, ne cenovni razred', 'zvij-theme'); ?></strong>
-    <p><?php esc_html_e('Black, Silver in Gold so stil. Throwie je utility setup za s sabo. DUBI filtri so v vsakem kitu.', 'zvij-theme'); ?></p>
+  <figure class="zh-hero-art">
+    <?php if ($hero_img !== '') : ?>
+      <img src="<?php echo esc_url($hero_img); ?>" alt="<?php esc_attr_e('Zvij.si setup', 'zvij-theme'); ?>" loading="eager" />
+    <?php else : ?>
+      <div class="zh-hero-fallback"><i class="ti ti-package" aria-hidden="true"></i></div>
+    <?php endif; ?>
+    <figcaption><?php esc_html_e('Vse, kar rabiš, da si zviješ.', 'zvij-theme'); ?></figcaption>
+  </figure>
+</section>
+
+<section class="section-block" id="ponudba">
+  <p class="eyebrow"><?php esc_html_e('Nosilna izdelka', 'zvij-theme'); ?></p>
+  <div class="zh-offer">
+
+    <div class="zh-card" data-zh-simple>
+      <div class="zh-shot">
+        <?php $d42_img = zvij_home_product_img_url($d42); ?>
+        <?php if ($d42_img !== '') : ?><img src="<?php echo esc_url($d42_img); ?>" alt="DUBI filtri" loading="lazy" /><?php else : ?><i class="ti ti-asterisk" aria-hidden="true"></i><?php endif; ?>
+      </div>
+      <div class="zh-cardbody">
+        <h3><?php esc_html_e('DUBI filtri', 'zvij-theme'); ?></h3>
+        <p class="zh-ben"><?php esc_html_e('Boljši občutek. Urejen reload.', 'zvij-theme'); ?></p>
+        <p class="zh-lab"><?php esc_html_e('Različica', 'zvij-theme'); ?></p>
+        <div class="zh-opts">
+          <button type="button" class="zh-opt on" data-opt data-pid="<?php echo esc_attr($d42 ? $d42->get_id() : ''); ?>" data-price="<?php echo esc_attr($d42 ? zvij_home_money($d42->get_price()) : ''); ?>" aria-pressed="true">DUBI 42</button>
+          <button type="button" class="zh-opt" data-opt data-pid="<?php echo esc_attr($d420 ? $d420->get_id() : ''); ?>" data-price="<?php echo esc_attr($d420 ? zvij_home_money($d420->get_price()) : ''); ?>" aria-pressed="false">DUBI 420</button>
+        </div>
+        <div class="zh-buy">
+          <span class="zh-price" data-price-out><?php echo esc_html($d42 ? zvij_home_money($d42->get_price()) : '—'); ?></span>
+          <?php echo $buy_btn($d42); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+        </div>
+      </div>
+    </div>
+
+    <div class="zh-card" data-zh-vrs>
+      <div class="zh-shot">
+        <?php $vimg = zvij_home_product_img_url($vrs_default); ?>
+        <?php if ($vimg !== '') : ?><img src="<?php echo esc_url($vimg); ?>" alt="CBD/CBG vršički" loading="lazy" /><?php else : ?><i class="ti ti-leaf" aria-hidden="true"></i><?php endif; ?>
+      </div>
+      <div class="zh-cardbody">
+        <h3><?php esc_html_e('CBD/CBG vršički', 'zvij-theme'); ?></h3>
+        <p class="zh-ben"><?php esc_html_e('Jasna izbira. 1 g ali 5 g.', 'zvij-theme'); ?></p>
+        <p class="zh-lab"><?php esc_html_e('Sorta', 'zvij-theme'); ?></p>
+        <div class="zh-opts">
+          <button type="button" class="zh-opt" data-sorta="SMOKEY">SMOKEY</button>
+          <button type="button" class="zh-opt" data-sorta="CHILLY">CHILLY</button>
+          <button type="button" class="zh-opt on" data-sorta="FRUTTY" aria-pressed="true">FRUTTY</button>
+        </div>
+        <p class="zh-lab"><?php esc_html_e('Količina', 'zvij-theme'); ?></p>
+        <div class="zh-opts">
+          <button type="button" class="zh-opt on" data-kol="1g" aria-pressed="true">1 g</button>
+          <button type="button" class="zh-opt" data-kol="5g">5 g</button>
+        </div>
+        <div class="zh-buy">
+          <span class="zh-price" data-price-out><?php echo esc_html($vrs_default ? zvij_home_money($vrs_default->get_price()) : '—'); ?></span>
+          <a href="#" data-product_id="<?php echo esc_attr($vrs_default ? $vrs_default->get_id() : ''); ?>" data-quantity="1" rel="nofollow" class="zh-add ajax_add_to_cart add_to_cart_button"><i class="ti ti-shopping-bag-plus" aria-hidden="true"></i> <?php esc_html_e('Dodaj', 'zvij-theme'); ?></a>
+        </div>
+        <script type="application/json" id="zh-vrs-map"><?php echo wp_json_encode($vrs_map); ?></script>
+      </div>
+    </div>
+
   </div>
 </section>
 
-<?php zvij_render_kit_showcase(); ?>
+<section class="section-block" data-kitsel>
+  <p class="eyebrow"><?php esc_html_e('Zvij.si Kit', 'zvij-theme'); ?></p>
+  <h2 class="zh-h2"><?php esc_html_e('En setup. Izberi barvo.', 'zvij-theme'); ?></h2>
+  <p class="zh-sub"><?php esc_html_e('Isti premišljen komplet v Black, Silver ali Gold.', 'zvij-theme'); ?></p>
+  <div class="zh-kit">
+    <figure class="zh-kit-art">
+      <?php $first = $colors[0]; ?>
+      <?php if ($first['img'] !== '') : ?>
+        <img data-kit-visual src="<?php echo esc_url($first['img']); ?>" alt="<?php echo esc_attr($first['name']); ?>" loading="lazy" />
+      <?php else : ?>
+        <div data-kit-visual class="zh-kit-fallback" style="background:<?php echo esc_attr($first['swatch']); ?>"></div>
+      <?php endif; ?>
+      <figcaption data-kit-cap><?php echo esc_html($first['name']); ?></figcaption>
+    </figure>
+    <div class="zh-kit-side">
+      <p class="zh-lab"><?php esc_html_e('Izberi barvo', 'zvij-theme'); ?></p>
+      <div class="zh-colors">
+        <?php foreach ($colors as $i => $c) : ?>
+          <button type="button" class="zh-color<?php echo $i === 0 ? ' on' : ''; ?>" data-color
+            data-img="<?php echo esc_url($c['img']); ?>"
+            data-href="<?php echo esc_url($c['href']); ?>"
+            data-name="<?php echo esc_attr($c['name']); ?>"
+            data-bg="<?php echo esc_attr($c['swatch']); ?>">
+            <b style="background:<?php echo esc_attr($c['swatch']); ?>"></b><?php echo esc_html(str_replace(' Kit', '', $c['name'])); ?>
+          </button>
+        <?php endforeach; ?>
+      </div>
+      <ul class="zh-kit-list">
+        <li><i class="ti ti-check" aria-hidden="true"></i><?php esc_html_e('Tulec, vžigalnik, grinder', 'zvij-theme'); ?></li>
+        <li><i class="ti ti-check" aria-hidden="true"></i><?php esc_html_e('Rolca v barvi kita', 'zvij-theme'); ?></li>
+        <li><i class="ti ti-check" aria-hidden="true"></i><?php esc_html_e('DUBI 42 filter', 'zvij-theme'); ?></li>
+      </ul>
+      <a class="button" data-kit-link href="<?php echo esc_url($first['href']); ?>"><?php esc_html_e('Poglej kit', 'zvij-theme'); ?></a>
+    </div>
+  </div>
+
+  <div class="zh-throwie">
+    <div class="zh-throwie-art">
+      <?php $tw = zvij_kit_flatlay_url('throwie'); ?>
+      <?php if ($tw !== '') : ?><img src="<?php echo esc_url($tw); ?>" alt="Throwie Kit" loading="lazy" /><?php else : ?><i class="ti ti-briefcase" aria-hidden="true"></i><?php endif; ?>
+    </div>
+    <div class="zh-throwie-body">
+      <h3><?php esc_html_e('Throwie Kit', 'zvij-theme'); ?></h3>
+      <p><?php esc_html_e('Osnovni setup. Brez kompliciranja.', 'zvij-theme'); ?></p>
+    </div>
+    <a class="button button--ghost" href="<?php echo esc_url($throwie_href); ?>"><?php esc_html_e('Poglej Throwie', 'zvij-theme'); ?></a>
+  </div>
+</section>
 
 <section class="section-block">
-  <div class="section-heading">
-    <p class="eyebrow"><?php esc_html_e('Product pillars', 'zvij-theme'); ?></p>
-    <h2><?php esc_html_e('Štiri poti v isti sistem.', 'zvij-theme'); ?></h2>
+  <div class="zh-reload">
+    <p class="eyebrow eyebrow--warm"><?php esc_html_e('Reload', 'zvij-theme'); ?></p>
+    <h2 class="zh-h2"><?php esc_html_e('Ko zmanjka, samo dopolni.', 'zvij-theme'); ?></h2>
+    <p class="zh-sub"><?php esc_html_e('Ne sestavljaš znova. Izbereš samo, kaj ti manjka.', 'zvij-theme'); ?></p>
+    <div class="zh-rtiles">
+      <div class="zh-rtile"><i class="ti ti-asterisk" aria-hidden="true"></i><span>DUBI</span></div>
+      <div class="zh-rtile"><i class="ti ti-leaf" aria-hidden="true"></i><span><?php esc_html_e('Vršički', 'zvij-theme'); ?></span></div>
+      <div class="zh-rtile"><i class="ti ti-news" aria-hidden="true"></i><span><?php esc_html_e('Rizle / rolce', 'zvij-theme'); ?></span></div>
+      <div class="zh-rtile"><i class="ti ti-flame" aria-hidden="true"></i><span><?php esc_html_e('Vžigalniki', 'zvij-theme'); ?></span></div>
+      <div class="zh-rtile"><i class="ti ti-dots" aria-hidden="true"></i><span><?php esc_html_e('Ostalo', 'zvij-theme'); ?></span></div>
+    </div>
+    <a class="button" href="<?php echo esc_url(home_url('/trgovina/')); ?>"><i class="ti ti-refresh" aria-hidden="true"></i> <?php esc_html_e('Hiter reload', 'zvij-theme'); ?></a>
   </div>
-  <div class="card-grid card-grid--four">
-    <?php foreach ($pillars as [$title, $slug, $copy]) : ?>
-      <article class="route-card">
-        <span class="card-kicker"><?php echo esc_html($title); ?></span>
-        <h3><a href="<?php echo esc_url(home_url('/' . $slug . '/')); ?>"><?php echo esc_html($title); ?></a></h3>
-        <p><?php echo esc_html($copy); ?></p>
-      </article>
-    <?php endforeach; ?>
-  </div>
-</section>
 
-<section class="feature-band feature-band--warm">
-  <div class="feature-band__content">
-    <p class="eyebrow"><?php esc_html_e('Prvi preizkus', 'zvij-theme'); ?></p>
-    <h2><?php esc_html_e('Prvi FRUTTY za 4,20 €.', 'zvij-theme'); ?></h2>
-    <p><?php esc_html_e('Lahek prvi preizkus. Če ti sede naš ritual, se naslednjič vrneš z dobroimetjem.', 'zvij-theme'); ?></p>
+  <div class="zh-member">
+    <div>
+      <h2 class="zh-h2"><?php esc_html_e('Član Zvij.si', 'zvij-theme'); ?> <span class="zh-tag"><?php esc_html_e('v pripravi', 'zvij-theme'); ?></span></h2>
+      <p class="zh-sub"><?php esc_html_e('Sistem za ponovne nakupe pride kmalu. Najprej izdelki in reload.', 'zvij-theme'); ?></p>
+    </div>
+    <a class="button button--member" href="<?php echo esc_url(home_url('/clan-zvij-si/')); ?>"><?php esc_html_e('Spoznaj Član Zvij.si', 'zvij-theme'); ?></a>
   </div>
-  <a class="button button--light" href="<?php echo esc_url(home_url('/product/frutty-cbd-vrsicki-1-g/')); ?>"><?php esc_html_e('Poglej FRUTTY', 'zvij-theme'); ?></a>
-</section>
 
-<section class="split-section">
-  <div>
-    <p class="eyebrow"><?php esc_html_e('Član Zvij.si', 'zvij-theme'); ?></p>
-    <h2><?php esc_html_e('Član Zvij.si', 'zvij-theme'); ?></h2>
-    <p class="section-tagline"><?php esc_html_e('Zvijače za zvijače.', 'zvij-theme'); ?></p>
-  </div>
-  <div class="text-stack">
-    <p><?php esc_html_e('Prvi nakup je lahek preizkus. Članstvo je praktičen del sistema: dobiš svojo Zvij kodo, vidiš dobroimetje in lažje prideš nazaj na naslednji reload.', 'zvij-theme'); ?></p>
-    <p><?php esc_html_e('Cilj ni lovljenje akcij, ampak urejen reload sistem. Brez preprodaje, brez cash payout obljub, brez hrupa.', 'zvij-theme'); ?></p>
-    <a class="text-link" href="<?php echo esc_url(home_url('/clan-zvij-si/')); ?>"><?php esc_html_e('Poglej članstvo', 'zvij-theme'); ?></a>
-  </div>
-</section>
-
-<section class="feature-band">
-  <div class="feature-band__content">
-    <p class="eyebrow"><?php esc_html_e('Best starter setup', 'zvij-theme'); ?></p>
-    <h2><?php esc_html_e('DUBI 42 + rolca + sample vršičkov.', 'zvij-theme'); ?></h2>
-    <p><?php esc_html_e('Zvij setup paket je dev bundle za preverjanje prvega nakupa. Vsebina je označena kot dev, dokler Jaka ne potrdi končne sestave.', 'zvij-theme'); ?></p>
-  </div>
-  <a class="button button--light" href="<?php echo esc_url(home_url('/zvij-setup/')); ?>"><?php esc_html_e('Sestavi setup', 'zvij-theme'); ?></a>
-</section>
-
-<section class="split-section split-section--quiet">
-  <div>
-    <p class="eyebrow"><?php esc_html_e('Setup dodatki', 'zvij-theme'); ?></p>
-    <h2><?php esc_html_e('Majhne stvari, ki jih imaš vedno pri sebi.', 'zvij-theme'); ?></h2>
-  </div>
-  <div class="text-stack">
-    <p><?php esc_html_e('Od rezervnega vžigalnika do premium Clipperja — majhne stvari, ki jih imaš vedno pri sebi.', 'zvij-theme'); ?></p>
-    <p><?php esc_html_e('Dodatki ostajajo del setup kulture: uporabni, odrasli in dovolj premišljeni, da podprejo Član Zvij.si sistem.', 'zvij-theme'); ?></p>
-    <a class="text-link" href="<?php echo esc_url(home_url('/trgovina/')); ?>"><?php esc_html_e('Poglej shop prototip', 'zvij-theme'); ?></a>
-  </div>
-</section>
-
-<section class="split-section split-section--quiet">
-  <div>
-    <p class="eyebrow"><?php esc_html_e('CBD/CBG vršički', 'zvij-theme'); ?></p>
-    <h2><?php esc_html_e('SMOKEY, CHILLY, FRUTTY.', 'zvij-theme'); ?></h2>
-  </div>
-  <div class="text-stack">
-    <p><?php esc_html_e('Premium vršički v jasni meri: 1 g pakiranje ali 5 g paket kot 5 posameznih 1 g pakiranj. Čajna uporaba je opisana kot ena od možnosti.', 'zvij-theme'); ?></p>
-    <a class="text-link" href="<?php echo esc_url(home_url('/cbd-vrsicki/')); ?>"><?php esc_html_e('Preberi o vršičkih', 'zvij-theme'); ?></a>
+  <div class="zh-frutty">
+    <div>
+      <h3><?php esc_html_e('Prvi FRUTTY za 4,20 €', 'zvij-theme'); ?></h3>
+      <p><?php esc_html_e('Lahek prvi preizkus.', 'zvij-theme'); ?></p>
+    </div>
+    <a class="button button--light" href="<?php echo esc_url(home_url('/product/frutty-cbd-vrsicki-1-g/')); ?>"><?php esc_html_e('Poglej FRUTTY', 'zvij-theme'); ?></a>
   </div>
 </section>
 
 <section class="footer-cta">
-  <p class="eyebrow"><?php esc_html_e('Naslednji korak', 'zvij-theme'); ?></p>
   <h2><?php esc_html_e('Začni s svojim setupom.', 'zvij-theme'); ?></h2>
   <a class="button" href="<?php echo esc_url(home_url('/trgovina/')); ?>"><?php esc_html_e('Odpri trgovino', 'zvij-theme'); ?></a>
 </section>
