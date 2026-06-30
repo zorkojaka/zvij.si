@@ -64,6 +64,12 @@ $buy_btn = static function (?WC_Product $product, string $label = 'Poglej') : st
 </section>
 
 <?php
+if (function_exists('zvij_render_homepage_product_carousel')) {
+    zvij_render_homepage_product_carousel();
+}
+?>
+
+<?php
 // Image-led editorial blocks. Each block has a configurable image slot
 // (assets/images/home/<name>.{jpg,png,webp}); a temporary asset is used until the
 // real photo is dropped in. See docs/IMAGE_ASSET_MAP.md.

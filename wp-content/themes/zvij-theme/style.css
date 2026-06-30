@@ -2650,7 +2650,227 @@ body::before {
   width: 34px;
 }
 
+.zv-carousel,
+.zv-carousel-empty {
+  margin: clamp(1.25rem, 3vw, 2.4rem) auto;
+  max-width: 1180px;
+  padding: 0 clamp(1rem, 3vw, 2rem);
+}
+
+.zv-carousel {
+  display: grid;
+  gap: 1rem;
+}
+
+.zv-carousel__header {
+  align-items: end;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.zv-carousel__label,
+.zv-carousel-card__cat {
+  color: #2f6a50;
+  font-size: 0.75rem;
+  font-weight: 950;
+  letter-spacing: 0;
+  margin: 0 0 0.35rem;
+  text-transform: uppercase;
+}
+
+.zv-carousel__header h2 {
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 0.95;
+  margin: 0;
+}
+
+.zv-carousel__header p:not(.zv-carousel__label) {
+  color: #4b4339;
+  font-weight: 650;
+  margin: 0.55rem 0 0;
+}
+
+.zv-carousel__controls {
+  display: flex;
+  gap: 0.55rem;
+}
+
+.zv-carousel__controls button {
+  align-items: center;
+  background: #fffaf2;
+  border: 1px solid rgba(25, 21, 17, 0.16);
+  border-radius: 999px;
+  box-shadow: 0 10px 24px rgba(25, 18, 10, 0.08);
+  color: var(--zvij-text);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 1.9rem;
+  font-weight: 800;
+  height: 44px;
+  justify-content: center;
+  line-height: 1;
+  padding: 0 0 0.16rem;
+  width: 44px;
+}
+
+.zv-carousel__viewport {
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.zv-carousel__viewport:focus-visible {
+  outline: 2px solid #c8934e;
+  outline-offset: 4px;
+}
+
+.zv-carousel__track {
+  display: flex;
+  gap: 1rem;
+  will-change: transform;
+}
+
+.zv-carousel-card {
+  background: rgba(255, 250, 242, 0.78);
+  border: 1px solid rgba(199, 177, 148, 0.42);
+  border-radius: 8px;
+  box-shadow: 0 16px 38px rgba(25, 18, 10, 0.06);
+  display: grid;
+  flex: 0 0 calc((100% - 3rem) / 4);
+  min-width: 0;
+  overflow: hidden;
+}
+
+.zv-carousel-card__image {
+  align-items: center;
+  aspect-ratio: 1 / 0.82;
+  background: #efe2cf;
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+.zv-carousel-card__image img {
+  height: 86%;
+  max-width: 88%;
+  object-fit: contain;
+  width: auto;
+}
+
+.zv-carousel-card__badge {
+  background: #c8934e;
+  border-radius: 999px;
+  color: #17120f;
+  font-size: 0.72rem;
+  font-weight: 950;
+  padding: 0.35rem 0.6rem;
+  position: absolute;
+  right: 0.7rem;
+  top: 0.7rem;
+}
+
+.zv-carousel-card__body {
+  display: grid;
+  gap: 0.55rem;
+  padding: 1rem;
+}
+
+.zv-carousel-card h3 {
+  font-size: 1rem;
+  line-height: 1.08;
+  margin: 0;
+  min-height: 2.2rem;
+}
+
+.zv-carousel-card h3 a {
+  color: var(--zvij-text);
+  text-decoration: none;
+}
+
+.zv-carousel-card__price {
+  font-size: 0.92rem;
+  font-weight: 900;
+  margin: 0;
+}
+
+.zv-carousel-card__price del {
+  color: #7d7367;
+  font-weight: 700;
+}
+
+.zv-carousel-card__hint {
+  color: #5d5247;
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.zv-carousel-card__vars {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.zv-carousel-card__vars button {
+  background: #f7ead7;
+  border: 1px solid rgba(25, 21, 17, 0.14);
+  border-radius: 999px;
+  color: var(--zvij-text);
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 900;
+  min-height: 34px;
+  min-width: 52px;
+  padding: 0.4rem 0.75rem;
+}
+
+.zv-carousel-card__vars button.on,
+.zv-carousel-card__vars button.is-selected {
+  background: var(--zvij-text);
+  color: #fffaf2;
+}
+
+.zv-carousel__add {
+  align-items: center;
+  background: var(--zvij-text);
+  border: 0;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 0.88rem;
+  font-weight: 950;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0.7rem 0.9rem;
+  text-align: center;
+  text-decoration: none;
+}
+
+.zv-carousel__add:disabled,
+.zv-carousel__add.is-loading {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.zv-carousel-card__status {
+  color: #2f6a50;
+  font-size: 0.78rem;
+  font-weight: 800;
+  min-height: 1rem;
+  margin: 0;
+}
+
+.zv-carousel-empty {
+  background: #fff7ea;
+  border: 1px solid rgba(199, 177, 148, 0.45);
+  border-radius: 8px;
+  color: #5d5247;
+}
+
 @media (max-width: 900px) {
+  .zv-carousel-card {
+    flex-basis: calc((100% - 1rem) / 2);
+  }
+
   .site-footer__inner {
     grid-template-columns: 1fr;
     min-height: auto;
@@ -2663,6 +2883,19 @@ body::before {
 }
 
 @media (max-width: 640px) {
+  .zv-carousel__header {
+    align-items: start;
+  }
+
+  .zv-carousel__controls button {
+    height: 40px;
+    width: 40px;
+  }
+
+  .zv-carousel-card {
+    flex-basis: 82%;
+  }
+
   body::before {
     background-size: 900px auto;
     opacity: 0.025;

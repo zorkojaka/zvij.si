@@ -19,11 +19,12 @@ Mockup status: blocked. The expected `docs/design/mockups/*.png` files are not p
 ### Required Hierarchy
 
 1. Hero
-2. Main products
-3. Kiti Zvij.si
-4. Reload
-5. Membership/trust content
-6. Footer
+2. Homepage product carousel
+3. Main products
+4. Kiti Zvij.si
+5. Reload
+6. Membership/trust content
+7. Footer
 
 ### Hero
 
@@ -61,6 +62,34 @@ Acceptance criteria:
 - Hero does not use the current "Vse, kar rabiš..." kit-first headline.
 - Uses the approved four-line brand statement.
 - Does not introduce extra sections beyond the specified hierarchy.
+
+### Homepage Product Carousel
+
+Component: `HomepageProductCarousel`
+
+Position:
+
+- Between the hero/service strip and the image-led product/category blocks.
+
+Data source:
+
+- WooCommerce product tag `homepage-carousel`
+- Product admin meta `_zvij_homepage_carousel_order`
+- Real WooCommerce product images and prices
+
+Behavior:
+
+- Infinite smooth carousel.
+- Autoplay pauses on hover, focus, and drag.
+- Reduced-motion users do not get autoplay.
+- Variable CBD/CBG products expose inline `1 g` / `5 g` variation buttons.
+- Simple products use WooCommerce AJAX add-to-cart directly.
+
+Acceptance criteria:
+
+- No draft, private, unpriced, out-of-stock, internal, sample, or TBD products appear.
+- Variable products add the selected variation ID, not the parent product.
+- Cards and add buttons include homepage carousel analytics data attributes.
 
 ### Main Products
 

@@ -19,7 +19,7 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.2');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.5');
 
     if (is_page('zvij-kit')) {
         wp_enqueue_script('zvij-kits', get_template_directory_uri() . '/assets/kits.js', [], '0.9.0', true);
@@ -29,8 +29,36 @@ add_action('wp_enqueue_scripts', function (): void {
         if (function_exists('WC')) {
             wp_enqueue_script('wc-add-to-cart');
         }
-        wp_enqueue_script('zvij-home', get_template_directory_uri() . '/assets/home.js', [], '0.9.0', true);
+        wp_enqueue_script('zvij-home', get_template_directory_uri() . '/assets/home.js', ['jquery'], '0.9.5', true);
     }
+});
+
+add_action('woocommerce_product_options_general_product_data', function (): void {
+    woocommerce_wp_text_input([
+        'id' => '_zvij_homepage_carousel_order',
+        'label' => __('Homepage carousel order', 'zvij-theme'),
+        'desc_tip' => true,
+        'description' => __('Lower numbers appear first in the homepage carousel. Fallback is product menu order, then publish date.', 'zvij-theme'),
+        'type' => 'number',
+        'custom_attributes' => [
+            'step' => '1',
+            'min' => '0',
+        ],
+    ]);
+});
+
+add_action('woocommerce_admin_process_product_object', function (WC_Product $product): void {
+    if (! isset($_POST['_zvij_homepage_carousel_order'])) {
+        return;
+    }
+
+    $raw = wc_clean(wp_unslash($_POST['_zvij_homepage_carousel_order']));
+    if ($raw === '') {
+        $product->delete_meta_data('_zvij_homepage_carousel_order');
+        return;
+    }
+
+    $product->update_meta_data('_zvij_homepage_carousel_order', (string) max(0, (int) $raw));
 });
 
 add_action('woocommerce_before_shop_loop_item_title', function (): void {
@@ -387,4 +415,190 @@ function zvij_home_block_img(string $name): string {
         }
     }
     return '';
+}
+
+function zvij_homepage_carousel_sort_value(WC_Product $product): array {
+    $custom = $product->get_meta('_zvij_homepage_carousel_order', true);
+    $has_custom = $custom !== '' && is_numeric($custom);
+
+    return [
+        $has_custom ? 0 : 1,
+        $has_custom ? (int) $custom : (int) get_post_field('menu_order', $product->get_id()),
+        (string) get_post_field('post_date', $product->get_id()),
+    ];
+}
+
+function zvij_homepage_carousel_product_visible(WC_Product $product): bool {
+    if ($product->get_status() !== 'publish') {
+        return false;
+    }
+    if ((string) $product->get_price() === '') {
+        return false;
+    }
+    if (! $product->is_purchasable()) {
+        return false;
+    }
+    if (! $product->is_in_stock() && ! $product->backorders_allowed()) {
+        return false;
+    }
+    $private_markers = strtolower($product->get_name() . ' ' . $product->get_slug());
+    foreach (['sample', 'internal', 'tbd'] as $marker) {
+        if (str_contains($private_markers, $marker)) {
+            return false;
+        }
+    }
+
+    if ($product->is_type('variable') && zvij_homepage_carousel_variations($product) === []) {
+        return false;
+    }
+
+    return true;
+}
+
+function zvij_homepage_carousel_products(): array {
+    if (! function_exists('wc_get_products')) {
+        return [];
+    }
+
+    $products = wc_get_products([
+        'status' => 'publish',
+        'limit' => 24,
+        'tag' => ['homepage-carousel'],
+        'orderby' => 'date',
+        'order' => 'DESC',
+    ]);
+    $products = array_values(array_filter($products, 'zvij_homepage_carousel_product_visible'));
+
+    usort($products, static function (WC_Product $a, WC_Product $b): int {
+        return zvij_homepage_carousel_sort_value($a) <=> zvij_homepage_carousel_sort_value($b);
+    });
+
+    return $products;
+}
+
+function zvij_homepage_carousel_label(WC_Product $product): string {
+    $terms = get_the_terms($product->get_id(), 'product_cat');
+    if (! empty($terms) && ! is_wp_error($terms)) {
+        return (string) $terms[0]->name;
+    }
+
+    return $product->is_type('variable') ? __('Izberi količino', 'zvij-theme') : __('Izdelek', 'zvij-theme');
+}
+
+function zvij_homepage_carousel_variations(WC_Product $product): array {
+    if (! $product->is_type('variable')) {
+        return [];
+    }
+
+    $items = [];
+    foreach ($product->get_children() as $variation_id) {
+        $variation = wc_get_product($variation_id);
+        if (! $variation instanceof WC_Product_Variation) {
+            continue;
+        }
+        if (! zvij_homepage_carousel_product_visible($variation)) {
+            continue;
+        }
+
+        $attrs = $variation->get_variation_attributes();
+        $label = '';
+        foreach ($attrs as $value) {
+            if ($value !== '') {
+                $label = (string) $value;
+                break;
+            }
+        }
+
+        $items[] = [
+            'id' => $variation->get_id(),
+            'label' => $label !== '' ? $label : $variation->get_name(),
+            'price' => wp_strip_all_tags($variation->get_price_html()),
+            'attrs' => $attrs,
+        ];
+    }
+
+    return $items;
+}
+
+function zvij_homepage_carousel_add_button(WC_Product $product, int $position): string {
+    if ($product->is_type('variable')) {
+        return sprintf(
+            '<button class="zv-carousel__add" type="button" data-variable-add data-product-id="%1$s" data-variation-id="" data-carousel-position="%2$s" data-carousel-source="homepage" disabled>%3$s</button>',
+            esc_attr((string) $product->get_id()),
+            esc_attr((string) $position),
+            esc_html__('Dodaj v košarico', 'zvij-theme')
+        );
+    }
+
+    return sprintf(
+        '<a href="%1$s" data-quantity="1" data-product_id="%2$s" data-product-id="%2$s" data-variation-id="" data-carousel-position="%3$s" data-carousel-source="homepage" rel="nofollow" class="zv-carousel__add ajax_add_to_cart add_to_cart_button">%4$s</a>',
+        esc_url($product->add_to_cart_url()),
+        esc_attr((string) $product->get_id()),
+        esc_attr((string) $position),
+        esc_html__('Dodaj v košarico', 'zvij-theme')
+    );
+}
+
+function zvij_render_homepage_product_carousel(): void {
+    $products = zvij_homepage_carousel_products();
+
+    if ($products === []) {
+        if (current_user_can('manage_woocommerce')) {
+            echo '<section class="zv-carousel-empty"><p>' . esc_html__('Homepage carousel is hidden because no published products have the homepage-carousel tag.', 'zvij-theme') . '</p></section>';
+        }
+        return;
+    }
+    ?>
+    <section class="zv-carousel" data-zv-carousel aria-labelledby="zv-carousel-title">
+      <div class="zv-carousel__header">
+        <div>
+          <p class="zv-carousel__label"><?php esc_html_e('IZBRANO ZA TVOJ SETUP', 'zvij-theme'); ?></p>
+          <h2 id="zv-carousel-title"><?php esc_html_e('Poglej, kaj se trenutno zvija.', 'zvij-theme'); ?></h2>
+          <p><?php esc_html_e('Filtri, vršički in stvari, ki sodijo zraven.', 'zvij-theme'); ?></p>
+        </div>
+        <div class="zv-carousel__controls">
+          <button type="button" data-carousel-prev aria-label="<?php esc_attr_e('Prejšnji izdelki', 'zvij-theme'); ?>">‹</button>
+          <button type="button" data-carousel-next aria-label="<?php esc_attr_e('Naslednji izdelki', 'zvij-theme'); ?>">›</button>
+        </div>
+      </div>
+      <div class="zv-carousel__viewport" data-carousel-viewport tabindex="0">
+        <div class="zv-carousel__track" data-carousel-track>
+          <?php foreach ($products as $i => $product) : ?>
+            <?php
+            $position = $i + 1;
+            $variations = zvij_homepage_carousel_variations($product);
+            ?>
+            <article class="zv-carousel-card" data-carousel-card data-product-id="<?php echo esc_attr((string) $product->get_id()); ?>" data-carousel-position="<?php echo esc_attr((string) $position); ?>" data-carousel-source="homepage">
+              <a class="zv-carousel-card__image" href="<?php echo esc_url(get_permalink($product->get_id())); ?>" aria-label="<?php echo esc_attr($product->get_name()); ?>">
+                <?php echo $product->get_image('woocommerce_thumbnail', ['loading' => $i === 0 ? 'eager' : 'lazy']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                <?php if ($product->is_on_sale()) : ?><span class="zv-carousel-card__badge"><?php esc_html_e('Akcija', 'zvij-theme'); ?></span><?php endif; ?>
+              </a>
+              <div class="zv-carousel-card__body">
+                <p class="zv-carousel-card__cat"><?php echo esc_html(zvij_homepage_carousel_label($product)); ?></p>
+                <h3><a href="<?php echo esc_url(get_permalink($product->get_id())); ?>"><?php echo esc_html($product->get_name()); ?></a></h3>
+                <p class="zv-carousel-card__price" data-price-out><?php echo wp_kses_post($product->get_price_html()); ?></p>
+                <?php if ($product->is_type('variable')) : ?>
+                  <div class="zv-carousel-card__hint"><?php esc_html_e('Izberi količino', 'zvij-theme'); ?></div>
+                  <div class="zv-carousel-card__vars" role="group" aria-label="<?php esc_attr_e('Količina', 'zvij-theme'); ?>">
+                    <?php foreach ($variations as $variation) : ?>
+                      <button type="button"
+                        data-variation-choice
+                        data-variation-id="<?php echo esc_attr((string) $variation['id']); ?>"
+                        data-product-id="<?php echo esc_attr((string) $product->get_id()); ?>"
+                        data-price="<?php echo esc_attr($variation['price']); ?>"
+                        data-attrs="<?php echo esc_attr(wp_json_encode($variation['attrs'])); ?>">
+                        <?php echo esc_html($variation['label']); ?>
+                      </button>
+                    <?php endforeach; ?>
+                  </div>
+                <?php endif; ?>
+                <?php echo zvij_homepage_carousel_add_button($product, $position); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                <p class="zv-carousel-card__status" data-cart-status aria-live="polite"></p>
+              </div>
+            </article>
+          <?php endforeach; ?>
+        </div>
+      </div>
+    </section>
+    <?php
 }

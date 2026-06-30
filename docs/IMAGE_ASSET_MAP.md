@@ -134,6 +134,24 @@ Rules:
 - Imported media can be used on dev.
 - Copy and legal positioning must stay careful.
 
+## Homepage Product Carousel Images
+
+The homepage product carousel uses real WooCommerce product images from the WP media library. It does not use mockup screenshots or generated placeholders.
+
+Source rule:
+
+- Products are selected by tag `homepage-carousel`.
+- Product image comes from `WC_Product::get_image()`.
+- Missing images should be fixed in WooCommerce media/product data, not hardcoded in the template.
+
+Initial dev product image slots:
+
+- DUBI 42 aktivnih ogljikovih filtrov
+- DUBI 420 aktivnih ogljikovih filtrov
+- SMOKEY CBD vrsicki
+- CHILLY CBG vrsicki
+- FRUTTY CBD vrsicki
+
 ## Real Owned Product Images
 
 Needed and not yet present as final assets:
