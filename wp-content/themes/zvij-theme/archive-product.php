@@ -10,9 +10,8 @@ if (! defined('ABSPATH')) {
 get_header();
 ?>
 <section class="shop-hero">
-  <p class="eyebrow"><?php esc_html_e('Trgovina', 'zvij-theme'); ?></p>
   <h1><?php woocommerce_page_title(); ?></h1>
-  <p><?php esc_html_e('DEV prototip trgovine. Izdelki so placeholderji, dokler Jaka ne potrdi podatkov, cen, pravnih besedil in checkout pravil.', 'zvij-theme'); ?></p>
+  <p><?php esc_html_e('Izboljšaj svojo rutino. Izberi, kar rabiš.', 'zvij-theme'); ?></p>
 </section>
 
 <?php

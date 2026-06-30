@@ -2,6 +2,18 @@
 
 Status: dev implementation.
 
+## Real inventory phase (2026-06-18)
+
+- Kit composition is data-driven via the `zvij_kits` option (`zvij_kit_definitions()`).
+  Unified roles: `tube · lighter · grinder · paper · dubi`.
+- Black / Silver / Gold are colour variants of one kit concept (no different marketing
+  meanings); Throwie is the separate lower-cost setup.
+- Mapping to current inventory: Black grinder = received Zvij.si mini grinder; tubes =
+  received metal tubes; lighters = incoming; paper/roll = RAW (colour kits) / Ziggi (Throwie).
+- Homepage kit names and the `/kiti` "Kaj je v kitu?" list now render from the option —
+  no hardcoded contents, and no fake retail price (shows `Cena kmalu.`).
+- Per-component inventory + image status: see `docs/ZVIJ_PRODUCT_MATRIX.md`.
+
 Core idea: **Zvij.si Kit = vse, kar rabiš, da si zviješ.** The homepage presents kits as a
 showcase of packages, not a builder.
 

@@ -19,7 +19,7 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.0');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.1');
 
     if (is_page('zvij-kit')) {
         wp_enqueue_script('zvij-kits', get_template_directory_uri() . '/assets/kits.js', [], '0.9.0', true);

@@ -2,6 +2,65 @@
 
 Status: commercial backbone draft.
 
+## Real inventory phase (2026-06-18)
+
+Each kit component carries product meta (set in `scripts/wp-sync-catalog-dev.php`):
+
+- `_zvij_inventory_status`: `received` | `incoming` | `supplier_candidate` | `later`
+- `_zvij_image_kind`: `real_photo` | `supplier_photo` | `temporary_mockup` | `missing`
+- `_zvij_image_source`: free text
+- `_zvij_final_photo_pending`: `yes` | `no`
+
+All components stay WooCommerce `draft` (no fake retail price exposed publicly).
+
+| Component | slug | Inventory status | Image | Final photo |
+|---|---|---|---|---|
+| Zvij.si Mini Grinder 5 cm (logo) | `zvij-mini-grinder-5-cm` | received | missing | yes |
+| Black Metal Tube | `black-metal-joint-tube` | received | missing | yes |
+| Silver Metal Tube | `silver-metal-joint-tube` | received | missing | yes |
+| Gold Metal Tube | `gold-metal-joint-tube` | received | missing | yes |
+| Black lighter | `clipper-black` | incoming | temporary_mockup | yes |
+| Silver lighter | `clipper-silver` | incoming | temporary_mockup | yes |
+| Gold lighter | `clipper-gold` | incoming | temporary_mockup | yes |
+| RAW rolls | `raw-rolls` | incoming | temporary_mockup | yes |
+| Ziggi rolls | `ziggi-rolls` | incoming | temporary_mockup | yes |
+| Silver grinder | `silver-grinder-placeholder` | incoming | temporary_mockup | yes |
+| Gold grinder | `gold-grinder-placeholder` | incoming | temporary_mockup | yes |
+| Throwie pouch | `throwie-bag` | incoming | temporary_mockup | yes |
+| Champ High Black grinder, Clipper gradient, Smoking/IRIE/JaJa/SmK papers & rolls, FARO fajrji | (various) | supplier_candidate | supplier_photo | yes |
+| Matching rolling tray | `matching-rolling-tray-placeholder` | later | missing | yes |
+
+Received ≠ TBD: received items are real and in hand; they are draft only until
+photographed and priced.
+
+## Kit schema (unified)
+
+One concept, five roles: `tube · lighter · grinder · paper · dubi`. Black, Silver
+and Gold are colour variants of the same kit; Throwie is the separate lower-cost
+setup. Mapping lives in `zvij_kit_definitions()` and is stored in the `zvij_kits`
+option (data-driven; the theme renders names/components from it).
+
+| Role | Black | Silver | Gold | Throwie |
+|---|---|---|---|---|
+| tube | black metal tube | silver metal tube | gold metal tube | pouch |
+| lighter | black lighter | silver lighter | gold lighter | basic fajrji |
+| grinder | Zvij.si mini grinder (received) | silver grinder | gold grinder | mini grinder |
+| paper | RAW rolls | RAW rolls | RAW rolls | Ziggi rolls |
+| dubi | DUBI 42 | DUBI 42 | DUBI 42 | DUBI 42 (optional) |
+
+## Roadmap — CBD kapljice (NOT on frontend yet)
+
+Future category: **CBD kapljice**. Status: supplier confirmed, commercial terms
+pending. Must not be added to the public site until confirmed. Needed before launch:
+
+- strengths
+- bottle size
+- wholesale price
+- MOQ
+- lab documentation
+- shelf life
+- private label option
+
 Zvij.si product program is not a random accessories list. It is built on two axes:
 
 1. three price/value tiers

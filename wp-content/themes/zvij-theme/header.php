@@ -18,18 +18,23 @@ if (! defined('ABSPATH')) {
 <?php wp_body_open(); ?>
 <header class="site-header">
   <a class="site-brand" href="<?php echo esc_url(home_url('/')); ?>">
-    <span class="site-brand__mark">Zvij</span>
-    <span class="site-brand__meta">ritual / setup / reload</span>
+    <span class="site-brand__mark">zvij.si</span>
   </a>
   <nav class="site-nav" aria-label="<?php esc_attr_e('Main menu', 'zvij-theme'); ?>">
-    <?php
-    wp_nav_menu([
-        'theme_location' => 'primary',
-        'container' => false,
-        'fallback_cb' => false,
-        'depth' => 1,
-    ]);
-    ?>
+    <ul>
+      <li><a href="<?php echo esc_url(home_url('/')); ?>">Domov</a></li>
+      <li><a href="<?php echo esc_url(home_url('/trgovina/')); ?>">Shop</a></li>
+      <li><a href="<?php echo esc_url(home_url('/kiti/')); ?>">Kiti</a></li>
+      <li><a href="<?php echo esc_url(home_url('/reload/')); ?>">Reload</a></li>
+      <li><a href="<?php echo esc_url(home_url('/o-nas/')); ?>">O nas</a></li>
+    </ul>
   </nav>
+  <div class="site-actions" aria-label="<?php esc_attr_e('Hitre akcije', 'zvij-theme'); ?>">
+    <a href="<?php echo esc_url(home_url('/?s=')); ?>" aria-label="<?php esc_attr_e('Iskanje', 'zvij-theme'); ?>">⌕</a>
+    <a href="<?php echo esc_url(home_url('/moj-racun/')); ?>" aria-label="<?php esc_attr_e('Moj račun', 'zvij-theme'); ?>">♙</a>
+    <a class="site-cart" href="<?php echo esc_url(function_exists('wc_get_cart_url') ? wc_get_cart_url() : home_url('/kosarica/')); ?>" aria-label="<?php esc_attr_e('Košarica', 'zvij-theme'); ?>">
+      <span>▱</span><b><?php echo esc_html(function_exists('WC') && WC()->cart ? WC()->cart->get_cart_contents_count() : 0); ?></b>
+    </a>
+  </div>
 </header>
 <main class="site-main">

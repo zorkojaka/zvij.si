@@ -350,6 +350,18 @@ function zvij_kit_components(): array {
             '<p>Samo če je vizualno čisto in poceni. Trenutni Knistermann trays so zavrnjeni kot preveč random/brand-heavy/dragi.</p>',
             ['_zvij_supplier' => 'TBD / Later', '_zvij_image_status' => 'missing_image'],
             'TBD-ROLLING-TRAY'),
+
+        // --- Incoming paper/roll (real inventory phase) ---
+        zvij_kit_component('RAW Rolls', 'raw-rolls', 'Rolce', 'rolce', ['black-kit', 'silver-kit', 'gold-kit', 'throwie'],
+            '<p>Incoming komponenta: RAW rolls — paper/roll slot za kite.</p>',
+            '<p>Pričakovano kmalu. Paper/roll komponenta za kite. Začasna mockup slika do prave fotografije.</p>',
+            ['_zvij_supplier' => 'RAW (incoming)', '_zvij_image_status' => 'missing_image'],
+            'RAW-ROLLS'),
+        zvij_kit_component('Ziggi Rolls', 'ziggi-rolls', 'Rolce', 'rolce', ['throwie', 'black-kit'],
+            '<p>Incoming komponenta: Ziggi rolls — paper/roll slot (Throwie / value).</p>',
+            '<p>Pričakovano kmalu. Paper/roll alternativa za Throwie in value setup. Začasna mockup slika do prave fotografije.</p>',
+            ['_zvij_supplier' => 'Ziggi (incoming)', '_zvij_image_status' => 'missing_image'],
+            'ZIGGI-ROLLS'),
     ];
 }
 
@@ -360,17 +372,20 @@ function zvij_kit_components(): array {
 function zvij_kit_definitions(): array {
     $addons = ['frutty-cbd-vrsicki-1-g', 'smokey-cbd-vrsicki-1-g', 'chilly-cbg-vrsicki-1-g'];
 
+    // Unified kit schema: every kit is the same 5 roles, mapped to colour components.
+    // role => tube, lighter, grinder, paper, dubi. Black/Silver/Gold are colour
+    // variants of ONE kit concept; Throwie is the separate lower-cost setup.
     return [
         [
             'key' => 'black', 'name' => 'Black Kit', 'slug' => 'black-kit', 'tag' => 'black-kit',
             'headline' => 'Diskreten setup.',
             'subline' => '5 izdelkov. Pripravljen za zvit.',
             'items' => [
-                ['slug' => 'black-metal-joint-tube', 'label' => 'Tube'],
-                ['slug' => 'clipper-black', 'label' => 'Clipper'],
-                ['slug' => 'champ-high-black-grinder-60-mm', 'label' => 'Grinder'],
-                ['slug' => 'smoking-black-rolls', 'label' => 'Smoking Black'],
-                ['slug' => 'dubi-42-aktivnih-ogljikovih-filtrov', 'label' => 'DUBI'],
+                ['role' => 'tube', 'slug' => 'black-metal-joint-tube', 'label' => 'Tulec'],
+                ['role' => 'lighter', 'slug' => 'clipper-black', 'label' => 'Vžigalnik'],
+                ['role' => 'grinder', 'slug' => 'zvij-mini-grinder-5-cm', 'label' => 'Grinder'],
+                ['role' => 'paper', 'slug' => 'raw-rolls', 'label' => 'Rolice'],
+                ['role' => 'dubi', 'slug' => 'dubi-42-aktivnih-ogljikovih-filtrov', 'label' => 'DUBI 42'],
             ],
             'addons' => $addons,
         ],
@@ -379,11 +394,11 @@ function zvij_kit_definitions(): array {
             'headline' => 'Čist setup.',
             'subline' => 'Nevtralen stil. Varna izbira.',
             'items' => [
-                ['slug' => 'silver-metal-joint-tube', 'label' => 'Tube'],
-                ['slug' => 'clipper-silver', 'label' => 'Clipper'],
-                ['slug' => 'silver-grinder-placeholder', 'label' => 'Grinder'],
-                ['slug' => 'smoking-silver-rolls', 'label' => 'Smoking Silver'],
-                ['slug' => 'dubi-42-aktivnih-ogljikovih-filtrov', 'label' => 'DUBI'],
+                ['role' => 'tube', 'slug' => 'silver-metal-joint-tube', 'label' => 'Tulec'],
+                ['role' => 'lighter', 'slug' => 'clipper-silver', 'label' => 'Vžigalnik'],
+                ['role' => 'grinder', 'slug' => 'silver-grinder-placeholder', 'label' => 'Grinder'],
+                ['role' => 'paper', 'slug' => 'raw-rolls', 'label' => 'Rolice'],
+                ['role' => 'dubi', 'slug' => 'dubi-42-aktivnih-ogljikovih-filtrov', 'label' => 'DUBI 42'],
             ],
             'addons' => $addons,
         ],
@@ -392,24 +407,24 @@ function zvij_kit_definitions(): array {
             'headline' => 'Darilni setup.',
             'subline' => 'Topel stil. Malo bolj poseben.',
             'items' => [
-                ['slug' => 'gold-metal-joint-tube', 'label' => 'Tube'],
-                ['slug' => 'clipper-gold', 'label' => 'Clipper'],
-                ['slug' => 'gold-grinder-placeholder', 'label' => 'Grinder'],
-                ['slug' => 'smk-gold-rolls', 'label' => 'SmK Gold Rolls'],
-                ['slug' => 'dubi-42-aktivnih-ogljikovih-filtrov', 'label' => 'DUBI'],
+                ['role' => 'tube', 'slug' => 'gold-metal-joint-tube', 'label' => 'Tulec'],
+                ['role' => 'lighter', 'slug' => 'clipper-gold', 'label' => 'Vžigalnik'],
+                ['role' => 'grinder', 'slug' => 'gold-grinder-placeholder', 'label' => 'Grinder'],
+                ['role' => 'paper', 'slug' => 'raw-rolls', 'label' => 'Rolice'],
+                ['role' => 'dubi', 'slug' => 'dubi-42-aktivnih-ogljikovih-filtrov', 'label' => 'DUBI 42'],
             ],
             'addons' => $addons,
         ],
         [
             'key' => 'throwie', 'name' => 'Throwie Kit', 'slug' => 'throwie', 'tag' => 'throwie',
             'headline' => 'Ko zagusti.',
-            'subline' => 'Poceni setup za v torbo.',
+            'subline' => 'Osnovni setup. Brez kompliciranja.',
             'items' => [
-                ['slug' => 'throwie-bag', 'label' => 'Bag'],
-                ['slug' => 'cheap-fajrji-hemp-2', 'label' => 'Fajrji'],
-                ['slug' => 'zvij-mini-grinder-5-cm', 'label' => 'Mini grinder'],
-                ['slug' => 'rizla-irie-xtra-light', 'label' => 'IRIE'],
-                ['slug' => 'dubi-42-aktivnih-ogljikovih-filtrov', 'label' => 'DUBI'],
+                ['role' => 'tube', 'slug' => 'throwie-bag', 'label' => 'Vrečka'],
+                ['role' => 'lighter', 'slug' => 'cheap-fajrji-hemp-2', 'label' => 'Vžigalnik'],
+                ['role' => 'grinder', 'slug' => 'zvij-mini-grinder-5-cm', 'label' => 'Mini grinder'],
+                ['role' => 'paper', 'slug' => 'ziggi-rolls', 'label' => 'Rolice'],
+                ['role' => 'dubi', 'slug' => 'dubi-42-aktivnih-ogljikovih-filtrov', 'label' => 'DUBI 42 (opcijsko)'],
             ],
             'addons' => $addons,
         ],
@@ -1249,6 +1264,54 @@ foreach ($kit_tag_map as $slug => $tags) {
     $product_id = zvij_catalog_find_product($slug);
     if ($product_id > 0) {
         zvij_catalog_apply_tags($product_id, $tags);
+    }
+}
+
+// Real inventory phase: inventory + image governance per kit component.
+// _zvij_inventory_status: received | incoming | supplier_candidate | later
+// _zvij_image_kind:       real_photo | supplier_photo | temporary_mockup | missing
+// _zvij_final_photo_pending: yes | no
+$inventory_status_map = [
+    // Received — physically in hand. Draft until photographed and priced. Not TBD.
+    'zvij-mini-grinder-5-cm'           => ['received', 'missing', 'yes'],
+    'black-metal-joint-tube'           => ['received', 'missing', 'yes'],
+    'silver-metal-joint-tube'          => ['received', 'missing', 'yes'],
+    'gold-metal-joint-tube'            => ['received', 'missing', 'yes'],
+    // Incoming — expected soon. Draft, temporary mockup, no public retail price.
+    'clipper-black'                    => ['incoming', 'temporary_mockup', 'yes'],
+    'clipper-silver'                   => ['incoming', 'temporary_mockup', 'yes'],
+    'clipper-gold'                     => ['incoming', 'temporary_mockup', 'yes'],
+    'raw-rolls'                        => ['incoming', 'temporary_mockup', 'yes'],
+    'ziggi-rolls'                      => ['incoming', 'temporary_mockup', 'yes'],
+    'silver-grinder-placeholder'       => ['incoming', 'temporary_mockup', 'yes'],
+    'gold-grinder-placeholder'         => ['incoming', 'temporary_mockup', 'yes'],
+    'throwie-bag'                      => ['incoming', 'temporary_mockup', 'yes'],
+    // Supplier candidates — Knistermann options under evaluation.
+    'champ-high-black-grinder-60-mm'   => ['supplier_candidate', 'supplier_photo', 'yes'],
+    'clipper-black-gradient'           => ['supplier_candidate', 'supplier_photo', 'yes'],
+    'cheap-fajrji-hemp-2'              => ['supplier_candidate', 'supplier_photo', 'yes'],
+    'rizla-irie-xtra-light'            => ['supplier_candidate', 'supplier_photo', 'yes'],
+    'jaja-noir-black'                  => ['supplier_candidate', 'supplier_photo', 'yes'],
+    'smoking-black-rolls'              => ['supplier_candidate', 'supplier_photo', 'yes'],
+    'smoking-brown-rolls'              => ['supplier_candidate', 'supplier_photo', 'yes'],
+    'smoking-silver-rolls'             => ['supplier_candidate', 'supplier_photo', 'yes'],
+    'smk-gold-rolls'                   => ['supplier_candidate', 'supplier_photo', 'yes'],
+    'smk-gold-papers-filter-tips'      => ['supplier_candidate', 'supplier_photo', 'yes'],
+    // Later.
+    'matching-rolling-tray-placeholder' => ['later', 'missing', 'yes'],
+];
+foreach ($inventory_status_map as $slug => $info) {
+    $pid = zvij_catalog_find_product($slug);
+    if ($pid <= 0) {
+        continue;
+    }
+    update_post_meta($pid, '_zvij_inventory_status', $info[0]);
+    update_post_meta($pid, '_zvij_image_kind', $info[1]);
+    update_post_meta($pid, '_zvij_final_photo_pending', $info[2]);
+    if (! get_post_meta($pid, '_zvij_image_source', true)) {
+        $src = $info[1] === 'supplier_photo' ? 'Knistermann supplier image'
+            : ($info[1] === 'temporary_mockup' ? 'temporary kit mockup' : 'none yet');
+        update_post_meta($pid, '_zvij_image_source', $src);
     }
 }
 

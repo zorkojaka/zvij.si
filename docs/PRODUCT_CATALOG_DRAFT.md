@@ -2,6 +2,15 @@
 
 Status: current dev shop catalog.
 
+## Real inventory phase (2026-06-18)
+
+Kit-component products now carry an inventory status (`received` | `incoming` |
+`supplier_candidate` | `later`) and image-governance meta. Received items (Zvij.si mini
+grinder + black/silver/gold metal tubes) and incoming items (lighters, RAW rolls, Ziggi
+rolls, colour grinders, pouch) stay WooCommerce `draft` with no fake retail price. Full
+matrix, unified kit schema and the **CBD kapljice** roadmap (documented only, not on the
+frontend) live in `docs/ZVIJ_PRODUCT_MATRIX.md`.
+
 Commercial product selection is governed by `docs/ZVIJ_PRODUCT_MATRIX.md`. The shop should not become a random accessories list: every product should fit a value tier, an aesthetic pole, or a kit role.
 
 ## Naming Map
