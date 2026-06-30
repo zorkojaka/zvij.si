@@ -18,7 +18,7 @@ if (! defined('ABSPATH')) {
 <?php wp_body_open(); ?>
 <header class="site-header">
   <a class="site-brand" href="<?php echo esc_url(home_url('/')); ?>">
-    <span class="site-brand__mark">zvij.si</span>
+    <img class="site-brand__logo" src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/brand/logo-obrobo.png'); ?>" alt="<?php esc_attr_e('zvij.si', 'zvij-theme'); ?>">
   </a>
   <nav class="site-nav" aria-label="<?php esc_attr_e('Main menu', 'zvij-theme'); ?>">
     <ul>
@@ -30,10 +30,10 @@ if (! defined('ABSPATH')) {
     </ul>
   </nav>
   <div class="site-actions" aria-label="<?php esc_attr_e('Hitre akcije', 'zvij-theme'); ?>">
-    <a href="<?php echo esc_url(home_url('/?s=')); ?>" aria-label="<?php esc_attr_e('Iskanje', 'zvij-theme'); ?>">⌕</a>
-    <a href="<?php echo esc_url(home_url('/moj-racun/')); ?>" aria-label="<?php esc_attr_e('Moj račun', 'zvij-theme'); ?>">♙</a>
+    <a href="<?php echo esc_url(home_url('/?s=')); ?>" aria-label="<?php esc_attr_e('Iskanje', 'zvij-theme'); ?>">&#128269;</a>
+    <a href="<?php echo esc_url(home_url('/moj-racun/')); ?>" aria-label="<?php esc_attr_e('Moj račun', 'zvij-theme'); ?>">&#128100;</a>
     <a class="site-cart" href="<?php echo esc_url(function_exists('wc_get_cart_url') ? wc_get_cart_url() : home_url('/kosarica/')); ?>" aria-label="<?php esc_attr_e('Košarica', 'zvij-theme'); ?>">
-      <span>▱</span><b><?php echo esc_html(function_exists('WC') && WC()->cart ? WC()->cart->get_cart_contents_count() : 0); ?></b>
+      <span>&#128717;</span><b><?php echo esc_html(function_exists('WC') && WC()->cart ? WC()->cart->get_cart_contents_count() : 0); ?></b>
     </a>
   </div>
 </header>
