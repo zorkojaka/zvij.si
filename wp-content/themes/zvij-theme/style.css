@@ -2738,24 +2738,26 @@ body::before {
   box-shadow: 0 16px 38px rgba(25, 18, 10, 0.06);
   display: grid;
   flex: 0 0 calc((100% - 4rem) / 5);
+  grid-template-rows: clamp(210px, 16vw, 300px) 1fr;
   min-width: 0;
   overflow: hidden;
 }
 
 .zv-carousel-card__image {
   align-items: center;
-  aspect-ratio: 1 / 0.82;
   background: #efe2cf;
   display: flex;
+  height: 100%;
   justify-content: center;
   position: relative;
 }
 
 .zv-carousel-card__image img {
-  height: 86%;
-  max-width: 88%;
+  height: 76%;
+  max-height: 230px;
+  max-width: 210px;
   object-fit: contain;
-  width: auto;
+  width: 72%;
 }
 
 .zv-carousel-card__badge {
@@ -2896,6 +2898,7 @@ body::before {
 
   .zv-carousel-card {
     flex-basis: 82%;
+    grid-template-rows: 230px 1fr;
   }
 
   body::before {
