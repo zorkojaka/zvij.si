@@ -1121,7 +1121,7 @@ a {
   align-items: center;
   display: grid;
   gap: 2rem;
-  grid-template-columns: 220px 1fr auto;
+  grid-template-columns: 220px minmax(220px, 0.8fr) minmax(320px, 1fr);
   margin-top: 0.75rem;
   overflow: hidden;
   padding: 1.5rem 2rem;
@@ -1143,6 +1143,89 @@ a {
   display: block;
   font-size: 0.9rem;
   margin-top: 2rem;
+}
+
+.zv-member__form {
+  min-width: 0;
+}
+
+.zvij-member-form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.zvij-member-form__trap {
+  height: 0;
+  left: -9999px;
+  overflow: hidden;
+  position: absolute;
+  width: 0;
+}
+
+.zvij-member-form__grid {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1fr);
+}
+
+.zvij-member-form label {
+  color: var(--zvij-text);
+  display: grid;
+  font-size: 0.86rem;
+  font-weight: 850;
+  gap: 0.25rem;
+}
+
+.zvij-member-form input[type="text"],
+.zvij-member-form input[type="email"] {
+  background: rgba(255, 248, 236, 0.92);
+  border: 1px solid var(--zvij-line);
+  border-radius: 5px;
+  color: var(--zvij-text);
+  font: inherit;
+  min-height: 42px;
+  padding: 0.7rem 0.8rem;
+  width: 100%;
+}
+
+.zvij-member-form__consent {
+  align-items: start;
+  display: grid !important;
+  font-size: 0.82rem !important;
+  font-weight: 650 !important;
+  gap: 0.55rem !important;
+  grid-template-columns: auto 1fr;
+  line-height: 1.35;
+}
+
+.zvij-member-form__consent input {
+  margin-top: 0.2rem;
+}
+
+.zvij-member-form__message {
+  font-size: 0.9rem;
+  font-weight: 850;
+  margin: 0;
+}
+
+.site-footer {
+  align-items: start;
+}
+
+.site-footer__member {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 760px;
+  width: min(100%, 760px);
+}
+
+.site-footer__member h2,
+.site-footer__member p {
+  margin: 0;
+}
+
+.site-footer__member .zvij-member-form__grid {
+  grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr);
 }
 
 .zv-trust {
@@ -1369,6 +1452,11 @@ a {
   }
 
   .zv-member {
+    grid-template-columns: 1fr;
+  }
+
+  .zvij-member-form__grid,
+  .site-footer__member .zvij-member-form__grid {
     grid-template-columns: 1fr;
   }
 

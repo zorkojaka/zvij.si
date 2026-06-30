@@ -224,3 +224,15 @@ dev.inteligent.si
 ```
 
 Live `zvij.si` must not be touched during development.
+# Email Membership Touchpoints
+
+- Homepage: `Postani član Zvij.si` membership section with reusable signup form.
+- Footer: compact `Postani član` form.
+- Checkout: optional, unchecked marketing opt-in for `Član Zvij.si`.
+- Admin: `Settings -> Član Zvij.si Email` status and test signup.
+
+Terminology:
+
+- Membership: `Član Zvij.si`
+- Email content series: `Zvijače za zvijače`
+- CTA: `Postani član`

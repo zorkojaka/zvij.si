@@ -201,3 +201,28 @@ Do not:
 - imply medical benefit
 - imply members are resellers
 - build infrastructure before the product system is clear
+# Član Zvij.si Email Membership
+
+Membership name: `Član Zvij.si`.
+
+Signup CTA: `Postani član`.
+
+Email content series: `Zvijače za zvijače`.
+
+V1 lives in `wp-content/plugins/zvij-core/zvij-core.php` and provides:
+
+- reusable membership signup form,
+- consent storage,
+- unique first-order WooCommerce coupon generation,
+- welcome email delivery through WordPress mail,
+- MailerLite-ready provider sync,
+- optional checkout marketing opt-in,
+- admin status and test-signup page.
+
+Provider setup and tests are documented in:
+
+- `docs/email/EMAIL_SYSTEM_AUDIT.md`
+- `docs/email/MAILERLITE_SETUP.md`
+- `docs/email/MEMBERSHIP_FLOW.md`
+- `docs/email/AUTOMATION_ROADMAP.md`
+- `docs/email/TEST_PLAN.md`
