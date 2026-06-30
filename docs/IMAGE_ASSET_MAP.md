@@ -22,6 +22,29 @@ Replacement locations (no code/layout changes required):
 
 Per-component current status: `docs/ZVIJ_PRODUCT_MATRIX.md`.
 
+## Homepage editorial block image slots (2026-06-18)
+
+The homepage product/category section uses image-led editorial blocks. Each block
+reads a configurable image slot via `zvij_home_block_img(<name>)`; drop a real photo
+at the path below and it overrides the temporary fallback automatically (no code change).
+
+Directory: `wp-content/themes/zvij-theme/assets/images/home/`
+Accepted extensions: `jpg`, `jpeg`, `png`, `webp` (first match wins).
+
+| Block | Slot file (`…/home/`) | Aspect | Temporary fallback | Final photo |
+|---|---|---|---|---|
+| DUBI (half) | `dubi.*` | ~4:3 | DUBI product image (kraft pouch) | needed |
+| CBD/CBG (half) | `cbd.*` | ~4:3 | SMOKEY+CHILLY+FRUTTY packs composed | needed |
+| Kiti — Black (full) | `kiti-black.*` | ~16:7 | `images/kits/black-kit-flatlay.png` | needed |
+| Kiti — Silver (full) | `kiti-silver.*` | ~16:7 | `images/kits/silver-kit-flatlay.png` | needed |
+| Kiti — Gold (full) | `kiti-gold.*` | ~16:7 | `images/kits/gold-kit-flatlay.png` | needed |
+| Reload (full) | `reload.*` | ~16:7 | `images/kits/throwie-kit-flatlay.png` | needed |
+
+Recommended sizes: full-width blocks ~2000×875 (16:7); half-width blocks ~1200×900
+(4:3). The Kiti block colour dots (Black/Silver/Gold) swap the background to the
+matching `kiti-<colour>` slot. Overlay copy and gradient are fixed in the theme; only
+the images change.
+
 ## Reference Mockups
 
 Expected but missing in current checkout:

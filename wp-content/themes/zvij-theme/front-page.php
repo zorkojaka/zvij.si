@@ -63,62 +63,89 @@ $buy_btn = static function (?WC_Product $product, string $label = 'Poglej') : st
   <div><b>Zate. Vedno.</b><span>Domača podpora</span></div>
 </section>
 
-<section class="zv-home-grid" id="ponudba">
-  <article class="zv-card zv-card--wide">
-    <div>
-      <p class="zv-kicker">CBD/CBG</p>
-      <h2>vršički</h2>
-      <p>Tri sorte. Dve količini. Tvoja izbira.</p>
-      <a class="button" href="<?php echo esc_url(home_url('/trgovina/')); ?>">Poglej vse</a>
-    </div>
-    <div class="zv-product-row">
-      <?php foreach (['smokey', 'chilly', 'frutty'] as $slug) : ?>
-        <?php $p = $products[$slug]; ?>
-        <figure>
-          <?php $img = zvij_home_product_img_url($p); ?>
-          <?php if ($img !== '') : ?><img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr($p instanceof WC_Product ? $p->get_name() : strtoupper($slug)); ?>" loading="lazy"><?php endif; ?>
-          <figcaption><?php echo esc_html(strtoupper($slug)); ?></figcaption>
-        </figure>
-      <?php endforeach; ?>
-    </div>
-  </article>
+<?php
+// Image-led editorial blocks. Each block has a configurable image slot
+// (assets/images/home/<name>.{jpg,png,webp}); a temporary asset is used until the
+// real photo is dropped in. See docs/IMAGE_ASSET_MAP.md.
+$dubi_bg   = zvij_home_block_img('dubi');
+$dubi_bg   = $dubi_bg !== '' ? $dubi_bg : zvij_home_product_img_url($dubi);
+$dubi_href = $dubi instanceof WC_Product ? get_permalink($dubi->get_id()) : home_url('/trgovina/');
+$cbd_bg    = zvij_home_block_img('cbd');
 
-  <article class="zv-card">
-    <p class="zv-kicker">DUBI</p>
-    <h2>filtri</h2>
-    <p>Boljši dim. Boljši občutek. Vsak dan.</p>
-    <?php $img = zvij_home_product_img_url($dubi); ?>
-    <?php if ($img !== '') : ?><img class="zv-card__image" src="<?php echo esc_url($img); ?>" alt="DUBI filtri" loading="lazy"><?php endif; ?>
-    <?php echo $buy_btn($dubi, 'Poglej filtre'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-  </article>
+$kiti_href  = home_url('/kiti/');
+$kit_colors = [];
+foreach ($kits as $kit) {
+    $cimg = zvij_home_block_img('kiti-' . $kit['key']);
+    $kit_colors[] = [
+        'key'  => $kit['key'],
+        'name' => $kit['name'],
+        'img'  => $cimg !== '' ? $cimg : zvij_kit_flatlay_url($kit['key']),
+    ];
+}
+$kiti_default = $kit_colors[0]['img'] ?? '';
 
-  <article class="zv-card zv-card--kit">
-    <div class="zv-card__head">
-      <div>
-        <p class="zv-kicker">Kiti Zvij.si</p>
-        <h2>En kit, tvoj stil.</h2>
-        <p>Izberi barvo. Ostalo je že sestavljeno.</p>
+$reload_bg = zvij_home_block_img('reload');
+$reload_bg = $reload_bg !== '' ? $reload_bg : zvij_kit_flatlay_url('throwie');
+?>
+<section class="zv-editorial" id="ponudba">
+  <div class="zv-editorial__row">
+
+    <article class="zv-edit zv-edit--half zv-edit--dubi">
+      <?php if ($dubi_bg !== '') : ?><img class="zv-edit__bg zv-edit__bg--contain" src="<?php echo esc_url($dubi_bg); ?>" alt="DUBI filtri" loading="lazy"><?php endif; ?>
+      <div class="zv-edit__shade"></div>
+      <div class="zv-edit__copy">
+        <h2>DUBI filtri</h2>
+        <p>42 ali 420.</p>
+        <a class="button button--on-image" href="<?php echo esc_url($dubi_href); ?>">Poglej filtre</a>
       </div>
-      <a class="button button--ghost" href="<?php echo esc_url(home_url('/zvij-kit/')); ?>">Poglej kite</a>
-    </div>
-    <div class="zv-kit-tabs">
-      <?php foreach ($kits as $i => $kit) : ?>
-        <?php $img = zvij_kit_flatlay_url($kit['key']); ?>
-        <a class="zv-kit-tab zv-kit-tab--<?php echo esc_attr($kit['tone']); ?>" href="<?php echo esc_url(home_url('/zvij-kit/')); ?>">
-          <?php if ($img !== '') : ?><img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr($kit['name']); ?>" loading="lazy"><?php endif; ?>
-          <span><?php echo esc_html($kit['name']); ?></span>
-        </a>
-      <?php endforeach; ?>
+    </article>
+
+    <article class="zv-edit zv-edit--half zv-edit--cbd">
+      <?php if ($cbd_bg !== '') : ?>
+        <img class="zv-edit__bg" src="<?php echo esc_url($cbd_bg); ?>" alt="CBD/CBG vršički" loading="lazy">
+      <?php else : ?>
+        <div class="zv-edit__packs" aria-hidden="true">
+          <?php foreach (['smokey', 'chilly', 'frutty'] as $slug) : ?>
+            <?php $pimg = zvij_home_product_img_url($products[$slug]); ?>
+            <?php if ($pimg !== '') : ?><img src="<?php echo esc_url($pimg); ?>" alt="" loading="lazy"><?php endif; ?>
+          <?php endforeach; ?>
+        </div>
+      <?php endif; ?>
+      <div class="zv-edit__shade"></div>
+      <div class="zv-edit__copy">
+        <h2>CBD/CBG vršički</h2>
+        <p>Tri sorte. Dve količini.</p>
+        <p class="zv-edit__pills"><span>1 g</span><span>5 g</span></p>
+        <a class="button button--on-image" href="<?php echo esc_url(home_url('/trgovina/')); ?>">Poglej vršičke</a>
+      </div>
+    </article>
+
+  </div>
+
+  <article class="zv-edit zv-edit--full zv-edit--kit" data-kitsel>
+    <?php if ($kiti_default !== '') : ?><img class="zv-edit__bg" data-kit-visual src="<?php echo esc_url($kiti_default); ?>" alt="Kiti Zvij.si" loading="lazy"><?php endif; ?>
+    <div class="zv-edit__shade zv-edit__shade--strong"></div>
+    <div class="zv-edit__copy">
+      <p class="zv-edit__kicker">Kiti Zvij.si</p>
+      <h2>En kit. Tvoj stil.</h2>
+      <p class="zv-edit__sub">Black · Silver · Gold</p>
+      <div class="zv-edit__colors">
+        <?php foreach ($kit_colors as $i => $c) : ?>
+          <button type="button" class="zv-color-dot zv-color-dot--<?php echo esc_attr($c['key']); ?><?php echo $i === 0 ? ' on' : ''; ?>" data-color data-img="<?php echo esc_url($c['img']); ?>" data-href="<?php echo esc_url($kiti_href); ?>" data-name="<?php echo esc_attr($c['name']); ?>" aria-label="<?php echo esc_attr($c['name']); ?>"></button>
+        <?php endforeach; ?>
+      </div>
+      <a class="button button--on-image" data-kit-link href="<?php echo esc_url($kiti_href); ?>">Poglej kite</a>
     </div>
   </article>
 
-  <article class="zv-card">
-    <p class="zv-kicker">Reload</p>
-    <h2>ko zmanjka</h2>
-    <p>Ne sestavljaš znova. Samo dopolniš.</p>
-    <?php $tw = zvij_kit_flatlay_url('throwie'); ?>
-    <?php if ($tw !== '') : ?><img class="zv-card__image" src="<?php echo esc_url($tw); ?>" alt="Reload bundle" loading="lazy"><?php endif; ?>
-    <a class="button" href="<?php echo esc_url(home_url('/reload/')); ?>">Poglej reload</a>
+  <article class="zv-edit zv-edit--full zv-edit--reload">
+    <?php if ($reload_bg !== '') : ?><img class="zv-edit__bg" src="<?php echo esc_url($reload_bg); ?>" alt="Reload" loading="lazy"><?php endif; ?>
+    <div class="zv-edit__shade zv-edit__shade--strong"></div>
+    <div class="zv-edit__copy">
+      <h2>Ko zmanjka, samo dopolni.</h2>
+      <p class="zv-edit__tags">DUBI · Vršički · Rizle / rolce · Vžigalniki · Ostalo</p>
+      <a class="button button--on-image" href="<?php echo esc_url(home_url('/reload/')); ?>">Poglej reload</a>
+    </div>
   </article>
 </section>
 

@@ -19,7 +19,7 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.1');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.2');
 
     if (is_page('zvij-kit')) {
         wp_enqueue_script('zvij-kits', get_template_directory_uri() . '/assets/kits.js', [], '0.9.0', true);
@@ -371,4 +371,20 @@ function zvij_kit_flatlay_url(string $key): string {
     $file = $key . '-kit-flatlay.png';
     $path = get_template_directory() . '/assets/images/kits/' . $file;
     return file_exists($path) ? get_template_directory_uri() . '/assets/images/kits/' . $file : '';
+}
+
+/**
+ * Configurable homepage block image slot.
+ * Drop a real photo at wp-content/themes/zvij-theme/assets/images/home/<name>.{jpg,jpeg,png,webp}
+ * and it overrides the temporary fallback — no code change required.
+ * Returns '' when no slot file exists (caller decides the temporary fallback).
+ */
+function zvij_home_block_img(string $name): string {
+    foreach (['jpg', 'jpeg', 'png', 'webp'] as $ext) {
+        $rel = '/assets/images/home/' . $name . '.' . $ext;
+        if (file_exists(get_template_directory() . $rel)) {
+            return get_template_directory_uri() . $rel;
+        }
+    }
+    return '';
 }

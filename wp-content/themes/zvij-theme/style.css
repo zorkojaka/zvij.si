@@ -2212,3 +2212,208 @@ a {
   line-height: 0.95;
   margin: 0.1rem 0 0.6rem;
 }
+
+/* ---------------------------------------------------------------------------
+   Homepage editorial blocks (image-led)
+--------------------------------------------------------------------------- */
+.zv-editorial {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+  margin: clamp(1rem, 3vw, 1.75rem) 0;
+}
+
+.zv-editorial__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+}
+
+.zv-edit {
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  background: var(--zvij-bg-deep);
+  color: var(--zvij-bg);
+  display: flex;
+  align-items: flex-end;
+  isolation: isolate;
+}
+
+.zv-edit--half {
+  aspect-ratio: 4 / 3;
+}
+
+.zv-edit--full {
+  aspect-ratio: 16 / 7;
+}
+
+.zv-edit__bg {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.zv-edit__bg--contain {
+  object-fit: contain;
+  object-position: 88% center;
+  padding: 5% 5% 5% 40%;
+}
+
+.zv-edit__packs {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 0;
+  padding: 7% 6% 0 38%;
+}
+
+.zv-edit__packs img {
+  height: 82%;
+  width: auto;
+  object-fit: contain;
+  margin-left: -8%;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.4));
+}
+
+.zv-edit__shade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(90deg, rgba(20, 17, 14, 0.85) 0%, rgba(20, 17, 14, 0.5) 40%, rgba(20, 17, 14, 0.05) 72%);
+}
+
+.zv-edit__shade--strong {
+  background: linear-gradient(90deg, rgba(20, 17, 14, 0.92) 0%, rgba(20, 17, 14, 0.6) 46%, rgba(20, 17, 14, 0.12) 82%);
+}
+
+.zv-edit__copy {
+  position: relative;
+  padding: clamp(1.25rem, 3.5vw, 2.75rem);
+  max-width: 32rem;
+}
+
+.zv-edit__copy h2 {
+  color: var(--zvij-bg);
+  font-size: clamp(1.9rem, 4vw, 3.2rem);
+  line-height: 0.98;
+  margin: 0 0 0.4rem;
+}
+
+.zv-edit__copy p {
+  color: rgba(243, 235, 221, 0.86);
+  font-size: clamp(1rem, 1.6vw, 1.3rem);
+  margin: 0 0 1.1rem;
+}
+
+.zv-edit__kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: rgba(243, 235, 221, 0.8);
+  margin: 0 0 0.5rem !important;
+}
+
+.zv-edit__sub {
+  font-weight: 700;
+}
+
+.zv-edit__pills {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.zv-edit__pills span {
+  border: 1px solid rgba(243, 235, 221, 0.5);
+  border-radius: 999px;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.zv-edit__tags {
+  font-size: 0.95rem !important;
+  font-weight: 700;
+}
+
+.button--on-image {
+  background: var(--zvij-bg);
+  border-color: var(--zvij-bg);
+  color: var(--zvij-text);
+}
+
+.button--on-image:hover {
+  background: #fff;
+  border-color: #fff;
+  color: var(--zvij-text);
+}
+
+.zv-edit__colors {
+  display: flex;
+  gap: 0.55rem;
+  margin: 0 0 1.1rem;
+}
+
+.zv-color-dot {
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+  border: 2px solid rgba(243, 235, 221, 0.55);
+  box-shadow: 0 0 0 2px transparent;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.zv-color-dot--black { background: #1f1b17; }
+.zv-color-dot--silver { background: #c9ccd0; }
+.zv-color-dot--gold { background: #d2a24f; }
+
+.zv-color-dot.on {
+  border-color: var(--zvij-bg);
+  box-shadow: 0 0 0 2px rgba(243, 235, 221, 0.35);
+}
+
+@media (max-width: 760px) {
+  .zv-editorial__row {
+    grid-template-columns: 1fr;
+  }
+
+  .zv-edit--half,
+  .zv-edit--full {
+    aspect-ratio: 4 / 3;
+  }
+
+  .zv-edit {
+    align-items: flex-end;
+  }
+
+  .zv-edit__shade,
+  .zv-edit__shade--strong {
+    background: linear-gradient(0deg, rgba(20, 17, 14, 0.92) 0%, rgba(20, 17, 14, 0.55) 45%, rgba(20, 17, 14, 0.15) 100%);
+  }
+
+  .zv-edit__bg--contain {
+    object-position: 88% 18%;
+    padding: 5% 5% 42% 5%;
+  }
+
+  .zv-edit__packs {
+    align-items: flex-start;
+    justify-content: center;
+    padding: 7% 5% 40%;
+  }
+
+  .zv-edit__packs img {
+    height: auto;
+    width: 28%;
+    margin-left: -4%;
+  }
+}
