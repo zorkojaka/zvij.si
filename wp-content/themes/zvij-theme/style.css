@@ -2653,8 +2653,9 @@ body::before {
 .zv-carousel,
 .zv-carousel-empty {
   margin: clamp(1.25rem, 3vw, 2.4rem) auto;
-  max-width: 1180px;
-  padding: 0 clamp(1rem, 3vw, 2rem);
+  max-width: none;
+  padding: 0;
+  width: 100%;
 }
 
 .zv-carousel {
@@ -2736,7 +2737,7 @@ body::before {
   border-radius: 8px;
   box-shadow: 0 16px 38px rgba(25, 18, 10, 0.06);
   display: grid;
-  flex: 0 0 calc((100% - 3rem) / 4);
+  flex: 0 0 calc((100% - 4rem) / 5);
   min-width: 0;
   overflow: hidden;
 }
@@ -2864,11 +2865,12 @@ body::before {
   border: 1px solid rgba(199, 177, 148, 0.45);
   border-radius: 8px;
   color: #5d5247;
+  padding: 1rem;
 }
 
 @media (max-width: 900px) {
   .zv-carousel-card {
-    flex-basis: calc((100% - 1rem) / 2);
+    flex-basis: calc((100% - 2rem) / 3);
   }
 
   .site-footer__inner {
