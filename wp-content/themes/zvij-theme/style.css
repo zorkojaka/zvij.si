@@ -2816,27 +2816,27 @@ body::before {
 }
 
 .zv-carousel-card__vars {
-  display: grid;
+  display: flex;
   gap: 0.45rem;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  min-height: 76px;
+  min-height: 42px;
 }
 
 .zv-carousel-card__vars button {
   background: #f7ead7;
   border: 1px solid rgba(25, 21, 17, 0.14);
-  border-radius: 8px;
+  border-radius: 999px;
   color: var(--zvij-text);
   cursor: pointer;
-  display: grid;
-  font-size: 0.76rem;
+  display: inline-grid;
+  font-size: 0.78rem;
   font-weight: 900;
-  gap: 0.1rem;
-  line-height: 1.12;
-  min-height: 76px;
-  min-width: 0;
-  padding: 0.48rem 0.42rem;
-  text-align: left;
+  gap: 0.02rem;
+  justify-items: center;
+  line-height: 1.05;
+  min-height: 42px;
+  min-width: 72px;
+  padding: 0.34rem 0.7rem;
+  text-align: center;
 }
 
 .zv-carousel-card__vars button.on,
@@ -2856,27 +2856,14 @@ body::before {
 }
 
 .zv-carousel-card__var-price {
-  font-size: 0.72rem;
+  color: #7d7367;
+  font-size: 0.62rem;
   font-weight: 900;
 }
 
-.zv-carousel-card__var-unit,
-.zv-carousel-card__var-save {
-  color: #6a6258;
-  display: block;
-  font-size: 0.66rem;
-  font-weight: 850;
-}
-
-.zv-carousel-card__vars button.on .zv-carousel-card__var-unit,
-.zv-carousel-card__vars button.on .zv-carousel-card__var-save,
-.zv-carousel-card__vars button.is-selected .zv-carousel-card__var-unit,
-.zv-carousel-card__vars button.is-selected .zv-carousel-card__var-save {
+.zv-carousel-card__vars button.on .zv-carousel-card__var-price,
+.zv-carousel-card__vars button.is-selected .zv-carousel-card__var-price {
   color: rgba(255, 250, 242, 0.82);
-}
-
-.zv-carousel-card__var-save {
-  color: #2f6a50;
 }
 
 .zv-carousel__add {
