@@ -1138,6 +1138,26 @@ a {
   margin-top: clamp(1rem, 2.5vw, 2rem);
   overflow: hidden;
   padding: clamp(2rem, 4vw, 3.25rem) clamp(1.5rem, 4vw, 3rem);
+  position: relative;
+}
+
+.zv-member::after {
+  background: url("assets/images/brand/member-leaf.png") center / contain no-repeat;
+  bottom: -2.4rem;
+  content: "";
+  height: clamp(150px, 18vw, 250px);
+  opacity: 0.14;
+  pointer-events: none;
+  position: absolute;
+  right: -2.2rem;
+  transform: rotate(-10deg);
+  width: clamp(150px, 18vw, 250px);
+  z-index: 0;
+}
+
+.zv-member > * {
+  position: relative;
+  z-index: 1;
 }
 
 .zv-member__card {
@@ -1467,6 +1487,14 @@ a {
 
   .zv-member {
     grid-template-columns: 1fr;
+  }
+
+  .zv-member::after {
+    bottom: -1.7rem;
+    height: 145px;
+    opacity: 0.1;
+    right: -2.6rem;
+    width: 145px;
   }
 
   .zvij-member-form__grid,
