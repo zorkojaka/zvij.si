@@ -2561,7 +2561,7 @@ body::before {
   align-items: center;
   display: grid;
   gap: clamp(2rem, 5vw, 4rem);
-  grid-template-columns: minmax(380px, 1.18fr) minmax(280px, 0.82fr);
+  grid-template-columns: minmax(280px, 0.82fr) minmax(380px, 1.18fr);
   margin: 0 auto;
   max-width: var(--zvij-max);
   min-height: auto;
@@ -2572,6 +2572,7 @@ body::before {
 .site-footer .site-footer__member {
   display: grid;
   gap: 1rem;
+  order: 2;
   max-width: 680px;
   width: 100%;
 }
@@ -2620,6 +2621,7 @@ body::before {
   gap: 1rem;
   justify-items: center;
   justify-self: stretch;
+  order: 1;
   place-content: center;
   text-align: center;
   max-width: none;
