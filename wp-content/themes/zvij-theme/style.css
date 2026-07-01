@@ -987,6 +987,11 @@ a {
   margin-top: 1rem;
 }
 
+.zv-benefits,
+.zv-trust {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .zv-service-strip b,
 .zv-benefits b,
 .zv-trust b,
@@ -1263,7 +1268,7 @@ a {
 }
 
 .zv-trust {
-  grid-template-columns: 1.3fr 0.9fr 1.3fr 1.2fr 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .zv-page-head {

@@ -103,7 +103,6 @@ $reload_bg = $reload_bg !== '' ? $reload_bg : zvij_kit_flatlay_url('throwie');
   <div><b>Domača podpora</b><span>Tukaj smo zate.</span></div>
   <div><b>Diskretno pakiranje</b><span>Brez oznak.</span></div>
   <div><b>Hitra dostava</b><span>1-2 dni.</span></div>
-  <div><b>Član Zvij.si</b><span>Ugodnosti za člane.</span></div>
 </section>
 
 <section class="zv-member zv-panel">
@@ -119,9 +118,9 @@ $reload_bg = $reload_bg !== '' ? $reload_bg : zvij_kit_flatlay_url('throwie');
 </section>
 
 <section class="zv-trust">
-  <div><b>Diskretno</b><span>Tvoj paket, tvoja stvar.</span></div>
-  <div><b>Domača roba</b><span>Iz Slovenije.</span></div>
-  <div><b>Sledi nam</b><span>@zvij.si</span></div>
+  <div><b>Domača podpora</b><span>Tukaj smo zate.</span></div>
+  <div><b>Diskretno pakiranje</b><span>Brez oznak.</span></div>
+  <div><b>Hitra dostava</b><span>1-2 dni.</span></div>
 </section>
 
 <?php
