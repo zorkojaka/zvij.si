@@ -18,7 +18,7 @@ if (! defined('ABSPATH')) {
 <?php wp_body_open(); ?>
 <header class="site-header">
   <a class="site-brand" href="<?php echo esc_url(home_url('/')); ?>">
-    <img class="site-brand__logo" src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/brand/logo-clean.png'); ?>" alt="<?php esc_attr_e('zvij.si', 'zvij-theme'); ?>">
+    <img class="site-brand__logo" src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/brand/logo-zvij.svg'); ?>" alt="<?php esc_attr_e('zvij.si', 'zvij-theme'); ?>">
   </a>
   <nav class="site-nav" aria-label="<?php esc_attr_e('Main menu', 'zvij-theme'); ?>">
     <ul>
