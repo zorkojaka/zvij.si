@@ -2688,9 +2688,10 @@ body::before {
 .site-footer__brand img {
   display: block;
   filter: drop-shadow(0 18px 35px rgba(25, 18, 10, 0.08));
-  max-height: clamp(140px, 17vw, 220px);
+  height: clamp(140px, 17vw, 220px);
+  max-width: min(100%, 285px);
   object-fit: contain;
-  width: min(100%, 285px);
+  width: auto;
 }
 
 .site-footer__social {
