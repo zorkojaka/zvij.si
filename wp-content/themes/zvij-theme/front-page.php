@@ -87,16 +87,6 @@ $reload_bg = $reload_bg !== '' ? $reload_bg : zvij_kit_flatlay_url('throwie');
       <a class="button button--on-image" data-kit-link href="<?php echo esc_url($kiti_href); ?>">Poglej kite</a>
     </div>
   </article>
-
-  <article class="zv-edit zv-edit--full zv-edit--reload">
-    <?php if ($reload_bg !== '') : ?><img class="zv-edit__bg" src="<?php echo esc_url($reload_bg); ?>" alt="Reload" loading="lazy"><?php endif; ?>
-    <div class="zv-edit__shade zv-edit__shade--strong"></div>
-    <div class="zv-edit__copy">
-      <h2>Ko zmanjka, samo dopolni.</h2>
-      <p class="zv-edit__tags">DUBI · Vršički · Rizle / rolce · Vžigalniki · Ostalo</p>
-      <a class="button button--on-image" href="<?php echo esc_url(home_url('/reload/')); ?>">Poglej reload</a>
-    </div>
-  </article>
 </section>
 
 <section class="zv-benefits">
@@ -115,6 +105,18 @@ $reload_bg = $reload_bg !== '' ? $reload_bg : zvij_kit_flatlay_url('throwie');
   <div class="zv-member__form">
     <?php echo function_exists('zvij_membership_form') ? zvij_membership_form(['source' => 'homepage']) : '<a class="button" href="' . esc_url(home_url('/clan-zvij-si/')) . '">Postani član</a>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
   </div>
+</section>
+
+<section class="zv-editorial">
+  <article class="zv-edit zv-edit--full zv-edit--reload">
+    <?php if ($reload_bg !== '') : ?><img class="zv-edit__bg" src="<?php echo esc_url($reload_bg); ?>" alt="Reload" loading="lazy"><?php endif; ?>
+    <div class="zv-edit__shade zv-edit__shade--strong"></div>
+    <div class="zv-edit__copy">
+      <h2>Ko zmanjka, samo dopolni.</h2>
+      <p class="zv-edit__tags">DUBI · Vršički · Rizle / rolce · Vžigalniki · Ostalo</p>
+      <a class="button button--on-image" href="<?php echo esc_url(home_url('/reload/')); ?>">Poglej reload</a>
+    </div>
+  </article>
 </section>
 
 <section class="zv-trust">
