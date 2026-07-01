@@ -9,14 +9,6 @@ if (! defined('ABSPATH')) {
 
 get_header();
 
-$dubi = zvij_home_product('dubi-42-aktivnih-ogljikovih-filtrov') ?: zvij_home_product('dubi-420-aktivnih-ogljikovih-filtrov');
-$products = [
-    'smokey' => zvij_home_product('smokey-cbd-vrsicki'),
-    'chilly' => zvij_home_product('chilly-cbg-vrsicki'),
-    'frutty' => zvij_home_product('frutty-cbd-vrsicki'),
-    'dubi' => $dubi,
-];
-
 $tone_map = ['black' => 'dark', 'silver' => 'silver', 'gold' => 'gold'];
 $kits = [];
 foreach ((array) get_option('zvij_kits', []) as $kit_def) {
@@ -31,14 +23,6 @@ foreach ((array) get_option('zvij_kits', []) as $kit_def) {
     ];
 }
 $hero_img = zvij_kit_flatlay_url('black');
-
-$buy_btn = static function (?WC_Product $product, string $label = 'Poglej') : string {
-    if (! $product instanceof WC_Product) {
-        return '<a class="button" href="' . esc_url(home_url('/trgovina/')) . '">' . esc_html($label) . '</a>';
-    }
-
-    return '<a class="button" href="' . esc_url(get_permalink($product->get_id())) . '">' . esc_html($label) . '</a>';
-};
 ?>
 
 <section class="zv-hero zv-panel">
@@ -70,14 +54,8 @@ if (function_exists('zvij_render_homepage_product_carousel')) {
 ?>
 
 <?php
-// Image-led editorial blocks. Each block has a configurable image slot
-// (assets/images/home/<name>.{jpg,png,webp}); a temporary asset is used until the
-// real photo is dropped in. See docs/IMAGE_ASSET_MAP.md.
-$dubi_bg   = zvij_home_block_img('dubi');
-$dubi_bg   = $dubi_bg !== '' ? $dubi_bg : zvij_home_product_img_url($dubi);
-$dubi_href = $dubi instanceof WC_Product ? get_permalink($dubi->get_id()) : home_url('/trgovina/');
-$cbd_bg    = zvij_home_block_img('cbd');
-
+// Image-led Kiti and Reload blocks. Product-family cards are handled by the
+// homepage carousel above.
 $kiti_href  = home_url('/kiti/');
 $kit_colors = [];
 foreach ($kits as $kit) {
@@ -94,40 +72,6 @@ $reload_bg = zvij_home_block_img('reload');
 $reload_bg = $reload_bg !== '' ? $reload_bg : zvij_kit_flatlay_url('throwie');
 ?>
 <section class="zv-editorial" id="ponudba">
-  <div class="zv-editorial__row">
-
-    <article class="zv-edit zv-edit--half zv-edit--dubi">
-      <?php if ($dubi_bg !== '') : ?><img class="zv-edit__bg zv-edit__bg--contain" src="<?php echo esc_url($dubi_bg); ?>" alt="DUBI filtri" loading="lazy"><?php endif; ?>
-      <div class="zv-edit__shade"></div>
-      <div class="zv-edit__copy">
-        <h2>DUBI filtri</h2>
-        <p>42 ali 420.</p>
-        <a class="button button--on-image" href="<?php echo esc_url($dubi_href); ?>">Poglej filtre</a>
-      </div>
-    </article>
-
-    <article class="zv-edit zv-edit--half zv-edit--cbd">
-      <?php if ($cbd_bg !== '') : ?>
-        <img class="zv-edit__bg" src="<?php echo esc_url($cbd_bg); ?>" alt="CBD/CBG vršički" loading="lazy">
-      <?php else : ?>
-        <div class="zv-edit__packs" aria-hidden="true">
-          <?php foreach (['smokey', 'chilly', 'frutty'] as $slug) : ?>
-            <?php $pimg = zvij_home_product_img_url($products[$slug]); ?>
-            <?php if ($pimg !== '') : ?><img src="<?php echo esc_url($pimg); ?>" alt="" loading="lazy"><?php endif; ?>
-          <?php endforeach; ?>
-        </div>
-      <?php endif; ?>
-      <div class="zv-edit__shade"></div>
-      <div class="zv-edit__copy">
-        <h2>CBD/CBG vršički</h2>
-        <p>Tri sorte. Dve količini.</p>
-        <p class="zv-edit__pills"><span>1 g</span><span>5 g</span></p>
-        <a class="button button--on-image" href="<?php echo esc_url(home_url('/trgovina/')); ?>">Poglej vršičke</a>
-      </div>
-    </article>
-
-  </div>
-
   <article class="zv-edit zv-edit--full zv-edit--kit" data-kitsel>
     <?php if ($kiti_default !== '') : ?><img class="zv-edit__bg" data-kit-visual src="<?php echo esc_url($kiti_default); ?>" alt="Kiti Zvij.si" loading="lazy"><?php endif; ?>
     <div class="zv-edit__shade zv-edit__shade--strong"></div>
