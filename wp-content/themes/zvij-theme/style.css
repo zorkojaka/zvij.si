@@ -2816,28 +2816,67 @@ body::before {
 }
 
 .zv-carousel-card__vars {
-  display: flex;
+  display: grid;
   gap: 0.45rem;
-  min-height: 34px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  min-height: 76px;
 }
 
 .zv-carousel-card__vars button {
   background: #f7ead7;
   border: 1px solid rgba(25, 21, 17, 0.14);
-  border-radius: 999px;
+  border-radius: 8px;
   color: var(--zvij-text);
   cursor: pointer;
-  font-size: 0.82rem;
+  display: grid;
+  font-size: 0.76rem;
   font-weight: 900;
-  min-height: 34px;
-  min-width: 52px;
-  padding: 0.4rem 0.75rem;
+  gap: 0.1rem;
+  line-height: 1.12;
+  min-height: 76px;
+  min-width: 0;
+  padding: 0.48rem 0.42rem;
+  text-align: left;
 }
 
 .zv-carousel-card__vars button.on,
 .zv-carousel-card__vars button.is-selected {
   background: var(--zvij-text);
   color: #fffaf2;
+}
+
+.zv-carousel-card__var-label,
+.zv-carousel-card__var-price {
+  display: block;
+}
+
+.zv-carousel-card__var-label {
+  font-size: 0.86rem;
+  font-weight: 950;
+}
+
+.zv-carousel-card__var-price {
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.zv-carousel-card__var-unit,
+.zv-carousel-card__var-save {
+  color: #6a6258;
+  display: block;
+  font-size: 0.66rem;
+  font-weight: 850;
+}
+
+.zv-carousel-card__vars button.on .zv-carousel-card__var-unit,
+.zv-carousel-card__vars button.on .zv-carousel-card__var-save,
+.zv-carousel-card__vars button.is-selected .zv-carousel-card__var-unit,
+.zv-carousel-card__vars button.is-selected .zv-carousel-card__var-save {
+  color: rgba(255, 250, 242, 0.82);
+}
+
+.zv-carousel-card__var-save {
+  color: #2f6a50;
 }
 
 .zv-carousel__add {

@@ -19,7 +19,7 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.13');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.15');
 
     if (is_page('zvij-kit')) {
         wp_enqueue_script('zvij-kits', get_template_directory_uri() . '/assets/kits.js', [], '0.9.0', true);
@@ -29,7 +29,7 @@ add_action('wp_enqueue_scripts', function (): void {
         if (function_exists('WC')) {
             wp_enqueue_script('wc-add-to-cart');
         }
-        wp_enqueue_script('zvij-home', get_template_directory_uri() . '/assets/home.js', ['jquery'], '0.9.13', true);
+        wp_enqueue_script('zvij-home', get_template_directory_uri() . '/assets/home.js', ['jquery'], '0.9.15', true);
     }
 });
 
@@ -508,11 +508,18 @@ function zvij_homepage_carousel_variations(WC_Product $product): array {
                 break;
             }
         }
+        $grams = 0.0;
+        if (preg_match('/([\d]+(?:[,.]\d+)?)\s*g/i', $label, $matches)) {
+            $grams = (float) str_replace(',', '.', $matches[1]);
+        }
 
         $items[] = [
             'id' => $variation->get_id(),
             'label' => $label !== '' ? $label : $variation->get_name(),
             'price' => wp_strip_all_tags($variation->get_price_html()),
+            'price_html' => $variation->get_price_html(),
+            'raw_price' => (float) $variation->get_price(),
+            'grams' => $grams,
             'attrs' => $attrs,
         ];
     }
@@ -573,6 +580,13 @@ function zvij_render_homepage_product_carousel(): void {
             $position = $i + 1;
             $variations = zvij_homepage_carousel_variations($product);
             $default_variation = $variations[0] ?? [];
+            $one_gram_price = 0.0;
+            foreach ($variations as $variation_for_compare) {
+                if ((float) ($variation_for_compare['grams'] ?? 0) === 1.0) {
+                    $one_gram_price = (float) ($variation_for_compare['raw_price'] ?? 0);
+                    break;
+                }
+            }
             ?>
             <article class="zv-carousel-card" data-carousel-card data-product-id="<?php echo esc_attr((string) $product->get_id()); ?>" data-carousel-position="<?php echo esc_attr((string) $position); ?>" data-carousel-source="homepage">
               <a class="zv-carousel-card__image" href="<?php echo esc_url(get_permalink($product->get_id())); ?>" aria-label="<?php echo esc_attr($product->get_name()); ?>">
@@ -595,7 +609,17 @@ function zvij_render_homepage_product_carousel(): void {
                         data-product-id="<?php echo esc_attr((string) $product->get_id()); ?>"
                         data-price="<?php echo esc_attr($variation['price']); ?>"
                         data-attrs="<?php echo esc_attr(wp_json_encode($variation['attrs'])); ?>">
-                        <?php echo esc_html($variation['label']); ?>
+                        <span class="zv-carousel-card__var-label"><?php echo esc_html($variation['label']); ?></span>
+                        <span class="zv-carousel-card__var-price"><?php echo wp_kses_post($variation['price_html']); ?></span>
+                        <?php if ((float) $variation['grams'] > 0.0) : ?>
+                          <span class="zv-carousel-card__var-unit"><?php echo esc_html(wp_strip_all_tags(wc_price($variation['raw_price'] / $variation['grams'])) . '/g'); ?></span>
+                        <?php endif; ?>
+                        <?php if ((float) $variation['grams'] > 1.0) : ?>
+                          <?php $saving = $one_gram_price > 0 ? ($one_gram_price * $variation['grams']) - $variation['raw_price'] : 0; ?>
+                          <?php if ($saving > 0.009) : ?>
+                            <span class="zv-carousel-card__var-save"><?php echo esc_html(sprintf(__('Prihrani %s', 'zvij-theme'), wp_strip_all_tags(wc_price($saving)))); ?></span>
+                          <?php endif; ?>
+                        <?php endif; ?>
                       </button>
                     <?php endforeach; ?>
                   </div>
