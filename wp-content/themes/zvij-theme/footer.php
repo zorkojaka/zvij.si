@@ -9,7 +9,6 @@ if (! defined('ABSPATH')) {
 ?>
 </main>
 <footer class="site-footer">
-  <div class="site-footer__pattern" aria-hidden="true"></div>
   <div class="site-footer__inner">
     <div class="site-footer__member">
       <p class="site-footer__eyebrow"><?php esc_html_e('Član Zvij.si', 'zvij-theme'); ?></p>
@@ -19,7 +18,7 @@ if (! defined('ABSPATH')) {
     </div>
 
     <div class="site-footer__brand">
-      <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/brand/logo-obrobo.png'); ?>" alt="<?php esc_attr_e('zvij.si', 'zvij-theme'); ?>" loading="lazy">
+      <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/brand/logo-small.png'); ?>" alt="<?php esc_attr_e('zvij.si', 'zvij-theme'); ?>" loading="lazy">
       <address>
         <strong>Zvij.si</strong><br>
         <?php esc_html_e('Tvoj vajb. Tvoja rutina. Tvoj lajf. Tvoja pravila.', 'zvij-theme'); ?>
