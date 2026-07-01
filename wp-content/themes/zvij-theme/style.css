@@ -992,6 +992,24 @@ a {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.zv-service-strip > div:nth-child(1),
+.zv-benefits > div:nth-child(1),
+.zv-trust > div:nth-child(1) {
+  text-align: left;
+}
+
+.zv-service-strip > div:nth-child(2),
+.zv-benefits > div:nth-child(2),
+.zv-trust > div:nth-child(2) {
+  text-align: center;
+}
+
+.zv-service-strip > div:nth-child(3),
+.zv-benefits > div:nth-child(3),
+.zv-trust > div:nth-child(3) {
+  text-align: right;
+}
+
 .zv-service-strip b,
 .zv-benefits b,
 .zv-trust b,
@@ -1481,6 +1499,12 @@ a {
   .woocommerce ul.products,
   .woocommerce-page ul.products {
     grid-template-columns: 1fr;
+  }
+
+  .zv-service-strip > div,
+  .zv-benefits > div,
+  .zv-trust > div {
+    text-align: left;
   }
 
   .zv-product-row,
