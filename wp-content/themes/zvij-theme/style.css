@@ -2755,7 +2755,8 @@ body::before {
 }
 
 .zv-carousel-card__body {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 0.55rem;
   padding: 1rem;
 }
@@ -2764,7 +2765,7 @@ body::before {
   font-size: 1rem;
   line-height: 1.08;
   margin: 0;
-  min-height: 2.2rem;
+  min-height: 2.6rem;
 }
 
 .zv-carousel-card h3 a {
@@ -2776,6 +2777,7 @@ body::before {
   font-size: 0.92rem;
   font-weight: 900;
   margin: 0;
+  min-height: 1.4rem;
 }
 
 .zv-carousel-card__price del {
@@ -2787,11 +2789,13 @@ body::before {
   color: #5d5247;
   font-size: 0.78rem;
   font-weight: 750;
+  min-height: 1.1rem;
 }
 
 .zv-carousel-card__vars {
   display: flex;
   gap: 0.45rem;
+  min-height: 34px;
 }
 
 .zv-carousel-card__vars button {
@@ -2818,16 +2822,19 @@ body::before {
   background: var(--zvij-text);
   border: 0;
   border-radius: 6px;
+  box-sizing: border-box;
   color: #fff;
   cursor: pointer;
   display: inline-flex;
   font-size: 0.88rem;
   font-weight: 950;
+  height: 42px;
   justify-content: center;
-  min-height: 42px;
-  padding: 0.7rem 0.9rem;
+  margin-top: auto;
+  padding: 0 0.9rem;
   text-align: center;
   text-decoration: none;
+  width: 100%;
 }
 
 .zv-carousel__add:disabled,
