@@ -19,7 +19,7 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.16');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.17');
 
     if (is_page('zvij-kit')) {
         wp_enqueue_script('zvij-kits', get_template_directory_uri() . '/assets/kits.js', [], '0.9.0', true);
@@ -29,7 +29,7 @@ add_action('wp_enqueue_scripts', function (): void {
         if (function_exists('WC')) {
             wp_enqueue_script('wc-add-to-cart');
         }
-        wp_enqueue_script('zvij-home', get_template_directory_uri() . '/assets/home.js', ['jquery'], '0.9.16', true);
+        wp_enqueue_script('zvij-home', get_template_directory_uri() . '/assets/home.js', ['jquery'], '0.9.17', true);
     }
 });
 
@@ -516,8 +516,6 @@ function zvij_homepage_carousel_variations(WC_Product $product): array {
         $items[] = [
             'id' => $variation->get_id(),
             'label' => $label !== '' ? $label : $variation->get_name(),
-            'price' => wp_strip_all_tags($variation->get_price_html()),
-            'price_html' => $variation->get_price_html(),
             'raw_price' => (float) $variation->get_price(),
             'grams' => $grams,
             'attrs' => $attrs,
@@ -596,7 +594,15 @@ function zvij_render_homepage_product_carousel(): void {
               <div class="zv-carousel-card__body">
                 <p class="zv-carousel-card__cat"><?php echo esc_html(zvij_homepage_carousel_label($product)); ?></p>
                 <h3><a href="<?php echo esc_url(get_permalink($product->get_id())); ?>"><?php echo esc_html($product->get_name()); ?></a></h3>
-                <p class="zv-carousel-card__price" data-price-out><?php echo wp_kses_post($product->get_price_html()); ?></p>
+                <p class="zv-carousel-card__price" data-price-out>
+                  <?php
+                  if ($product->is_type('variable') && isset($default_variation['raw_price'])) {
+                      echo wp_kses_post(wc_price((float) $default_variation['raw_price']));
+                  } else {
+                      echo wp_kses_post($product->get_price_html());
+                  }
+                  ?>
+                </p>
                 <?php if ($product->is_type('variable')) : ?>
                   <div class="zv-carousel-card__hint"><?php esc_html_e('Izberi količino', 'zvij-theme'); ?></div>
                   <div class="zv-carousel-card__vars" role="group" aria-label="<?php esc_attr_e('Količina', 'zvij-theme'); ?>">
@@ -607,10 +613,10 @@ function zvij_render_homepage_product_carousel(): void {
                         aria-pressed="<?php echo $variation_i === 0 ? 'true' : 'false'; ?>"
                         data-variation-id="<?php echo esc_attr((string) $variation['id']); ?>"
                         data-product-id="<?php echo esc_attr((string) $product->get_id()); ?>"
-                        data-price="<?php echo esc_attr($variation['price']); ?>"
+                        data-price="<?php echo esc_attr(wp_strip_all_tags(wc_price((float) $variation['raw_price']))); ?>"
                         data-attrs="<?php echo esc_attr(wp_json_encode($variation['attrs'])); ?>">
                         <span class="zv-carousel-card__var-label"><?php echo esc_html($variation['label']); ?></span>
-                        <span class="zv-carousel-card__var-price"><?php echo wp_kses_post($variation['price_html']); ?></span>
+                        <span class="zv-carousel-card__var-price"><?php echo wp_kses_post(wc_price((float) $variation['raw_price'])); ?></span>
                       </button>
                     <?php endforeach; ?>
                   </div>
