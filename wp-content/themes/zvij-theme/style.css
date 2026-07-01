@@ -880,7 +880,7 @@ a {
 
 .site-main {
   max-width: var(--zvij-max);
-  padding: 0 clamp(1rem, 3.2vw, 4rem) 3rem;
+  padding: 0 clamp(1rem, 3.2vw, 4rem) 1rem;
 }
 
 .zv-panel,
@@ -1133,11 +1133,11 @@ a {
 .zv-member {
   align-items: center;
   display: grid;
-  gap: 2rem;
-  grid-template-columns: 220px minmax(220px, 0.8fr) minmax(320px, 1fr);
-  margin-top: 0.75rem;
+  gap: clamp(2rem, 4vw, 4rem);
+  grid-template-columns: minmax(210px, 0.52fr) minmax(280px, 0.98fr) minmax(360px, 1.45fr);
+  margin-top: clamp(1rem, 2.5vw, 2rem);
   overflow: hidden;
-  padding: 1.5rem 2rem;
+  padding: clamp(2rem, 4vw, 3.25rem) clamp(1.5rem, 4vw, 3rem);
 }
 
 .zv-member__card {
@@ -1160,6 +1160,7 @@ a {
 
 .zv-member__form {
   min-width: 0;
+  width: 100%;
 }
 
 .zvij-member-form {
@@ -2551,26 +2552,28 @@ body::before {
   background: #f1eee9;
   color: var(--zvij-text);
   display: block;
-  margin-top: clamp(3rem, 8vw, 7rem);
+  margin-top: 0;
   overflow: hidden;
   padding: 0;
 }
 
-.site-footer__inner {
+.site-footer .site-footer__inner {
   align-items: center;
   display: grid;
-  gap: clamp(2rem, 6vw, 5rem);
-  grid-template-columns: minmax(300px, 0.88fr) minmax(320px, 1.12fr);
+  gap: clamp(2rem, 5vw, 4rem);
+  grid-template-columns: minmax(380px, 1.18fr) minmax(280px, 0.82fr);
   margin: 0 auto;
-  max-width: 1180px;
-  min-height: 560px;
-  padding: clamp(3rem, 8vw, 7rem) clamp(1.2rem, 4vw, 3rem);
+  max-width: var(--zvij-max);
+  min-height: auto;
+  padding: clamp(2.5rem, 5vw, 4rem) clamp(1rem, 3.2vw, 4rem);
+  width: 100%;
 }
 
-.site-footer__member {
+.site-footer .site-footer__member {
   display: grid;
-  gap: 0.9rem;
-  max-width: 520px;
+  gap: 1rem;
+  max-width: 680px;
+  width: 100%;
 }
 
 .site-footer__eyebrow {
@@ -2610,12 +2613,14 @@ body::before {
   border-color: transparent;
 }
 
-.site-footer__brand {
+.site-footer .site-footer__brand {
   align-items: center;
   display: grid;
   gap: 1rem;
   justify-items: center;
+  justify-self: end;
   text-align: center;
+  max-width: none;
 }
 
 .site-footer__brand img {
@@ -2933,6 +2938,7 @@ body::before {
 
   .site-footer__brand {
     justify-items: start;
+    justify-self: stretch;
     text-align: left;
   }
 }
