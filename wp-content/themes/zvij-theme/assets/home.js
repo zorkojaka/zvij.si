@@ -165,23 +165,70 @@
       var status = card.querySelector('[data-cart-status]');
       var price = card.querySelector('[data-price-out]');
 
+      function choiceIsFiveGram(choice) {
+        var text = (choice.textContent || '').trim().toLowerCase();
+        var attrs = {};
+        try {
+          attrs = JSON.parse(choice.getAttribute('data-attrs') || '{}');
+        } catch (e) {
+          attrs = {};
+        }
+        return text.indexOf('5') === 0 || Object.keys(attrs).some(function (key) {
+          return String(attrs[key]).toLowerCase().indexOf('5') === 0;
+        });
+      }
+
+      function updateImagePack(choice) {
+        var image = card.querySelector('.zv-carousel-card__image');
+        if (!image) {
+          return;
+        }
+        image.querySelectorAll('.zv-carousel-card__image-clone').forEach(function (clone) {
+          clone.remove();
+        });
+        image.classList.toggle('is-pack-5', choiceIsFiveGram(choice));
+        if (!image.classList.contains('is-pack-5')) {
+          return;
+        }
+        var original = image.querySelector('img:not(.zv-carousel-card__image-clone)');
+        if (!original) {
+          return;
+        }
+        for (var i = 0; i < 2; i += 1) {
+          var clone = original.cloneNode(true);
+          clone.classList.add('zv-carousel-card__image-clone');
+          clone.setAttribute('aria-hidden', 'true');
+          image.insertBefore(clone, original.nextSibling);
+        }
+      }
+
+      function applyChoice(choice) {
+        activate(choices, choice);
+        if (price && choice.getAttribute('data-price')) {
+          price.textContent = choice.getAttribute('data-price');
+        }
+        if (add) {
+          add.disabled = false;
+          add.dataset.productId = choice.getAttribute('data-product-id') || '';
+          add.dataset.variationId = choice.getAttribute('data-variation-id') || '';
+          add.dataset.attrs = choice.getAttribute('data-attrs') || '{}';
+        }
+        updateImagePack(choice);
+        if (status) {
+          status.textContent = '';
+        }
+      }
+
       choices.forEach(function (choice) {
         choice.addEventListener('click', function () {
-          activate(choices, choice);
-          if (price && choice.getAttribute('data-price')) {
-            price.textContent = choice.getAttribute('data-price');
-          }
-          if (add) {
-            add.disabled = false;
-            add.dataset.productId = choice.getAttribute('data-product-id') || '';
-            add.dataset.variationId = choice.getAttribute('data-variation-id') || '';
-            add.dataset.attrs = choice.getAttribute('data-attrs') || '{}';
-          }
-          if (status) {
-            status.textContent = '';
-          }
+          applyChoice(choice);
         });
       });
+
+      var selected = card.querySelector('[data-variation-choice].on') || choices[0];
+      if (selected) {
+        applyChoice(selected);
+      }
 
       if (!add) {
         return;
@@ -395,6 +442,9 @@
     });
 
     viewport.addEventListener('pointerdown', function (event) {
+      if (event.target.closest('a, button')) {
+        return;
+      }
       dragging = true;
       paused = true;
       dragStart = event.clientX;

@@ -19,7 +19,7 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.11');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.12');
 
     if (is_page('zvij-kit')) {
         wp_enqueue_script('zvij-kits', get_template_directory_uri() . '/assets/kits.js', [], '0.9.0', true);
@@ -29,7 +29,7 @@ add_action('wp_enqueue_scripts', function (): void {
         if (function_exists('WC')) {
             wp_enqueue_script('wc-add-to-cart');
         }
-        wp_enqueue_script('zvij-home', get_template_directory_uri() . '/assets/home.js', ['jquery'], '0.9.11', true);
+        wp_enqueue_script('zvij-home', get_template_directory_uri() . '/assets/home.js', ['jquery'], '0.9.12', true);
     }
 });
 
@@ -520,11 +520,16 @@ function zvij_homepage_carousel_variations(WC_Product $product): array {
     return $items;
 }
 
-function zvij_homepage_carousel_add_button(WC_Product $product, int $position): string {
+function zvij_homepage_carousel_add_button(WC_Product $product, int $position, array $default_variation = []): string {
     if ($product->is_type('variable')) {
+        $variation_id = isset($default_variation['id']) ? (string) $default_variation['id'] : '';
+        $attrs = isset($default_variation['attrs']) && is_array($default_variation['attrs']) ? wp_json_encode($default_variation['attrs']) : '{}';
+
         return sprintf(
-            '<button class="zv-carousel__add" type="button" data-variable-add data-product-id="%1$s" data-variation-id="" data-carousel-position="%2$s" data-carousel-source="homepage" disabled>%3$s</button>',
+            '<button class="zv-carousel__add" type="button" data-variable-add data-product-id="%1$s" data-variation-id="%2$s" data-attrs="%3$s" data-carousel-position="%4$s" data-carousel-source="homepage">%5$s</button>',
             esc_attr((string) $product->get_id()),
+            esc_attr($variation_id),
+            esc_attr((string) $attrs),
             esc_attr((string) $position),
             esc_html__('Dodaj v košarico', 'zvij-theme')
         );
@@ -567,6 +572,7 @@ function zvij_render_homepage_product_carousel(): void {
             <?php
             $position = $i + 1;
             $variations = zvij_homepage_carousel_variations($product);
+            $default_variation = $variations[0] ?? [];
             ?>
             <article class="zv-carousel-card" data-carousel-card data-product-id="<?php echo esc_attr((string) $product->get_id()); ?>" data-carousel-position="<?php echo esc_attr((string) $position); ?>" data-carousel-source="homepage">
               <a class="zv-carousel-card__image" href="<?php echo esc_url(get_permalink($product->get_id())); ?>" aria-label="<?php echo esc_attr($product->get_name()); ?>">
@@ -580,9 +586,11 @@ function zvij_render_homepage_product_carousel(): void {
                 <?php if ($product->is_type('variable')) : ?>
                   <div class="zv-carousel-card__hint"><?php esc_html_e('Izberi količino', 'zvij-theme'); ?></div>
                   <div class="zv-carousel-card__vars" role="group" aria-label="<?php esc_attr_e('Količina', 'zvij-theme'); ?>">
-                    <?php foreach ($variations as $variation) : ?>
+                    <?php foreach ($variations as $variation_i => $variation) : ?>
                       <button type="button"
                         data-variation-choice
+                        class="<?php echo $variation_i === 0 ? 'on' : ''; ?>"
+                        aria-pressed="<?php echo $variation_i === 0 ? 'true' : 'false'; ?>"
                         data-variation-id="<?php echo esc_attr((string) $variation['id']); ?>"
                         data-product-id="<?php echo esc_attr((string) $product->get_id()); ?>"
                         data-price="<?php echo esc_attr($variation['price']); ?>"
@@ -592,7 +600,7 @@ function zvij_render_homepage_product_carousel(): void {
                     <?php endforeach; ?>
                   </div>
                 <?php endif; ?>
-                <?php echo zvij_homepage_carousel_add_button($product, $position); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                <?php echo zvij_homepage_carousel_add_button($product, $position, $default_variation); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                 <p class="zv-carousel-card__status" data-cart-status aria-live="polite"></p>
               </div>
             </article>
