@@ -3,7 +3,7 @@
  * Plugin Name: Zvij Core
  * Plugin URI: https://dev.inteligent.si
  * Description: Core dev features for the Zvij.si WordPress/WooCommerce app.
- * Version: 0.2.0
+ * Version: 0.2.1
  * Author: Zvij.si
  * Requires at least: 6.5
  * Requires PHP: 8.2
@@ -14,7 +14,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-define('ZVIJ_CORE_VERSION', '0.2.0');
+define('ZVIJ_CORE_VERSION', '0.2.1');
 define('ZVIJ_MEMBER_PRIVACY_VERSION', '2026-06-30');
 
 register_activation_hook(__FILE__, 'zvij_membership_install');
@@ -283,7 +283,20 @@ function zvij_membership_send_welcome_email(string $email, string $coupon): bool
     $message .= "Politika zasebnosti: {$privacy_url}\n\n";
     $message .= "Zvij.si\nTvoj vajb. Tvoja rutina. Tvoj lajf. Tvoja pravila.\n";
 
-    return wp_mail($email, $subject, $message, ['Content-Type: text/plain; charset=UTF-8']);
+    $delivered = wp_mail($email, $subject, $message, ['Content-Type: text/plain; charset=UTF-8']);
+
+    // Dev preview: makes the flow fully testable without SMTP/provider. The last
+    // welcome email (subject, body, coupon, delivery result) is shown on the admin page.
+    update_option('zvij_membership_last_welcome', [
+        'to' => $email,
+        'subject' => $subject,
+        'body' => $message,
+        'coupon' => $coupon,
+        'delivered' => $delivered ? 'yes' : 'no (dev nima SMTP-ja — vsebina je vidna spodaj)',
+        'at' => current_time('mysql'),
+    ], false);
+
+    return $delivered;
 }
 
 function zvij_membership_process_signup(array $input, bool $send_email = true): array {
@@ -504,6 +517,32 @@ function zvij_membership_admin_page(): void {
         <p><button class="button button-primary" type="submit">Send test signup</button></p>
       </form>
       <p>Secrets are intentionally not shown here.</p>
+
+      <h2>Zadnji welcome email (dev pregled)</h2>
+      <?php $lw = (array) get_option('zvij_membership_last_welcome', []); ?>
+      <?php if (! empty($lw['to'])) : ?>
+        <table class="widefat striped" style="max-width: 760px;">
+          <tbody>
+            <tr><th>Za</th><td><?php echo esc_html((string) ($lw['to'] ?? '')); ?></td></tr>
+            <tr><th>Zadeva</th><td><?php echo esc_html((string) ($lw['subject'] ?? '')); ?></td></tr>
+            <tr><th>Koda za prvi nakup</th><td><code><?php echo esc_html((string) ($lw['coupon'] ?? '')); ?></code></td></tr>
+            <tr><th>Dostavljeno</th><td><?php echo esc_html((string) ($lw['delivered'] ?? '')); ?></td></tr>
+            <tr><th>Čas</th><td><?php echo esc_html((string) ($lw['at'] ?? '')); ?></td></tr>
+          </tbody>
+        </table>
+        <pre style="max-width: 760px; white-space: pre-wrap; background: #fff; border: 1px solid #ccd0d4; padding: 12px;"><?php echo esc_html((string) ($lw['body'] ?? '')); ?></pre>
+      <?php else : ?>
+        <p>Še ni poslanega welcome emaila. Uporabi »Send test signup« ali obrazec »Postani član« na strani.</p>
+      <?php endif; ?>
+
+      <h2>Kako testirati</h2>
+      <ol style="max-width: 760px;">
+        <li>Na <a href="<?php echo esc_url(home_url('/')); ?>">dev.inteligent.si</a> izpolni obrazec »Postani član« (homepage ali footer) — soglasje mora biti obkljukano.</li>
+        <li>Pokaže se: »Dobrodošel med člani Zvij.si. Preveri svoj e-poštni predal.«</li>
+        <li>Vsebino welcome emaila in <strong>kodo</strong> preveri zgoraj (dev nima SMTP-ja, zato mail ne pride v pravi predal — pride šele po povezavi MailerLite/SMTP).</li>
+        <li>Kodo preizkusi v košarici (naj velja 10 %, enkratna uporaba, poteče čez 30 dni).</li>
+        <li>Ponovna prijava istega e-maila vrne isto kodo in ne javi napake.</li>
+      </ol>
     </div>
     <?php
 }
