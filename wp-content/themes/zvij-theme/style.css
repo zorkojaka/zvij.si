@@ -878,6 +878,48 @@ a {
   width: min(100%, 360px);
 }
 
+.single-product table.variations select.zv-native-variation-select {
+  border: 0;
+  clip: rect(1px, 1px, 1px, 1px);
+  clip-path: inset(50%);
+  height: 1px !important;
+  margin: -1px !important;
+  min-height: 0 !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  padding: 0;
+  position: absolute;
+  width: 1px !important;
+}
+
+.zv-single-vars {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.zv-single-var {
+  align-items: center;
+  background: #f6ead7;
+  border: 1px solid #d9c7ac;
+  border-radius: 999px;
+  color: var(--zvij-text);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-weight: 950;
+  justify-content: center;
+  min-height: 42px;
+  min-width: 74px;
+  padding: 0.55rem 1rem;
+}
+
+.zv-single-var.on {
+  background: var(--zvij-text);
+  border-color: var(--zvij-text);
+  color: var(--zvij-bg);
+}
+
 .single-product .single_variation_wrap {
   display: grid;
   gap: 0.85rem;

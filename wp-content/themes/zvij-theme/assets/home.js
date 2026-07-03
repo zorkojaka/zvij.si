@@ -491,6 +491,73 @@
     window.addEventListener('beforeunload', stop);
   }
 
+  function initSingleProductVariationButtons(scope) {
+    scope.querySelectorAll('.single-product form.variations_form').forEach(function (form) {
+      if (form.dataset.zvijVariationButtonsReady === 'true') {
+        return;
+      }
+      form.dataset.zvijVariationButtonsReady = 'true';
+
+      form.querySelectorAll('select[name^="attribute_"]').forEach(function (select) {
+        var options = Array.prototype.slice.call(select.options).filter(function (option) {
+          return option.value !== '';
+        });
+        if (options.length < 2) {
+          return;
+        }
+
+        select.classList.add('zv-native-variation-select');
+
+        var group = document.createElement('div');
+        group.className = 'zv-single-vars';
+        group.setAttribute('role', 'group');
+        group.setAttribute('aria-label', select.getAttribute('data-attribute_name') || select.name);
+
+        options.forEach(function (option, index) {
+          var button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'zv-single-var' + (index === 0 ? ' on' : '');
+          button.dataset.value = option.value;
+          button.setAttribute('aria-pressed', index === 0 ? 'true' : 'false');
+          button.textContent = option.textContent.trim();
+          group.appendChild(button);
+        });
+
+        select.insertAdjacentElement('afterend', group);
+
+        function choose(value) {
+          select.value = value;
+          group.querySelectorAll('.zv-single-var').forEach(function (button) {
+            var on = button.dataset.value === value;
+            button.classList.toggle('on', on);
+            button.setAttribute('aria-pressed', on ? 'true' : 'false');
+          });
+          if (window.jQuery) {
+            window.jQuery(select).trigger('change');
+            window.jQuery(form).trigger('check_variations');
+          } else {
+            select.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+        }
+
+        group.addEventListener('click', function (event) {
+          var button = event.target.closest('.zv-single-var');
+          if (!button) {
+            return;
+          }
+          choose(button.dataset.value);
+        });
+
+        if (!select.value && options[0]) {
+          choose(options[0].value);
+        } else if (select.value) {
+          choose(select.value);
+        }
+      });
+    });
+  }
+
   document.querySelectorAll('[data-zv-carousel]').forEach(initCarousel);
   initVariationAdds(document);
+  initSingleProductVariationButtons(document);
 })();
