@@ -19,7 +19,7 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.31');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.33');
 
     if (is_page('zvij-kit')) {
         wp_enqueue_script('zvij-kits', get_template_directory_uri() . '/assets/kits.js', [], '0.9.0', true);
@@ -29,7 +29,7 @@ add_action('wp_enqueue_scripts', function (): void {
         if (function_exists('WC')) {
             wp_enqueue_script('wc-add-to-cart');
         }
-        wp_enqueue_script('zvij-home', get_template_directory_uri() . '/assets/home.js', ['jquery'], '0.9.31', true);
+        wp_enqueue_script('zvij-home', get_template_directory_uri() . '/assets/home.js', ['jquery'], '0.9.33', true);
     }
 });
 
@@ -101,6 +101,11 @@ add_action('woocommerce_after_shop_loop_item', function (): void {
     global $product;
 
     if (! $product instanceof WC_Product) {
+        return;
+    }
+
+    if (is_product()) {
+        woocommerce_template_loop_add_to_cart();
         return;
     }
 
