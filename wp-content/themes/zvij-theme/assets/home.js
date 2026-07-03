@@ -160,10 +160,18 @@
 
   function initVariationAdds(scope) {
     scope.querySelectorAll('.zv-carousel-card').forEach(function (card) {
+      if (card.dataset.variationAddReady === 'true') {
+        return;
+      }
+      card.dataset.variationAddReady = 'true';
+
       var choices = Array.prototype.slice.call(card.querySelectorAll('[data-variation-choice]'));
       var add = card.querySelector('[data-variable-add]');
       var status = card.querySelector('[data-cart-status]');
       var price = card.querySelector('[data-price-out]');
+      if (!choices.length || !add) {
+        return;
+      }
 
       function choiceIsFiveGram(choice) {
         var text = (choice.textContent || '').trim().toLowerCase();
@@ -484,4 +492,5 @@
   }
 
   document.querySelectorAll('[data-zv-carousel]').forEach(initCarousel);
+  initVariationAdds(document);
 })();

@@ -19,19 +19,21 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.27');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.29');
 
     if (is_page('zvij-kit')) {
         wp_enqueue_script('zvij-kits', get_template_directory_uri() . '/assets/kits.js', [], '0.9.0', true);
     }
 
-    if (is_front_page()) {
+    if (is_front_page() || is_shop() || is_product_taxonomy() || is_product()) {
         if (function_exists('WC')) {
             wp_enqueue_script('wc-add-to-cart');
         }
-        wp_enqueue_script('zvij-home', get_template_directory_uri() . '/assets/home.js', ['jquery'], '0.9.27', true);
+        wp_enqueue_script('zvij-home', get_template_directory_uri() . '/assets/home.js', ['jquery'], '0.9.29', true);
     }
 });
+
+remove_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10);
 
 add_action('woocommerce_product_options_general_product_data', function (): void {
     woocommerce_wp_text_input([
@@ -93,6 +95,48 @@ add_action('woocommerce_after_shop_loop_item', function (): void {
         echo '<p class="product-card__credit">' . esc_html($dobroimetje_note) . '</p>';
     }
 }, 7);
+
+add_action('woocommerce_after_shop_loop_item', function (): void {
+    global $product;
+
+    if (! $product instanceof WC_Product) {
+        return;
+    }
+
+    if ($product->is_type('variable')) {
+        $variations = zvij_homepage_carousel_variations($product);
+        $default_variation = $variations[0] ?? [];
+
+        if ($variations !== [] && $default_variation !== []) {
+            ?>
+            <div class="zv-shop-vars zv-carousel-card" data-product-id="<?php echo esc_attr((string) $product->get_id()); ?>" data-carousel-source="shop">
+              <p class="zv-shop-vars__price" data-price-out><?php echo wp_kses_post(wc_price((float) $default_variation['raw_price'])); ?></p>
+              <div class="zv-carousel-card__hint"><?php esc_html_e('Izberi količino', 'zvij-theme'); ?></div>
+              <div class="zv-carousel-card__vars" role="group" aria-label="<?php esc_attr_e('Količina', 'zvij-theme'); ?>">
+                <?php foreach ($variations as $variation_i => $variation) : ?>
+                  <button type="button"
+                    data-variation-choice
+                    class="<?php echo $variation_i === 0 ? 'on' : ''; ?>"
+                    aria-pressed="<?php echo $variation_i === 0 ? 'true' : 'false'; ?>"
+                    data-variation-id="<?php echo esc_attr((string) $variation['id']); ?>"
+                    data-product-id="<?php echo esc_attr((string) $product->get_id()); ?>"
+                    data-price="<?php echo esc_attr(wp_strip_all_tags(wc_price((float) $variation['raw_price']))); ?>"
+                    data-attrs="<?php echo esc_attr(wp_json_encode($variation['attrs'])); ?>">
+                    <span class="zv-carousel-card__var-label"><?php echo esc_html($variation['label']); ?></span>
+                    <span class="zv-carousel-card__var-price"><?php echo wp_kses_post(wc_price((float) $variation['raw_price'])); ?></span>
+                  </button>
+                <?php endforeach; ?>
+              </div>
+              <?php echo zvij_homepage_carousel_add_button($product, 0, $default_variation); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+              <p class="zv-carousel-card__status" data-cart-status aria-live="polite"></p>
+            </div>
+            <?php
+            return;
+        }
+    }
+
+    woocommerce_template_loop_add_to_cart();
+}, 10);
 
 add_action('woocommerce_single_product_summary', function (): void {
     global $product;
