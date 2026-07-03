@@ -35,6 +35,7 @@ add_action('wp_enqueue_scripts', function (): void {
 
 remove_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10);
 remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_meta', 40);
+remove_action('woocommerce_sidebar', 'woocommerce_get_sidebar', 10);
 
 add_action('woocommerce_product_options_general_product_data', function (): void {
     woocommerce_wp_text_input([
@@ -219,7 +220,7 @@ add_action('woocommerce_after_single_product_summary', function (): void {
         </div>
       </section>
     <?php endif; ?>
-    <?php if ($source_url !== '' || $needs_review === 'true') : ?>
+    <?php if (current_user_can('manage_woocommerce') && isset($_GET['zvij_dev_notes']) && ($source_url !== '' || $needs_review === 'true')) : ?>
       <aside class="zvij-dev-note">
         <?php if ($needs_review === 'true') : ?>
           <strong><?php esc_html_e('DEV review:', 'zvij-theme'); ?></strong>
