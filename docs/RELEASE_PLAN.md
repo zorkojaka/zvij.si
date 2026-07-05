@@ -24,6 +24,7 @@ Ta dokument je operativni vir resnice za pot do prve prodajne verzije. Nadgrajuj
 - **Checkout UX:** klasični (shortcode) cart/checkout/moj račun, stilizirani v brand smeri (dvokolonska blagajna s povzetkom naročila, mobilna postavitev). Prehod z block checkouta je bil nujen, ker block checkout ne podpira obstoječih hookov (opt-in, member status).
 - **Jezik:** nameščen sl_SI za WordPress in WooCommerce (checkout, emaili, statusi v slovenščini).
 - **Očiščen javni katalog:** »Sample paket« in »Zvij setup paket« (DEV placeholderja) umaknjena v draft. Javno je 5 realnih izdelkov.
+- **Izdaja računov (ZVIJ-08, zvij-core 0.4.0):** email kupcu o naročilu (processing / on-hold predračun / pripravljeno / completed) vsebuje računsko glavo — »Račun št. {št. naročila}«, datum izdaje, izdajatelj (Zvij.si d.o.o., naslov trgovine, zvijace@zvij.si, TRR/davčna če vpisani) in opombo o DDV; WooCommerce že izpiše postavke in znesek. HTML + plain-text. Ni davčno/fiskalno zaporedno številčenje — pravi računovodski sistem je kasnejša naloga (`includes/zvij-invoice.php`).
 
 ### Znane omejitve dev okolja
 
@@ -46,7 +47,7 @@ Ta dokument je operativni vir resnice za pot do prve prodajne verzije. Nadgrajuj
 | 5 | Realne fotografije: grinder, tulci, kit flat-layi, hero | Jaka (fotografiranje) | blokirano na Jaka |
 | 6 | Podatki podjetja: TRR za predračun, naslov trgovine, davčni status (DDV zavezanec?) | Jaka | blokirano na Jaka |
 | 7 | Potrditev cen dostave in praga brezplačne dostave | Jaka (odločitev) | predlog vpisan (3,90 € / 40 €) |
-| 8 | Izdaja računov (Woo email z računom zadošča za start; pravi računovodski sistem kasneje) | odločitev | odprto |
+| 8 | Izdaja računov (Woo email z računom zadošča za start; pravi računovodski sistem kasneje) | odločitev | ✅ urejeno (ZVIJ-08, zvij-core 0.4.0) — račun v email kupcu; poln naslov/TRR/davčna se izpišejo, ko so podatki podjetja (#6) vpisani |
 | 9 | Migracija dev → zvij.si (backup, DNS, search-replace, test) | agent + Jaka potrditev | pripravljeno v DEPLOY_DEV.md konceptu |
 | 10 | Pravni pregled pogojev/zasebnosti (osnutki so vpisani) | Jaka | osnutek pripravljen |
 
@@ -101,7 +102,7 @@ Ta dokument je operativni vir resnice za pot do prve prodajne verzije. Nadgrajuj
 2. Cena dostave 3,90 € in ponudnik (Pošta Slovenije / GLS / DPD?) — vpliva na format naslovnice.
 3. Po povzetju: obdržati na produkciji? (višji strošek, a dviguje konverzijo v SLO)
 4. DDV: ali je Zvij.si d.o.o. zavezanec? (zdaj cene z vključenim DDV, davki izklopljeni)
-5. Računi: Woo email dovolj za start ali takoj povezava z računovodskim sistemom?
+5. ~~Računi: Woo email dovolj za start ali takoj povezava z računovodskim sistemom?~~ **Odločeno (ZVIJ-08): Woo email z računom zadošča za start** — implementirano v zvij-core 0.4.0. Računovodski sistem kasneje. Jaka naj vpiše podatke podjetja (#6: naslov trgovine, TRR prek `zvij_invoice_trr`, davčna prek `zvij_invoice_tax_id`), da je izdajatelj na računu popoln.
 6. Silver kit v prvi val ali kasneje (odvisno od nabave grinder/vžigalnik)?
 
 ---
@@ -109,7 +110,8 @@ Ta dokument je operativni vir resnice za pot do prve prodajne verzije. Nadgrajuj
 ## Tehnične opombe za naslednjega agenta
 
 - WP-CLI: `docker compose run --rm wp-cli wp ...` (profil `tools`).
-- zvij-core 0.3.0: `includes/zvij-orders.php` (status + tiskanje), `includes/zvij-dashboard.php` (operativni pregled). Tiskanje: `admin-post.php?action=zvij_print_order&order_id=N` z noncem (`zvij_order_print_url()`).
+- zvij-core 0.4.0: `includes/zvij-orders.php` (status + tiskanje), `includes/zvij-dashboard.php` (operativni pregled), `includes/zvij-invoice.php` (računska glava v email kupcu; hook `woocommerce_email_before_order_table`). Tiskanje: `admin-post.php?action=zvij_print_order&order_id=N` z noncem (`zvij_order_print_url()`).
+- Račun (ZVIJ-08): prilagodljivo prek opcij `zvij_invoice_seller_name`, `zvij_invoice_seller_email`, `zvij_invoice_trr`, `zvij_invoice_tax_id`, `zvij_invoice_vat_note` in istoimenskih filtrov; naslov izdajatelja se bere iz `woocommerce_store_*`. Statusi z računom prek filtra `zvij_invoice_statuses`.
 - Cart/checkout/account so **klasični shortcodi** (ne blocki) — namerno, zaradi zvij-core checkout hookov in popolnega brand stylinga. Ne vračaj na block checkout brez migracije hookov na Store API.
 - Status `wc-zvij-ready` je vključen v `woocommerce_order_is_paid_statuses`.
 - Dostava/plačila/pravne strani so bile nastavljene programatično; ponovljivo prek WP-CLI (glej git history tega dokumenta za ukaze).
