@@ -125,6 +125,17 @@ while (have_posts()) :
         <?php
         continue;
     endif;
+    if (function_exists('is_cart') && (is_cart() || is_checkout() || is_account_page())) :
+        ?>
+        <article <?php post_class('page-layout zv-commerce'); ?>>
+          <header class="zv-commerce__head">
+            <h1><?php the_title(); ?></h1>
+          </header>
+          <div class="zv-commerce__body entry-content"><?php the_content(); ?></div>
+        </article>
+        <?php
+        continue;
+    endif;
     ?>
     <article <?php post_class('page-layout'); ?>>
       <header class="page-hero">

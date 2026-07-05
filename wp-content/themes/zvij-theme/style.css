@@ -3,7 +3,7 @@ Theme Name: Zvij Theme
 Theme URI: https://dev.inteligent.si
 Author: Zvij.si
 Description: Clean development shop prototype for dev.inteligent.si.
-Version: 0.6.0
+Version: 0.6.1
 Requires at least: 6.5
 Tested up to: 6.5
 Requires PHP: 8.2
@@ -3357,5 +3357,431 @@ body::before {
 
   .site-footer__member .zvij-member-form__grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Commerce pages: classic cart / checkout / my account
+--------------------------------------------------------------------------- */
+
+.zv-commerce {
+  margin: 0 auto;
+  max-width: 1080px;
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 4vw, 2rem) 4rem;
+}
+
+.zv-commerce__head h1 {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  margin: 0 0 1.5rem;
+}
+
+.zv-commerce .woocommerce {
+  font-size: 0.98rem;
+}
+
+/* Notices */
+.zv-commerce .woocommerce-message,
+.zv-commerce .woocommerce-info,
+.zv-commerce .woocommerce-error {
+  background: var(--zvij-panel);
+  border: 1px solid var(--zvij-line);
+  border-left: 4px solid var(--zvij-accent);
+  border-radius: var(--zvij-radius);
+  list-style: none;
+  margin: 0 0 1.25rem;
+  padding: 0.9rem 1.1rem;
+}
+
+.zv-commerce .woocommerce-error {
+  border-left-color: #a4402e;
+}
+
+.zv-commerce .woocommerce-error li {
+  margin: 0.2rem 0;
+}
+
+/* Cart table */
+.zv-commerce table.shop_table {
+  border: 1px solid var(--zvij-line);
+  border-collapse: separate;
+  border-radius: var(--zvij-radius);
+  border-spacing: 0;
+  background: var(--zvij-panel);
+  width: 100%;
+}
+
+.zv-commerce table.shop_table th,
+.zv-commerce table.shop_table td {
+  border-bottom: 1px solid var(--zvij-line);
+  padding: 0.85rem 0.9rem;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.zv-commerce table.shop_table tr:last-child > td {
+  border-bottom: 0;
+}
+
+.zv-commerce table.shop_table th {
+  color: var(--zvij-muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.zv-commerce .cart_item img {
+  border-radius: var(--zvij-radius);
+  width: 64px;
+}
+
+.zv-commerce .product-remove a {
+  color: var(--zvij-muted);
+  display: inline-grid;
+  font-size: 1.2rem;
+  height: 32px;
+  place-items: center;
+  text-decoration: none;
+  width: 32px;
+}
+
+.zv-commerce .product-remove a:hover {
+  color: #a4402e;
+}
+
+.zv-commerce .quantity .qty {
+  background: #fff;
+  border: 1px solid var(--zvij-line);
+  border-radius: var(--zvij-radius);
+  padding: 0.45rem 0.4rem;
+  width: 4.4rem;
+}
+
+.zv-commerce .coupon {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.zv-commerce .coupon .input-text {
+  background: #fff;
+  border: 1px solid var(--zvij-line);
+  border-radius: var(--zvij-radius);
+  padding: 0.55rem 0.7rem;
+  width: 11rem;
+}
+
+.zv-commerce td.actions {
+  background: transparent;
+}
+
+.zv-commerce td.actions > .button {
+  float: right;
+}
+
+/* Cart totals */
+.zv-commerce .cart-collaterals {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.zv-commerce .cart_totals {
+  max-width: 420px;
+  width: 100%;
+}
+
+.zv-commerce .cart_totals h2 {
+  font-size: 1.15rem;
+  margin: 0 0 0.6rem;
+}
+
+.zv-commerce .wc-proceed-to-checkout {
+  margin-top: 1rem;
+}
+
+.zv-commerce .wc-proceed-to-checkout .checkout-button {
+  display: block;
+  text-align: center;
+  width: 100%;
+}
+
+/* Forms (checkout, account, addresses) */
+.zv-commerce form .form-row {
+  margin: 0 0 0.9rem;
+}
+
+.zv-commerce form .form-row label {
+  color: var(--zvij-text);
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.zv-commerce form .form-row .input-text,
+.zv-commerce form .form-row select,
+.zv-commerce form .form-row textarea,
+.zv-commerce .select2-container--default .select2-selection--single {
+  background: #fff;
+  border: 1px solid var(--zvij-line);
+  border-radius: var(--zvij-radius);
+  font: inherit;
+  min-height: 44px;
+  padding: 0.55rem 0.75rem;
+  width: 100%;
+}
+
+.zv-commerce form .form-row .input-text:focus,
+.zv-commerce form .form-row select:focus,
+.zv-commerce form .form-row textarea:focus {
+  border-color: var(--zvij-accent);
+  outline: 2px solid rgba(49, 95, 73, 0.25);
+}
+
+.zv-commerce .select2-container--default .select2-selection--single .select2-selection__rendered {
+  line-height: 30px;
+}
+
+.zv-commerce .select2-container--default .select2-selection--single .select2-selection__arrow {
+  height: 42px;
+}
+
+/* Checkout layout: form left, order review right */
+.zv-commerce form.checkout {
+  align-items: start;
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+}
+
+.zv-commerce form.checkout #customer_details {
+  grid-column: 1;
+}
+
+.zv-commerce form.checkout #order_review_heading,
+.zv-commerce form.checkout #order_review {
+  grid-column: 2;
+}
+
+.zv-commerce form.checkout #order_review_heading {
+  grid-row: 1;
+  margin: 0;
+}
+
+.zv-commerce form.checkout #order_review {
+  background: var(--zvij-panel);
+  border: 1px solid var(--zvij-line);
+  border-radius: var(--zvij-radius);
+  grid-row: 1 / span 4;
+  margin-top: 2.4rem;
+  padding: 1.25rem;
+  position: sticky;
+  top: 90px;
+}
+
+.zv-commerce form.checkout #order_review table.shop_table {
+  border: 0;
+  background: transparent;
+}
+
+.zv-commerce form.checkout #order_review table.shop_table th,
+.zv-commerce form.checkout #order_review table.shop_table td {
+  padding: 0.6rem 0.2rem;
+}
+
+.zv-commerce .woocommerce-checkout-review-order-table tfoot .order-total td,
+.zv-commerce .woocommerce-checkout-review-order-table tfoot .order-total th {
+  border-bottom: 0;
+  font-size: 1.1rem;
+}
+
+/* Payment box */
+.zv-commerce #payment {
+  background: transparent;
+}
+
+.zv-commerce #payment ul.wc_payment_methods {
+  border-top: 1px solid var(--zvij-line);
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0.75rem 0 0;
+}
+
+.zv-commerce #payment ul.wc_payment_methods li {
+  margin: 0 0 0.6rem;
+}
+
+.zv-commerce #payment ul.wc_payment_methods label {
+  font-weight: 600;
+  margin-left: 0.35rem;
+}
+
+.zv-commerce #payment div.payment_box {
+  background: var(--zvij-panel-alt);
+  border-radius: var(--zvij-radius);
+  color: var(--zvij-muted);
+  font-size: 0.88rem;
+  margin: 0.4rem 0 0;
+  padding: 0.65rem 0.85rem;
+}
+
+.zv-commerce #payment .place-order {
+  margin-top: 1rem;
+  padding: 0;
+}
+
+.zv-commerce #place_order {
+  display: block;
+  font-size: 1.05rem;
+  padding: 0.95rem 1.5rem;
+  width: 100%;
+}
+
+.zv-commerce .woocommerce-terms-and-conditions-wrapper {
+  color: var(--zvij-muted);
+  font-size: 0.85rem;
+  margin: 0.75rem 0;
+}
+
+.zv-commerce .zvij-checkout-optin {
+  background: var(--zvij-panel-alt);
+  border-radius: var(--zvij-radius);
+  margin-top: 0.75rem;
+  padding: 0.7rem 0.9rem;
+}
+
+.zv-commerce .zvij-checkout-optin .form-row {
+  margin: 0;
+}
+
+.zv-commerce .zvij-checkout-optin label {
+  display: inline;
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+/* Order received */
+.zv-commerce .woocommerce-thankyou-order-received {
+  color: var(--zvij-accent);
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.zv-commerce .woocommerce-thankyou-order-details {
+  background: var(--zvij-panel);
+  border: 1px solid var(--zvij-line);
+  border-radius: var(--zvij-radius);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  list-style: none;
+  margin: 0 0 1.5rem;
+  padding: 1rem 1.25rem;
+}
+
+.zv-commerce .woocommerce-thankyou-order-details li {
+  color: var(--zvij-muted);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+}
+
+.zv-commerce .woocommerce-thankyou-order-details li strong {
+  color: var(--zvij-text);
+  display: block;
+  font-size: 1rem;
+  text-transform: none;
+}
+
+/* My account */
+.zv-commerce .woocommerce-MyAccount-navigation ul {
+  border: 1px solid var(--zvij-line);
+  border-radius: var(--zvij-radius);
+  background: var(--zvij-panel);
+  list-style: none;
+  margin: 0 0 1.5rem;
+  overflow: hidden;
+  padding: 0;
+}
+
+.zv-commerce .woocommerce-MyAccount-navigation li {
+  border-bottom: 1px solid var(--zvij-line);
+}
+
+.zv-commerce .woocommerce-MyAccount-navigation li:last-child {
+  border-bottom: 0;
+}
+
+.zv-commerce .woocommerce-MyAccount-navigation a {
+  color: var(--zvij-text);
+  display: block;
+  padding: 0.7rem 1rem;
+  text-decoration: none;
+}
+
+.zv-commerce .woocommerce-MyAccount-navigation .is-active a,
+.zv-commerce .woocommerce-MyAccount-navigation a:hover {
+  background: var(--zvij-panel-alt);
+}
+
+@media (min-width: 821px) {
+  .zv-commerce .woocommerce-MyAccount-navigation {
+    float: left;
+    width: 230px;
+  }
+
+  .zv-commerce .woocommerce-MyAccount-content {
+    float: right;
+    width: calc(100% - 260px);
+  }
+
+  .zv-commerce .woocommerce:has(.woocommerce-MyAccount-navigation)::after {
+    clear: both;
+    content: "";
+    display: table;
+  }
+}
+
+@media (max-width: 900px) {
+  .zv-commerce form.checkout {
+    grid-template-columns: 1fr;
+  }
+
+  .zv-commerce form.checkout #customer_details,
+  .zv-commerce form.checkout #order_review_heading,
+  .zv-commerce form.checkout #order_review {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .zv-commerce form.checkout #order_review {
+    margin-top: 0;
+    position: static;
+  }
+
+  .zv-commerce table.shop_table_responsive tr {
+    display: block;
+    padding: 0.35rem 0;
+  }
+
+  .zv-commerce table.shop_table_responsive td {
+    display: flex;
+    justify-content: space-between;
+    text-align: right;
+  }
+
+  .zv-commerce td.actions > .button {
+    float: none;
+    margin-top: 0.75rem;
+    width: 100%;
+  }
+
+  .zv-commerce .coupon {
+    flex-wrap: wrap;
+  }
+
+  .zv-commerce .coupon .input-text {
+    flex: 1;
+    width: auto;
   }
 }
