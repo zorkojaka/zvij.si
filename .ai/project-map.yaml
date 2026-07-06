@@ -1,0 +1,85 @@
+# Zvij.si maps — derived from docs/RELEASE_PLAN.md (5. 7. 2026).
+# The system map mirrors §1 "Potrjeno trenutno stanje"; nodes marked
+# verified cite the documented E2E evidence (test order #369). The roadmap
+# mirrors §2 MUST LAUNCH. Task statuses are computed by the AI Workbench.
+project: zvijsi
+kind: system+roadmap
+updated: 2026-07-05
+nodes:
+  # ── System map (product flow, per RELEASE_PLAN §1) ──────────────────────
+  - id: catalog
+    label: "Katalog (DUBI, SMOKEY/CHILLY/FRUTTY, carousel)"
+    type: system
+    description: Variabilni izdelki 1g/5g s cenami in slikami; homepage carousel.
+    source: docs/RELEASE_PLAN.md#1-potrjeno-trenutno-stanje
+    verified: true
+    evidence: "E2E test s testnim naročilom #369 (RELEASE_PLAN §1)"
+    tasks: []
+    deps: []
+  - id: cart-checkout
+    label: "Košarica → blagajna → naročilo"
+    type: workflow step
+    description: Klasični shortcode checkout, dvokolonska blagajna, obvezno soglasje s pogoji.
+    source: docs/RELEASE_PLAN.md#1-potrjeno-trenutno-stanje
+    verified: true
+    evidence: "E2E test s testnim naročilom #369 (RELEASE_PLAN §1)"
+    tasks: []
+    deps: [catalog]
+  - id: payments
+    label: "Plačila (kartice/Revolut produkcijsko)"
+    type: capability
+    description: Dev ima BACS + COD; produkcijske kartice čakajo na ključe.
+    source: docs/RELEASE_PLAN.md#2-gap-analiza
+    tasks: [ZVIJ-01]
+    deps: [cart-checkout]
+  - id: delivery
+    label: "Dostava (cona SLO, prag brezplačne)"
+    type: capability
+    description: 3,90 € / brezplačno nad 40 € — PREDLOG, čaka potrditev.
+    source: docs/RELEASE_PLAN.md#6-odprta-vprašanja
+    tasks: [ZVIJ-07]
+    deps: [cart-checkout]
+  - id: emails
+    label: "Transakcijski emaili (SMTP)"
+    type: capability
+    description: Dev nima SMTP; produkcija zahteva SMTP/transakcijskega ponudnika + zvijace@zvij.si s SPF/DKIM/DMARC.
+    source: docs/RELEASE_PLAN.md#2-gap-analiza
+    tasks: [ZVIJ-02, ZVIJ-04]
+    deps: [cart-checkout]
+  - id: membership
+    label: "Član Zvij.si (kupon, welcome, MailerLite)"
+    type: capability
+    description: Obrazec, soglasje, 10% kupon, welcome email delujejo; MailerLite čaka na API ključ.
+    source: docs/RELEASE_PLAN.md#1-potrjeno-trenutno-stanje
+    tasks: [ZVIJ-03]
+    deps: [emails]
+  - id: admin-fulfilment
+    label: "Operativni admin (dashboard, odpremni dokument, statusi)"
+    type: system
+    description: zvij-core 0.3.0 — operativni pregled, natisljiv odpremni dokument, status »Pripravljeno za odpremo«.
+    source: docs/RELEASE_PLAN.md#1-potrjeno-trenutno-stanje
+    verified: true
+    evidence: "zvij-core 0.3.0 opisan kot delujoč v RELEASE_PLAN §1"
+    tasks: []
+    deps: [cart-checkout]
+  - id: legal-company
+    label: "Pravno + podatki podjetja (pogoji, DDV, TRR, računi)"
+    type: capability
+    description: Pravne strani objavljene (osnutek); podatki podjetja, DDV status, izdaja računov odprti.
+    source: docs/RELEASE_PLAN.md#2-gap-analiza
+    tasks: [ZVIJ-06, ZVIJ-08, ZVIJ-10]
+    deps: []
+  - id: content-photos
+    label: "Vsebina (realne fotografije)"
+    type: capability
+    description: Grinder, tulci, kit flat-layi, hero — čaka Jakovo fotografiranje.
+    source: docs/RELEASE_PLAN.md#2-gap-analiza
+    tasks: [ZVIJ-05]
+    deps: []
+  - id: launch
+    label: "Migracija dev → zvij.si (lansiranje)"
+    type: release
+    description: Backup, DNS, search-replace, test; koncept v DEPLOY_DEV.md.
+    source: docs/RELEASE_PLAN.md#2-gap-analiza
+    tasks: [ZVIJ-09]
+    deps: [payments, delivery, emails, membership, legal-company, content-photos]
