@@ -1,0 +1,267 @@
+# Zvij.si project blueprint — AUTHORITATIVE (lives in the project repo).
+# Format: AI Workbench PROJECT_BLUEPRINT_STANDARD.md (blueprint v1).
+# Derived from docs/RELEASE_PLAN.md (5. 7. 2026); supersedes .ai/project-map.yaml.
+# Node statuses follow the evidence rules: VERIFIED only with cited evidence,
+# IMPLEMENTED only with source/commit evidence, no invented task IDs.
+blueprint: 1
+project_id: zvijsi
+title: "Zvij.si spletna trgovina"
+authoritative: true
+updated: 2026-07-06
+
+objective: >
+  Zvij.si prodaja zvijalne izdelke (DUBI, vršički, pribor) slovenskim kupcem
+  prek lastne WooCommerce trgovine. Cilj tega projekta: prva prava prodajna
+  verzija na zvij.si — kupec kupi, plača s kartico, dobi email s računom,
+  Jaka spakira po odpremnem dokumentu.
+current_state: >
+  Celoten nakupni tok deluje in je E2E preverjen na dev.inteligent.si
+  (testno naročilo #369). Operativni admin (zvij-core 0.3.0) in račun v
+  emailu (zvij-core 0.4.0) sta implementirana. Lansiranje blokira 10 MUST
+  LAUNCH vrzeli — večina čaka na Jakove ključe, podatke ali odločitve.
+target_state: >
+  Kupec na zvij.si: stran izdelka → košarica → blagajna → dostava → plačilo
+  s kartico → Jaka obdela naročilo → natisne odpremni dokument → kupec dobi
+  emaile → član se vrača → mehko lansiranje prijateljem in DUBI kupcem.
+current_milestone:
+  label: "Zapri MUST LAUNCH vrzeli → mehko lansiranje"
+  target_node: soft-launch
+  source: docs/RELEASE_PLAN.md#2-gap-analiza
+
+sources:
+  - docs/RELEASE_PLAN.md
+  - docs/NEXT_STEPS.md
+  - docs/DEPLOY_DEV.md
+
+nodes:
+  - id: first-sales
+    type: goal
+    label: "Prva prava prodaja na zvij.si"
+    status: PLANNED
+    description: >
+      Trgovina je javno na zvij.si in sprejema prava naročila s pravim
+      denarjem. Vse spodaj vodi sem.
+    done_when: >
+      Prvo pravo plačano naročilo pravega kupca (ne testno) je obdelano
+      od nakupa do odpreme.
+    source: docs/RELEASE_PLAN.md#5-release-checklist
+    impact:
+      before: "Trgovina obstaja samo na dev okolju, brez prihodkov."
+      after: "Zvij.si ustvarja prihodek in prave podatke o kupcih."
+    tasks: []
+    owner_requests: []
+
+  - id: product-page
+    type: workflow_step
+    label: "Stran izdelka (katalog)"
+    status: PARTIAL
+    description: >
+      DUBI 42/420, SMOKEY/CHILLY/FRUTTY kot variabilni izdelki 1g/5g s
+      cenami; homepage carousel deluje; 5 javnih izdelkov, placeholderji
+      umaknjeni. Manjkajo realne fotografije (grinder, tulci, kiti, hero).
+    done_when: >
+      Vsi javni izdelki imajo realne fotografije in potrjene cene/zaloge;
+      odločeno, ali gre Silver kit v prvi val.
+    evidence: "E2E test s testnim naročilom #369 (RELEASE_PLAN §1)"
+    source: docs/RELEASE_PLAN.md#1-potrjeno-trenutno-stanje
+    impact:
+      before: "Izdelki z AI flat-lay slikami — nizko zaupanje kupca."
+      after: "Realne fotografije — največji vizualni dvig pred lansiranjem."
+    tasks: [ZVIJ-05]
+    owner_requests: [OWNER-M05, OWNER-Q06]
+
+  - id: cart
+    type: workflow_step
+    label: "Košarica"
+    status: VERIFIED
+    description: >
+      Klasična shortcode košarica, stilizirana v brand smeri, mobilna
+      postavitev.
+    done_when: "Kupec doda izdelek in pride do blagajne — deluje, preverjeno."
+    evidence: "E2E test s testnim naročilom #369 (RELEASE_PLAN §1)"
+    source: docs/RELEASE_PLAN.md#1-potrjeno-trenutno-stanje
+    impact:
+      before: "—"
+      after: "Deluje; brez odprtih nalog."
+    tasks: []
+    owner_requests: []
+
+  - id: checkout
+    type: workflow_step
+    label: "Blagajna"
+    status: PARTIAL
+    description: >
+      Dvokolonska klasična blagajna z obveznim soglasjem s pogoji; pravne
+      strani objavljene kot osnutek. Tok je E2E preverjen; pravna besedila
+      še niso pregledana.
+    done_when: >
+      Jaka pregleda pogoje/zasebnost/vračila (ZVIJ-10); soglasje na blagajni
+      kaže na pregledana besedila.
+    evidence: "E2E test s testnim naročilom #369 (RELEASE_PLAN §1)"
+    source: docs/RELEASE_PLAN.md#1-potrjeno-trenutno-stanje
+    impact:
+      before: "Soglasje kaže na pravno nepregledane osnutke."
+      after: "Blagajna pravno varna za pravi denar."
+    tasks: [ZVIJ-10]
+    owner_requests: [OWNER-M10]
+
+  - id: delivery
+    type: workflow_step
+    label: "Dostava"
+    status: PARTIAL
+    description: >
+      Cona Slovenija: 3,90 €, brezplačno nad 40 € — deluje na dev, a je
+      vpisan PREDLOG. Čaka Jakova potrditev cene, praga in ponudnika
+      (Pošta/GLS/DPD — vpliva na format naslovnice).
+    done_when: >
+      Jaka potrdi ceno dostave, prag brezplačne dostave in ponudnika;
+      nastavitve v WooCommerce ustrezajo potrjenemu.
+    evidence: "Deluje v E2E testu #369 s 3,90 € dostave (RELEASE_PLAN §1)"
+    source: docs/RELEASE_PLAN.md#6-odprta-vprašanja
+    impact:
+      before: "Cene dostave so predlog — napačen prag pomeni izgubo marže."
+      after: "Potrjena dostava; naslovnica ustreza izbranemu ponudniku."
+    tasks: [ZVIJ-07]
+    owner_requests: [OWNER-M07, OWNER-Q01, OWNER-Q02]
+
+  - id: payment
+    type: workflow_step
+    label: "Plačilo"
+    status: PARTIAL
+    description: >
+      Dev ima predračun (BACS) in po povzetju (COD). Produkcijske kartice
+      (Revolut ali WooPayments) čakajo na Jakovo izbiro ponudnika in ključe;
+      odprta odločitev, ali COD ostane na produkciji.
+    done_when: >
+      Kartično plačilo testirano v sandboxu in preklopljeno na produkcijo;
+      odločeno o COD.
+    evidence: "BACS + COD delujeta v dev (RELEASE_PLAN §1)"
+    source: docs/RELEASE_PLAN.md#2-gap-analiza
+    impact:
+      before: "Kupec lahko plača le z nakazilom ali po povzetju."
+      after: "Kupec plača s kartico — bistveno višja konverzija."
+    tasks: [ZVIJ-01]
+    owner_requests: [OWNER-M01, OWNER-Q03]
+
+  - id: order-admin
+    type: system
+    label: "Operativni admin naročil"
+    status: IMPLEMENTED
+    description: >
+      zvij-core 0.3.0: operativni pregled (prihodek, naročila, člani, zaloga),
+      status »Pripravljeno za odpremo« (wc-zvij-ready) z bulk akcijo.
+    done_when: >
+      Jaka obdela vsaj eno pravo naročilo od »v obdelavi« do »pripravljeno
+      za odpremo« — takrat VERIFIED.
+    evidence: "zvij-core 0.3.0, opisan kot delujoč v RELEASE_PLAN §1"
+    source: docs/RELEASE_PLAN.md#1-potrjeno-trenutno-stanje
+    impact:
+      before: "Naročila razmetana po WooCommerce adminu."
+      after: "En operativni pregled: kaj obdelati, kaj pakirati, kaj poslati."
+    tasks: []
+    owner_requests: []
+
+  - id: packing-document
+    type: capability
+    label: "Odpremni dokument"
+    status: IMPLEMENTED
+    description: >
+      Natisljiv odpremni dokument (naslovnica + seznam za pakiranje s SKU in
+      checkboxi, COD znesek); gumbi na seznamu naročil, naročilu in dashboardu.
+    done_when: >
+      Dokument natisnjen in preverjen na papirju (release checklist §5);
+      format naslovnice usklajen z izbranim dostavljavcem.
+    evidence: "zvij-core 0.3.0, opisan kot delujoč v RELEASE_PLAN §1"
+    source: docs/RELEASE_PLAN.md#1-potrjeno-trenutno-stanje
+    impact:
+      before: "Ročno prepisovanje naslovov — počasi in z napakami."
+      after: "Natisni, spakiraj po checkboxih, nalepi naslovnico."
+    tasks: []
+    owner_requests: []
+
+  - id: customer-emails
+    type: capability
+    label: "Emaili kupcem (SMTP, račun, domena)"
+    status: PARTIAL
+    description: >
+      Račun v emailu kupcu je implementiran (ZVIJ-08, zvij-core 0.4.0, v
+      pregledu). Dev nima SMTP — emaili se ne dostavijo. Za produkcijo:
+      SMTP/transakcijski ponudnik, zvijace@zvij.si s SPF/DKIM/DMARC in
+      podatki podjetja (TRR, naslov, DDV) za popolno računsko glavo.
+    done_when: >
+      Pravo potrditveno naročilo prispe v pravi nabiralnik s popolno
+      računsko glavo (izdajatelj, TRR, davčna).
+    evidence: "ZVIJ-08 implementiran v zvij-core 0.4.0 (RELEASE_PLAN §1)"
+    source: docs/RELEASE_PLAN.md#2-gap-analiza
+    impact:
+      before: "Kupec po nakupu ne dobi ničesar — izgleda kot prevara."
+      after: "Takojšnja potrditev z računom z zvij.si domene."
+    tasks: [ZVIJ-02, ZVIJ-04, ZVIJ-06, ZVIJ-08]
+    # OWNER-Q05 je v RELEASE_PLAN §6.5 prečrtan kot odločen (ZVIJ-08),
+    # v workbenchu pa še OPEN → zahteva naj se zapre, ne odgovarja.
+    owner_requests: [OWNER-M02, OWNER-M04, OWNER-M06, OWNER-Q05]
+    needs_review: true
+
+  - id: retention
+    type: capability
+    label: "Zadrževanje (Član Zvij.si, MailerLite)"
+    status: PARTIAL
+    description: >
+      Članstvo deluje: obrazec, soglasje, 10% kupon, welcome email, checkout
+      opt-in, customer oznaka ob nakupu. MailerLite sinhronizacija pripravljena,
+      čaka API ključ. Reload avtomatika, zapuščene košarice in dobroimetje so
+      zavestno po lansiranju (LAHKO POČAKA — brez stabilnih ID-jev, ne izmišljamo).
+    done_when: >
+      Nov član pristane v MailerLite skupini »Člani Zvij.si«, welcome email
+      dostavljen, odjava deluje.
+    evidence: "Članstvo opisano kot delujoče v RELEASE_PLAN §1"
+    source: docs/RELEASE_PLAN.md#1-potrjeno-trenutno-stanje
+    impact:
+      before: "Člani se zbirajo samo lokalno v WordPressu."
+      after: "Email lista za ponovne nakupe — drugi nakup je najcenejši."
+    tasks: [ZVIJ-03]
+    owner_requests: [OWNER-M03]
+
+  - id: soft-launch
+    type: release
+    label: "Migracija na zvij.si + mehko lansiranje"
+    status: PLANNED
+    description: >
+      Backup, DNS, search-replace dev.inteligent.si → zvij.si, SSL, smoke
+      testi; koncept v DEPLOY_DEV.md. Pred preklopom: čiščenje (testno
+      naročilo #369, testni člani, WP_DEBUG), DDV odločitev. Nato link
+      prijateljem in DUBI kupcem, IG objava.
+    done_when: >
+      Release checklist §5 v celoti odkljukan; pravi testni nakup z majhnim
+      zneskom uspešen na zvij.si.
+    source: docs/RELEASE_PLAN.md#5-release-checklist
+    impact:
+      before: "Trgovina živi na dev.inteligent.si, nihče je ne najde."
+      after: "Trgovina javno na zvij.si, prvi pravi kupci."
+    tasks: [ZVIJ-09]
+    proposed_tasks:
+      - id: ZVIJ-PROP-01
+        title: "Čiščenje pred produkcijo: testno naročilo #369, testni člani, draft izdelki skriti, WP_DEBUG off"
+        needs_review: true
+        source: docs/RELEASE_PLAN.md#4-agent-ready-backlog
+    owner_requests: [OWNER-M09, OWNER-Q04]
+
+edges:
+  # Ciljni tok (target flow)
+  - { from: product-page, to: cart, kind: flow }
+  - { from: cart, to: checkout, kind: flow }
+  - { from: checkout, to: delivery, kind: flow }
+  - { from: delivery, to: payment, kind: flow }
+  - { from: payment, to: order-admin, kind: flow }
+  - { from: order-admin, to: packing-document, kind: flow }
+  - { from: packing-document, to: customer-emails, kind: flow }
+  - { from: customer-emails, to: retention, kind: flow }
+  - { from: retention, to: soft-launch, kind: flow }
+  - { from: soft-launch, to: first-sales, kind: flow }
+  # MUST LAUNCH odvisnosti (kaj mora biti done pred lansiranjem)
+  - { from: product-page, to: soft-launch, kind: requires }
+  - { from: checkout, to: soft-launch, kind: requires }
+  - { from: delivery, to: soft-launch, kind: requires }
+  - { from: payment, to: soft-launch, kind: requires }
+  - { from: customer-emails, to: soft-launch, kind: requires }
+  - { from: retention, to: soft-launch, kind: requires }
