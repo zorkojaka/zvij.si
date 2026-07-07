@@ -13,7 +13,7 @@ Ta dokument je operativni vir resnice za pot do prve prodajne verzije. Nadgrajuj
 
 - **Celoten nakupni tok:** izdelek → košarica → blagajna → naročilo → stran »naročilo prejeto«. Preverjen z DUBI 42, plačilo po predračunu, skupni znesek pravilen (izdelek 7,99 € + dostava 3,90 €).
 - **Katalog:** DUBI 42, DUBI 420, SMOKEY/CHILLY/FRUTTY kot variabilni izdelki 1 g / 5 g s cenami in slikami. Homepage carousel (tag `homepage-carousel`) deluje.
-- **Dostava:** cona Slovenija — dostava 3,90 €, brezplačna nad 40 € (PREDLOG, glej odprta vprašanja).
+- **Dostava:** cona Slovenija (Pošta Slovenije), potrjeno (OWNER-M07): navadna 2,90 €, s sledenjem 3,90 €, s podpisom 3,90 €, po povzetju 5,90 €, paket 7,50 €; brezplačna navadna nad 42 €. Nastavljeno programsko prek `scripts/wp-configure-shipping-dev.php` (ZVIJ-07).
 - **Plačila (dev):** predračun/nakazilo (BACS) in po povzetju (COD). Revolut/kartice čakajo na produkcijske ključe.
 - **Pravne strani:** Politika zasebnosti, Vračila in reklamacije, Pogoji poslovanja (18+, cene z DDV, dostava, CBD disclaimer) — objavljene in povezane s checkoutom (obvezno soglasje).
 - **Član Zvij.si:** obrazec (homepage/footer), soglasje, kupon 10 % (enkraten, 30 dni, vezan na email), welcome email (dev pregled v adminu), checkout opt-in, ob nakupu se član označi kot `customer`. MailerLite sinhronizacija je pripravljena, čaka na API ključ.
@@ -46,7 +46,7 @@ Ta dokument je operativni vir resnice za pot do prve prodajne verzije. Nadgrajuj
 | 4 | zvijace@zvij.si + SPF/DKIM/DMARC | Jaka (cPanel/DNS) | blokirano na Jaka |
 | 5 | Realne fotografije: grinder, tulci, kit flat-layi, hero | Jaka (fotografiranje) | blokirano na Jaka |
 | 6 | Podatki podjetja: TRR za predračun, naslov trgovine, davčni status (DDV zavezanec?) | Jaka | blokirano na Jaka |
-| 7 | Potrditev cen dostave in praga brezplačne dostave | Jaka (odločitev) | predlog vpisan (3,90 € / 40 €) |
+| 7 | Potrditev cen dostave in praga brezplačne dostave | Jaka (odločitev) | ✅ potrjeno (OWNER-M07, ZVIJ-07): navadna 2,90 / sledenje 3,90 / podpis 3,90 / povzetje 5,90 / paket 7,50; brezplačna nad 42 € |
 | 8 | Izdaja računov (Woo email z računom zadošča za start; pravi računovodski sistem kasneje) | odločitev | ✅ urejeno (ZVIJ-08, zvij-core 0.4.0) — račun v email kupcu; poln naslov/TRR/davčna se izpišejo, ko so podatki podjetja (#6) vpisani |
 | 9 | Migracija dev → zvij.si (backup, DNS, search-replace, test) | agent + Jaka potrditev | pripravljeno v DEPLOY_DEV.md konceptu |
 | 10 | Pravni pregled pogojev/zasebnosti (osnutki so vpisani) | Jaka | osnutek pripravljen |
@@ -98,8 +98,8 @@ Ta dokument je operativni vir resnice za pot do prve prodajne verzije. Nadgrajuj
 
 ## 6. Odprta vprašanja (potrebna Jakova odločitev)
 
-1. Prag brezplačne dostave: vpisan predlog 40 € — potrdi ali spremeni (WooCommerce → Dostava → Slovenija).
-2. Cena dostave 3,90 € in ponudnik (Pošta Slovenije / GLS / DPD?) — vpliva na format naslovnice.
+1. ~~Prag brezplačne dostave: vpisan predlog 40 €~~ **Odločeno (OWNER-M07, ZVIJ-07): 42 €**, brezplačna velja za navadno pošiljko; sledenje/podpis/povzetje se doplačajo.
+2. ~~Cena dostave in ponudnik~~ **Odločeno (OWNER-M07/Q02): Pošta Slovenije**; navadna 2,90 / sledenje 3,90 / podpis 3,90 / povzetje 5,90 / paket 7,50 €.
 3. Po povzetju: obdržati na produkciji? (višji strošek, a dviguje konverzijo v SLO)
 4. DDV: ali je Zvij.si d.o.o. zavezanec? (zdaj cene z vključenim DDV, davki izklopljeni)
 5. ~~Računi: Woo email dovolj za start ali takoj povezava z računovodskim sistemom?~~ **Odločeno (ZVIJ-08): Woo email z računom zadošča za start** — implementirano v zvij-core 0.4.0. Računovodski sistem kasneje. Jaka naj vpiše podatke podjetja (#6: naslov trgovine, TRR prek `zvij_invoice_trr`, davčna prek `zvij_invoice_tax_id`), da je izdajatelj na računu popoln.

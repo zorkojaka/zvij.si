@@ -565,3 +565,26 @@ add_action('admin_post_zvij_membership_admin_test', function (): void {
     wp_safe_redirect(admin_url('options-general.php?page=zvij-membership-email'));
     exit;
 });
+
+/**
+ * ZVIJ-07 — delivery model (owner-confirmed OWNER-M07).
+ * Over the 42 EUR free-shipping threshold, "navadna" (standard post) is free,
+ * so the paid "Navadna poštnina" rate must not sit next to the free option.
+ * When free shipping applies we drop only the base navadna flat rate; the paid
+ * upgrade tiers (sledenje / podpis / povzetje / paket) stay available.
+ */
+add_filter('woocommerce_package_rates', function (array $rates): array {
+    $has_free = false;
+    foreach ($rates as $rate) {
+        if ($rate->method_id === 'free_shipping') { $has_free = true; break; }
+    }
+    if (! $has_free) {
+        return $rates;
+    }
+    foreach ($rates as $key => $rate) {
+        if ($rate->method_id === 'flat_rate' && $rate->get_label() === 'Navadna poštnina') {
+            unset($rates[$key]);
+        }
+    }
+    return $rates;
+}, 10, 1);
