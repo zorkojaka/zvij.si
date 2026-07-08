@@ -22,7 +22,10 @@ foreach ((array) get_option('zvij_kits', []) as $kit_def) {
         'tone' => $tone_map[$key],
     ];
 }
-$hero_img = zvij_kit_flatlay_url('black');
+$hero_img = zvij_home_block_img('hero');
+if ($hero_img === '') {
+    $hero_img = zvij_kit_flatlay_url('black');
+}
 ?>
 
 <section class="zv-hero zv-panel">

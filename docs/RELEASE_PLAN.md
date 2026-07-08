@@ -44,7 +44,7 @@ Ta dokument je operativni vir resnice za pot do prve prodajne verzije. Nadgrajuj
 | 2 | SMTP / transakcijski email (potrditve naročil, welcome email) | Jaka (račun) + agent | blokirano na Jaka |
 | 3 | MailerLite: račun, skupina »Člani Zvij.si«, API ključ + group ID v env | Jaka + agent | blokirano na Jaka |
 | 4 | zvijace@zvij.si + SPF/DKIM/DMARC | Jaka (cPanel/DNS) | blokirano na Jaka |
-| 5 | Realne fotografije: grinder, tulci, kit flat-layi, hero | Jaka (fotografiranje) | blokirano na Jaka |
+| 5 | Realne fotografije: grinder, tulci, kit flat-layi, hero | Jaka (fotografiranje) | ✅ večinoma urejeno (8. 7.): produktne fotografije iz `~/apps/zvijsi/produkti` uvožene za DUBI 42/420, SMOKEY/CHILLY/FRUTTY, grinder in vse tri tulce (featured + galerije, optimizirane v JPEG); hero na domači strani je zdaj realna fotografija tulcev. Še manjka: pravi kit flat-layi (Black/Silver/Gold/Throwie še AI), vžigalniki in rolce (čaka nabava). Posterji z vpečenim besedilom (crn/srebrn/zlat-tulec.png) so rezervirani za promo bloke, ne za produktne galerije. |
 | 6 | Podatki podjetja: TRR za predračun, naslov trgovine, davčni status (DDV zavezanec?) | Jaka | blokirano na Jaka |
 | 7 | Potrditev cen dostave in praga brezplačne dostave | Jaka (odločitev) | ✅ potrjeno (OWNER-M07, ZVIJ-07): navadna 2,90 / sledenje 3,90 / podpis 3,90 / povzetje 5,90 / paket 7,50; brezplačna nad 42 € |
 | 8 | Izdaja računov (Woo email z računom zadošča za start; pravi računovodski sistem kasneje) | odločitev | ✅ urejeno (ZVIJ-08, zvij-core 0.4.0) — račun v email kupcu; poln naslov/TRR/davčna se izpišejo, ko so podatki podjetja (#6) vpisani |
@@ -65,7 +65,7 @@ Ta dokument je operativni vir resnice za pot do prve prodajne verzije. Nadgrajuj
 
 ## 3. Kaj mora narediti Jaka (ročno, po prioriteti)
 
-1. **Fotografiraj** grinder in tulce (navodila v PRODUCT_IMAGE_PLAN.md) — največji vizualni dvig.
+1. ~~Fotografiraj grinder in tulce~~ **Urejeno (8. 7.)** — fotografije uvožene v katalog. Ostane: foto vžigalnikov in rolc ob prihodu ter realni kit flat-layi za Black/Silver/Gold/Throwie.
 2. **Odpri MailerLite** račun in ustvari skupino »Člani Zvij.si«; API ključ pošlji varno (env, ne Git).
 3. **Ustvari zvijace@zvij.si** in uredi SPF/DKIM/DMARC DNS zapise.
 4. **Odloči:** prag brezplačne dostave (predlog 40 €), cena dostave (predlog 3,90 €), DDV status podjetja, TRR za predračun.
