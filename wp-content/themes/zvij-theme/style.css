@@ -472,9 +472,9 @@ a {
     linear-gradient(135deg, #efe0c8, #fffaf1);
   border-radius: var(--zvij-radius);
   aspect-ratio: 1 / 1;
-  object-fit: contain;
+  object-fit: cover;
   margin: 0 0 1rem;
-  padding: 1rem;
+  padding: 0;
 }
 
 .woocommerce ul.products li.product .woocommerce-loop-product__title {
@@ -697,6 +697,17 @@ a {
 
 .single-product div.product .woocommerce-product-gallery img {
   border-radius: var(--zvij-radius);
+}
+
+.single-product div.product .woocommerce-product-gallery__image img {
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  width: 100%;
+}
+
+.single-product div.product .woocommerce-product-gallery .flex-control-thumbs img {
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
 }
 
 .single-product div.product .summary {
@@ -1244,21 +1255,20 @@ a {
 }
 
 .zv-hero__visual {
-  align-items: center;
   background:
     radial-gradient(circle at 20% 6%, rgba(49, 95, 73, 0.14), transparent 18rem),
     linear-gradient(135deg, rgba(255, 250, 242, 0.15), rgba(198, 155, 86, 0.28));
-  display: flex;
-  justify-content: center;
   min-width: 0;
-  padding: clamp(1rem, 3vw, 3rem);
+  overflow: hidden;
+  position: relative;
 }
 
 .zv-hero__visual img {
-  filter: drop-shadow(0 30px 55px rgba(20, 14, 8, 0.22));
-  max-height: 460px;
-  object-fit: contain;
-  width: min(100%, 900px);
+  height: 100%;
+  inset: 0;
+  object-fit: cover;
+  position: absolute;
+  width: 100%;
 }
 
 .button,
@@ -3147,11 +3157,9 @@ body::before {
 }
 
 .zv-carousel-card__image img {
-  height: 76%;
-  max-height: 230px;
-  max-width: 210px;
-  object-fit: contain;
-  width: 72%;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
 }
 
 .zv-carousel-card__image.is-pack-5 img {
