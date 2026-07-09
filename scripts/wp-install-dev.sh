@@ -80,4 +80,16 @@ fi
 docker_compose "${compose_args[@]}" --profile tools run --rm wp-cli \
   wp plugin activate revolut-gateway-for-woocommerce
 
+# SMTP dostava emailov (MUST LAUNCH #2). Nastavitve (host/port/pošiljatelj) so
+# programske; geslo poštnega predala vpiše Jaka v UI. Glej docs/SMTP_SETUP.md.
+if docker_compose "${compose_args[@]}" --profile tools run --rm wp-cli wp plugin is-installed wp-mail-smtp; then
+  printf 'WP Mail SMTP is already installed.\n'
+else
+  docker_compose "${compose_args[@]}" --profile tools run --rm wp-cli \
+    wp plugin install wp-mail-smtp
+fi
+
+docker_compose "${compose_args[@]}" --profile tools run --rm wp-cli \
+  wp plugin activate wp-mail-smtp
+
 printf 'WordPress dev install ready: %s\n' "$URL"
