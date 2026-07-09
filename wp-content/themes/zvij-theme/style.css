@@ -209,6 +209,46 @@ a {
   color: var(--zvij-text);
 }
 
+/* WooCommerce privzeti poudarek je vijoličen (--wc-primary #720eec) — prepišemo
+   na brand (zelena za povezave/poudarke, glavni CTA gumbi črni s zelenim hoverjem
+   po DESIGN_SYSTEM.md). Rešuje vijolične gumbe v blagajni. */
+:root,
+.woocommerce,
+.woocommerce-page {
+  --wc-primary: var(--zvij-accent);
+  --wc-primary-text: #ffffff;
+  --wc-highlight: var(--zvij-accent);
+  --wc-highlight-text: #ffffff;
+}
+
+.woocommerce a.button.alt,
+.woocommerce button.button.alt,
+.woocommerce input.button.alt,
+.woocommerce #respond input#submit.alt,
+.woocommerce-page a.button.alt,
+.woocommerce .checkout-button,
+.woocommerce #place_order,
+#place_order,
+.wc-block-components-button:not(.is-link),
+.wp-block-woocommerce-cart .wc-block-cart__submit-button {
+  background: var(--zvij-text);
+  border: 1px solid var(--zvij-text);
+  color: var(--zvij-bg);
+}
+
+.woocommerce a.button.alt:hover,
+.woocommerce button.button.alt:hover,
+.woocommerce input.button.alt:hover,
+.woocommerce #respond input#submit.alt:hover,
+.woocommerce .checkout-button:hover,
+.woocommerce #place_order:hover,
+#place_order:hover,
+.wc-block-components-button:not(.is-link):hover {
+  background: var(--zvij-accent);
+  border-color: var(--zvij-accent);
+  color: #fff;
+}
+
 .ritual-note {
   align-self: end;
   background: var(--zvij-bg-deep);
