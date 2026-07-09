@@ -8,13 +8,25 @@
  * računa), tako da email kupcu služi kot račun. WooCommerce že izpiše postavke,
  * količine in znesek — tu dodamo le manjkajočo identifikacijo izdajatelja.
  *
- * To NI davčno/fiskalno zaporedno številčenje računov — številka računa je
- * številka naročila; formalni računovodski sistem je ločena, kasnejša naloga.
+ * Št. računa: zaporedno številčenje v formatu ZZ/MM/LLLL (zaporedna/mesec/leto).
+ * Številka se naročilu dodeli enkrat (ob prvem računskem emailu) in se shrani v
+ * meta naročila, tako da se ob ponovnih pošiljanjih ne spremeni. Zaporedni
+ * števec se hrani v opciji `zvij_invoice_next_seq` (Jaka ga lahko ročno popravi
+ * v WooCommerce → Nastavitve → Splošno, npr. po računu izdanem izven sistema) in
+ * se ob prehodu v novo koledarsko leto samodejno vrne na 1.
+ *
+ * To ni poln fiskalni/računovodski sistem (davčno potrjevanje računov ipd.) —
+ * ta ostaja ločena, kasnejša naloga.
  */
 
 if (! defined('ABSPATH')) {
     exit;
 }
+
+const ZVIJ_INVOICE_NEXT_SEQ_OPTION = 'zvij_invoice_next_seq';
+const ZVIJ_INVOICE_SEQ_YEAR_OPTION = 'zvij_invoice_seq_year';
+const ZVIJ_INVOICE_NUMBER_META = '_zvij_invoice_number';
+const ZVIJ_INVOICE_SEQ_META = '_zvij_invoice_seq';
 
 /**
  * Statusi naročila, pri katerih email kupcu šteje kot račun.
@@ -87,6 +99,55 @@ function zvij_invoice_date(WC_Order $order): string {
 }
 
 /**
+ * Ali se zaporedni števec ob novem letu vrne na 1 (privzeto da).
+ */
+function zvij_invoice_reset_yearly(): bool {
+    return (bool) apply_filters('zvij_invoice_reset_yearly', true);
+}
+
+/**
+ * Št. računa v formatu ZZ/MM/LLLL. Če je naročilu že dodeljena, jo vrne;
+ * sicer dodeli naslednjo zaporedno in jo shrani (idempotentno).
+ */
+function zvij_invoice_number(WC_Order $order): string {
+    $existing = (string) $order->get_meta(ZVIJ_INVOICE_NUMBER_META);
+    if ($existing !== '') {
+        return $existing;
+    }
+
+    return zvij_invoice_assign_number($order);
+}
+
+/**
+ * Dodeli in shrani naslednjo zaporedno št. računa za naročilo.
+ * Leto/mesec se vzameta iz datuma izdaje (plačilo, sicer nastanek naročila).
+ */
+function zvij_invoice_assign_number(WC_Order $order): string {
+    $date = $order->get_date_paid() ?: $order->get_date_created();
+    $year = (int) ($date ? $date->date('Y') : date('Y'));
+    $month = (int) ($date ? $date->date('n') : date('n'));
+
+    $seq_year = (int) get_option(ZVIJ_INVOICE_SEQ_YEAR_OPTION, 0);
+    $next = (int) get_option(ZVIJ_INVOICE_NEXT_SEQ_OPTION, 1);
+
+    if (zvij_invoice_reset_yearly() && $seq_year !== 0 && $year > $seq_year) {
+        $next = 1;
+    }
+
+    $seq = max(1, $next);
+    $number = sprintf('%d/%02d/%04d', $seq, $month, $year);
+
+    $order->update_meta_data(ZVIJ_INVOICE_NUMBER_META, $number);
+    $order->update_meta_data(ZVIJ_INVOICE_SEQ_META, $seq);
+    $order->save();
+
+    update_option(ZVIJ_INVOICE_NEXT_SEQ_OPTION, $seq + 1);
+    update_option(ZVIJ_INVOICE_SEQ_YEAR_OPTION, $year);
+
+    return $number;
+}
+
+/**
  * V email kupcu doda računsko glavo. Ne izpiše se v admin emaile (nova naročila)
  * niti pri statusih, ki niso račun (cancelled/failed/pending/refunded).
  *
@@ -101,7 +162,7 @@ function zvij_invoice_render_email($order, bool $sent_to_admin, bool $plain_text
     }
 
     $seller = zvij_invoice_seller();
-    $number = $order->get_order_number();
+    $number = zvij_invoice_number($order);
     $date = zvij_invoice_date($order);
     $vat_note = zvij_invoice_vat_note();
 
@@ -146,3 +207,50 @@ function zvij_invoice_render_email($order, bool $sent_to_admin, bool $plain_text
 
 // Nad tabelo postavk: računska glava se pokaže pred specifikacijo naročila.
 add_action('woocommerce_email_before_order_table', 'zvij_invoice_render_email', 20, 4);
+
+/**
+ * WooCommerce → Nastavitve → Splošno: polje za ročni popravek zaporednega
+ * števca računov (npr. po računu izdanem izven sistema).
+ */
+function zvij_invoice_register_settings(array $settings): array {
+    $fields = [
+        [
+            'type' => 'title',
+            'name' => __('Zvij.si — računi', 'zvij-core'),
+            'desc' => __('Zaporedno številčenje računov v formatu ZZ/MM/LLLL (zaporedna/mesec/leto). Ob prehodu v novo leto se števec samodejno vrne na 1.', 'zvij-core'),
+            'id'   => 'zvij_invoice_options',
+        ],
+        [
+            'type'    => 'number',
+            'name'    => __('Naslednja zaporedna št. računa', 'zvij-core'),
+            'desc'    => __('Zaporedna številka, ki jo dobi naslednji izdani račun. Ročno popravi, če izdaš račun izven sistema, da ostane zaporedje neprekinjeno.', 'zvij-core'),
+            'desc_tip' => true,
+            'id'      => ZVIJ_INVOICE_NEXT_SEQ_OPTION,
+            'default' => 1,
+            'css'     => 'width:90px;',
+            'custom_attributes' => ['min' => '1', 'step' => '1'],
+        ],
+        [
+            'type' => 'sectionend',
+            'id'   => 'zvij_invoice_options',
+        ],
+    ];
+
+    return array_merge($settings, $fields);
+}
+add_filter('woocommerce_get_settings_general', 'zvij_invoice_register_settings');
+
+/**
+ * Prikaz dodeljene št. računa na strani naročila v adminu (samo za referenco).
+ */
+function zvij_invoice_show_number_admin($order): void {
+    if (! $order instanceof WC_Order) {
+        return;
+    }
+    $number = (string) $order->get_meta(ZVIJ_INVOICE_NUMBER_META);
+    if ($number === '') {
+        return;
+    }
+    echo '<p class="form-field form-field-wide"><strong>' . esc_html__('Št. računa', 'zvij-core') . ':</strong> ' . esc_html($number) . '</p>';
+}
+add_action('woocommerce_admin_order_data_after_order_details', 'zvij_invoice_show_number_admin');
