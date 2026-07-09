@@ -68,4 +68,16 @@ fi
 docker_compose "${compose_args[@]}" --profile tools run --rm wp-cli \
   wp plugin activate woocommerce
 
+# Revolut kartično plačilo (ZVIJ-01). Privzeti način je sandbox; API ključ vpiše
+# Jaka v WooCommerce → Nastavitve → Plačila → Revolut. Glej docs/REVOLUT_SETUP.md.
+if docker_compose "${compose_args[@]}" --profile tools run --rm wp-cli wp plugin is-installed revolut-gateway-for-woocommerce; then
+  printf 'Revolut gateway is already installed.\n'
+else
+  docker_compose "${compose_args[@]}" --profile tools run --rm wp-cli \
+    wp plugin install revolut-gateway-for-woocommerce
+fi
+
+docker_compose "${compose_args[@]}" --profile tools run --rm wp-cli \
+  wp plugin activate revolut-gateway-for-woocommerce
+
 printf 'WordPress dev install ready: %s\n' "$URL"
