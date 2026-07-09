@@ -68,6 +68,7 @@ function zvij_invoice_seller(): array {
         trim((string) get_option('woocommerce_store_postcode', '') . ' ' . (string) get_option('woocommerce_store_city', ''))
     );
     $email = (string) apply_filters('zvij_invoice_seller_email', get_option('zvij_invoice_seller_email', 'zvijace@zvij.si'));
+    $reg_no = trim((string) get_option('zvij_invoice_reg_no', '')); // matična številka
     $tax_id = trim((string) get_option('zvij_invoice_tax_id', '')); // davčna/ID za DDV
     $trr = trim((string) get_option('zvij_invoice_trr', ''));       // TRR za predračun/nakazilo
 
@@ -80,6 +81,9 @@ function zvij_invoice_seller(): array {
     }
     if ($email !== '') {
         $lines[] = $email;
+    }
+    if ($reg_no !== '') {
+        $lines[] = 'Matična št.: ' . $reg_no;
     }
     if ($tax_id !== '') {
         $lines[] = 'Davčna št.: ' . $tax_id;
