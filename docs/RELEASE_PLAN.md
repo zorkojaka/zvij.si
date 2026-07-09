@@ -45,7 +45,7 @@ Ta dokument je operativni vir resnice za pot do prve prodajne verzije. Nadgrajuj
 | # | Vrzel | Kdo | Status |
 |---|-------|-----|--------|
 | 1 | Produkcijsko plačilo s kartico (Revolut) — namestitev vtičnika, sandbox test, produkcijski ključi | Jaka (ključi) + agent (integracija) | 🔧 gateway nameščen v dev (sandbox), čaka Jakov **sandbox ključ** → test → produkcija (`docs/REVOLUT_SETUP.md`) |
-| 2 | SMTP / transakcijski email (potrditve naročil, welcome email) | Jaka (geslo) + agent | 🔧 WP Mail SMTP nameščen + nastavljen (mail.zvij.si, 587/TLS — dev blokira 465); čaka Jakovo **geslo predala** v UI + test (`docs/SMTP_SETUP.md`) |
+| 2 | SMTP / transakcijski email (potrditve naročil, welcome email) | agent + Jaka | ✅ deluje (9. 7.): WP Mail SMTP prek `mail.zvij.si` 587/TLS; avtentikacija (235) in pošiljanje potrjena z dev. Za produkcijo uredi še SPF/DKIM/DMARC (#4) za dostavljivost. (`docs/SMTP_SETUP.md`) |
 | 3 | MailerLite: račun, skupina »Člani Zvij.si«, API ključ + group ID v env | Jaka + agent | blokirano na Jaka |
 | 4 | zvijace@zvij.si + SPF/DKIM/DMARC | Jaka (cPanel/DNS) | blokirano na Jaka |
 | 5 | Realne fotografije: grinder, tulci, kit flat-layi, hero | Jaka (fotografiranje) | ✅ večinoma urejeno (8. 7.): produktne fotografije iz `~/apps/zvijsi/produkti` uvožene za DUBI 42/420, SMOKEY/CHILLY/FRUTTY, grinder in vse tri tulce (featured + galerije, optimizirane v JPEG); hero na domači strani je zdaj realna fotografija tulcev. Še manjka: pravi kit flat-layi (Black/Silver/Gold/Throwie še AI), vžigalniki in rolce (čaka nabava). Posterji z vpečenim besedilom (crn/srebrn/zlat-tulec.png) so rezervirani za promo bloke, ne za produktne galerije. |
