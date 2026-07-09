@@ -8,12 +8,16 @@
  * računa), tako da email kupcu služi kot račun. WooCommerce že izpiše postavke,
  * količine in znesek — tu dodamo le manjkajočo identifikacijo izdajatelja.
  *
- * Št. računa: zaporedno številčenje v formatu ZZ/MM/LLLL (zaporedna/mesec/leto).
- * Številka se naročilu dodeli enkrat (ob prvem računskem emailu) in se shrani v
- * meta naročila, tako da se ob ponovnih pošiljanjih ne spremeni. Zaporedni
- * števec se hrani v opciji `zvij_invoice_next_seq` (Jaka ga lahko ročno popravi
- * v WooCommerce → Nastavitve → Splošno, npr. po računu izdanem izven sistema) in
- * se ob prehodu v novo koledarsko leto samodejno vrne na 1.
+ * Zaporedno št. dobijo SAMO računi (plačana naročila: processing/ready/completed);
+ * ta zaporedje teče po vrsti brez lukenj. Predračun (on-hold/nakazilo) je ločen
+ * dokument — uporabi št. naročila in ne porabi zaporedne št. računa.
+ *
+ * Št. računa: format ZZ/MM/LLLL (zaporedna/mesec/leto). Dodeli se enkrat (ob
+ * prehodu naročila v plačan status) in se shrani v meta naročila, tako da se ob
+ * ponovnih pošiljanjih ne spremeni. Zaporedni števec se hrani v opciji
+ * `zvij_invoice_next_seq` (Jaka ga lahko ročno popravi v WooCommerce → Nastavitve
+ * → Splošno, npr. po računu izdanem izven sistema) in se ob prehodu v novo
+ * koledarsko leto samodejno vrne na 1.
  *
  * To ni poln fiskalni/računovodski sistem (davčno potrjevanje računov ipd.) —
  * ta ostaja ločena, kasnejša naloga.
@@ -29,15 +33,24 @@ const ZVIJ_INVOICE_NUMBER_META = '_zvij_invoice_number';
 const ZVIJ_INVOICE_SEQ_META = '_zvij_invoice_seq';
 
 /**
- * Statusi naročila, pri katerih email kupcu šteje kot račun.
- * on-hold = predračun (BACS/nakazilo), processing/ready/completed = plačano/v obdelavi.
+ * Statusi, pri katerih se izda RAČUN (plačano/v obdelavi). Samo ti porabijo
+ * zaporedno št. računa — tako izdani računi tečejo po vrsti brez lukenj.
+ * Predračun (on-hold/nakazilo) je ločen, glej zvij_proforma_statuses().
  */
 function zvij_invoice_statuses(): array {
-    $statuses = ['processing', 'on-hold', 'completed'];
+    $statuses = ['processing', 'completed'];
     if (defined('ZVIJ_ORDER_STATUS_READY')) {
         $statuses[] = ZVIJ_ORDER_STATUS_READY;
     }
     return apply_filters('zvij_invoice_statuses', $statuses);
+}
+
+/**
+ * Statusi predračuna (nakazilo/BACS, še neplačano). Predračun NE dobi zaporedne
+ * št. računa — uporabi št. naročila in svoj naziv, da je zaporedje računov čisto.
+ */
+function zvij_proforma_statuses(): array {
+    return apply_filters('zvij_proforma_statuses', ['on-hold']);
 }
 
 /**
@@ -157,19 +170,31 @@ function zvij_invoice_render_email($order, bool $sent_to_admin, bool $plain_text
     if ($sent_to_admin || ! $order instanceof WC_Order) {
         return;
     }
-    if (! in_array($order->get_status(), zvij_invoice_statuses(), true)) {
+    $status = $order->get_status();
+    $is_invoice = in_array($status, zvij_invoice_statuses(), true);
+    $is_proforma = in_array($status, zvij_proforma_statuses(), true);
+    if (! $is_invoice && ! $is_proforma) {
         return;
     }
 
     $seller = zvij_invoice_seller();
-    $number = zvij_invoice_number($order);
     $date = zvij_invoice_date($order);
     $vat_note = zvij_invoice_vat_note();
 
+    if ($is_invoice) {
+        $doc_label = 'RAČUN';
+        $doc_title = 'Račun';
+        $number = zvij_invoice_number($order);
+    } else {
+        $doc_label = 'PREDRAČUN';
+        $doc_title = 'Predračun';
+        $number = $order->get_order_number();
+    }
+
     if ($plain_text) {
         echo "\n" . str_repeat('=', 40) . "\n";
-        echo 'RAČUN' . "\n";
-        echo 'Račun št.: ' . $number . "\n";
+        echo $doc_label . "\n";
+        echo $doc_title . ' št.: ' . $number . "\n";
         echo 'Datum izdaje: ' . $date . "\n\n";
         echo 'Izdajatelj: ' . $seller['name'] . "\n";
         foreach ($seller['lines'] as $line) {
@@ -191,8 +216,8 @@ function zvij_invoice_render_email($order, bool $sent_to_admin, bool $plain_text
         . '<table cellpadding="0" cellspacing="0" border="0" style="width:100%;border-collapse:collapse;">'
         . '<tr>'
         . '<td style="vertical-align:top;padding:0;">'
-        . '<div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8a7f6e;">Račun</div>'
-        . '<div style="font-size:15px;font-weight:700;color:#1e1a15;">Račun št. ' . esc_html($number) . '</div>'
+        . '<div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8a7f6e;">' . esc_html($doc_title) . '</div>'
+        . '<div style="font-size:15px;font-weight:700;color:#1e1a15;">' . esc_html($doc_title) . ' št. ' . esc_html($number) . '</div>'
         . '<div style="font-size:13px;color:#4a4335;">Datum izdaje: ' . esc_html($date) . '</div>'
         . '</td>'
         . '<td style="vertical-align:top;padding:0;text-align:right;font-size:12px;line-height:1.5;color:#4a4335;">'
@@ -207,6 +232,22 @@ function zvij_invoice_render_email($order, bool $sent_to_admin, bool $plain_text
 
 // Nad tabelo postavk: računska glava se pokaže pred specifikacijo naročila.
 add_action('woocommerce_email_before_order_table', 'zvij_invoice_render_email', 20, 4);
+
+/**
+ * Zaporedno št. računa dodeli takoj, ko naročilo preide v plačan status, da so
+ * računi oštevilčeni po vrstnem redu izdaje (ne po datumu naročila) in brez
+ * lukenj — neodvisno od tega, ali/kdaj je poslan email. Idempotentno.
+ */
+function zvij_invoice_assign_on_status($order_id, $from, $to, $order): void {
+    if (! $order instanceof WC_Order) {
+        return;
+    }
+    if (! in_array($to, zvij_invoice_statuses(), true)) {
+        return;
+    }
+    zvij_invoice_number($order);
+}
+add_action('woocommerce_order_status_changed', 'zvij_invoice_assign_on_status', 20, 4);
 
 /**
  * WooCommerce → Nastavitve → Splošno: polje za ročni popravek zaporednega
