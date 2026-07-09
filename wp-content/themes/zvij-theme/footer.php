@@ -29,6 +29,12 @@ if (! defined('ABSPATH')) {
       </div>
     </div>
   </div>
+  <div class="site-footer__legal">
+    <?php if ($privacy = get_privacy_policy_url()) : ?>
+      <a href="<?php echo esc_url($privacy); ?>"><?php esc_html_e('Politika zasebnosti', 'zvij-theme'); ?></a>
+    <?php endif; ?>
+    <button type="button" class="site-footer__cookies" onclick="if(window.zvijOpenCookieSettings)window.zvijOpenCookieSettings()"><?php esc_html_e('Nastavitve piškotkov', 'zvij-theme'); ?></button>
+  </div>
 </footer>
 <?php wp_footer(); ?>
 </body>

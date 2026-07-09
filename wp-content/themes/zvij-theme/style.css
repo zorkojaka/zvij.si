@@ -2966,6 +2966,36 @@ body::before {
   width: 100%;
 }
 
+.site-footer__legal {
+  align-items: center;
+  border-top: 1px solid rgba(199, 177, 148, 0.28);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: var(--zvij-max);
+  padding: 1rem clamp(1rem, 3.2vw, 4rem);
+}
+
+.site-footer__legal a,
+.site-footer__cookies {
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.85rem;
+  opacity: 0.8;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.site-footer__legal a:hover,
+.site-footer__cookies:hover {
+  opacity: 1;
+}
+
 .site-footer .site-footer__member {
   display: grid;
   gap: 1rem;

@@ -21,6 +21,7 @@ require_once __DIR__ . '/includes/zvij-orders.php';
 require_once __DIR__ . '/includes/zvij-dashboard.php';
 require_once __DIR__ . '/includes/zvij-invoice.php';
 require_once __DIR__ . '/includes/zvij-payment-qr.php';
+require_once __DIR__ . '/includes/zvij-cookie-consent.php';
 
 register_activation_hook(__FILE__, 'zvij_membership_install');
 add_action('plugins_loaded', 'zvij_membership_install');
