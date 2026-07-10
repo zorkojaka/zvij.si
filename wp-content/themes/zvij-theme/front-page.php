@@ -45,9 +45,9 @@ if ($hero_img === '') {
 </section>
 
 <section class="zv-service-strip" aria-label="Prednosti">
-  <div><b>Hitra dostava</b><span>1-2 dni</span></div>
-  <div><b>Diskretno pakiranje</b><span>Brez oznak</span></div>
-  <div><b>Zate. Vedno.</b><span>Domača podpora</span></div>
+  <div data-ico="truck"><b>Hitra dostava</b><span>1-2 dni</span></div>
+  <div data-ico="shield"><b>Diskretno pakiranje</b><span>Brez oznak</span></div>
+  <div data-ico="heart"><b>Zate. Vedno.</b><span>Domača podpora</span></div>
 </section>
 
 <?php
@@ -93,9 +93,9 @@ $reload_bg = $reload_bg !== '' ? $reload_bg : zvij_kit_flatlay_url('throwie');
 </section>
 
 <section class="zv-benefits">
-  <div><b>Domača podpora</b><span>Tukaj smo zate.</span></div>
-  <div><b>Diskretno pakiranje</b><span>Brez oznak.</span></div>
-  <div><b>Hitra dostava</b><span>1-2 dni.</span></div>
+  <div data-ico="heart"><b>Domača podpora</b><span>Tukaj smo zate.</span></div>
+  <div data-ico="shield"><b>Diskretno pakiranje</b><span>Brez oznak.</span></div>
+  <div data-ico="truck"><b>Hitra dostava</b><span>1-2 dni.</span></div>
 </section>
 
 <section class="zv-member zv-panel">
@@ -123,9 +123,9 @@ $reload_bg = $reload_bg !== '' ? $reload_bg : zvij_kit_flatlay_url('throwie');
 </section>
 
 <section class="zv-trust">
-  <div><b>Domača podpora</b><span>Tukaj smo zate.</span></div>
-  <div><b>Diskretno pakiranje</b><span>Brez oznak.</span></div>
-  <div><b>Hitra dostava</b><span>1-2 dni.</span></div>
+  <div data-ico="heart"><b>Domača podpora</b><span>Tukaj smo zate.</span></div>
+  <div data-ico="shield"><b>Diskretno pakiranje</b><span>Brez oznak.</span></div>
+  <div data-ico="truck"><b>Hitra dostava</b><span>1-2 dni.</span></div>
 </section>
 
 <?php

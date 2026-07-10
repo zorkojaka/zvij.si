@@ -49,9 +49,9 @@ while (have_posts()) :
           <?php endforeach; ?>
         </section>
         <section class="zv-benefits">
-          <div><b>Vse na enem mestu</b><span>Brez iskanja po trgovinah.</span></div>
-          <div><b>Usklajeno</b><span>Tvoj stil. Tvoja izbira.</span></div>
-          <div><b>Pripravljeno za akcijo</b><span>Odpri in uživaj.</span></div>
+          <div data-ico="package"><b>Vse na enem mestu</b><span>Brez iskanja po trgovinah.</span></div>
+          <div data-ico="spark"><b>Usklajeno</b><span>Tvoj stil. Tvoja izbira.</span></div>
+          <div data-ico="bolt"><b>Pripravljeno za akcijo</b><span>Odpri in uživaj.</span></div>
         </section>
         <section class="zv-card zv-card--kit-list">
           <h2>Kaj je v kitu?</h2>
@@ -90,10 +90,9 @@ while (have_posts()) :
           <?php endforeach; ?>
         </section>
         <section class="zv-service-strip">
-          <div><b>Hitro pri tebi</b><span>1-2 dni</span></div>
-          <div><b>Diskretno pakiranje</b><span>Brez oznak</span></div>
-          <div><b>Domača podpora</b><span>Tukaj smo zate.</span></div>
-          <div><b>Zate. Vedno.</b><span>Domača podpora</span></div>
+          <div data-ico="truck"><b>Hitro pri tebi</b><span>1-2 dni</span></div>
+          <div data-ico="shield"><b>Diskretno pakiranje</b><span>Brez oznak</span></div>
+          <div data-ico="heart"><b>Domača podpora</b><span>Tukaj smo zate.</span></div>
         </section>
         <?php
         continue;
@@ -111,10 +110,9 @@ while (have_posts()) :
           <?php if ($hero !== '') : ?><img src="<?php echo esc_url($hero); ?>" alt="Zvij.si ekipa in setup" loading="lazy"><?php endif; ?>
         </section>
         <section class="zv-benefits">
-          <div><b>Domače</b><span>Smo iz Slovenije.</span></div>
-          <div><b>Pošteno</b><span>Fer cene. Brez presenečenj.</span></div>
-          <div><b>Diskretno</b><span>Tvoja zasebnost je naša stvar.</span></div>
-          <div><b>Za skupnost</b><span>Podpiramo kulturo.</span></div>
+          <div data-ico="pin"><b>Domače</b><span>Smo iz Slovenije.</span></div>
+          <div data-ico="check"><b>Pošteno</b><span>Fer cene. Brez presenečenj.</span></div>
+          <div data-ico="shield"><b>Diskretno</b><span>Tvoja zasebnost je naša stvar.</span></div>
         </section>
         <section class="zv-about-story zv-panel" id="ekipa">
           <div class="zv-about-story__head">
