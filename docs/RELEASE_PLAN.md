@@ -1,10 +1,12 @@
 # Zvij.si — Release plan in gap analiza
 
-Datum: 5. 7. 2026 · Zadnja posodobitev: 9. 7. 2026
+Datum: 5. 7. 2026 · Zadnja posodobitev: 10. 7. 2026
 Veja: `chore/docker-wordpress-dev` · Dev: https://dev.inteligent.si
 
 Ta dokument je operativni vir resnice za pot do prve prodajne verzije. Nadgrajuje handoff dokument (1. 7. 2026); zaklenjene odločitve iz handoffa ostajajo v veljavi.
 
+> **Posodobitev 10. 7. 2026:** poenoten dizajn produktnih kartic v trgovini — lastna predloga `woocommerce/content-product.php` (slikovni pas čez celo širino kartice brez roba, značke Akcija/Prvič kot overlay na sliki, cena + gumb poravnana na dno kartice; enako v »Podobni izdelki«). Popravljena mobilna noga (obrazec »Postani član« se ni več prelomil v eno kolono in je bil odrinjen iz zaslona). E2E preverjeno: dodajanje v košarico z enostavno in variabilno kartico deluje.
+>
 > **Posodobitev 9. 7. 2026:** slike zapolnijo okvir (hero/karusel/trgovina, `object-fit: cover`); račun ima zaporedno št. `ZZ/MM/LLLL` z ročnim popravkom, predračun je ločen dokument; podatki izdajatelja vneseni iz PRS in **TRR popravljen** na `SI56 6100 0002 8076 803`; dodan **UPN QR »slikaj in plačaj«** za nakazila; **Revolut gateway nameščen v dev (sandbox)**, čaka na Jakov ključ; COD 5,90 € potrjen za produkcijo; podjetje ni zavezanec za DDV.
 
 ---

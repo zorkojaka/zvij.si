@@ -19,7 +19,7 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.45');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.46');
 
     if (is_page('zvij-kit')) {
         wp_enqueue_script('zvij-kits', get_template_directory_uri() . '/assets/kits.js', [], '0.9.0', true);
@@ -65,48 +65,17 @@ add_action('woocommerce_admin_process_product_object', function (WC_Product $pro
     $product->update_meta_data('_zvij_homepage_carousel_order', (string) max(0, (int) $raw));
 });
 
-add_action('woocommerce_before_shop_loop_item_title', function (): void {
-    global $product;
-
-    if (! $product instanceof WC_Product) {
-        return;
-    }
-
-    $terms = get_the_terms($product->get_id(), 'product_cat');
-    if (empty($terms) || is_wp_error($terms)) {
-        return;
-    }
-
-    echo '<span class="product-card__cat">' . esc_html($terms[0]->name) . '</span>';
-
-    $first_purchase_badge = (string) get_post_meta($product->get_id(), '_zvij_first_purchase_badge', true);
-    if ($first_purchase_badge !== '') {
-        echo '<span class="product-card__badge">' . esc_html($first_purchase_badge) . '</span>';
-    }
-}, 9);
-
-add_action('woocommerce_after_shop_loop_item', function (): void {
-    global $product;
-
-    if (! $product instanceof WC_Product) {
-        return;
-    }
-
-    $dobroimetje_note = (string) get_post_meta($product->get_id(), '_zvij_dobroimetje_note', true);
-    if ($dobroimetje_note !== '') {
-        echo '<p class="product-card__credit">' . esc_html($dobroimetje_note) . '</p>';
-    }
-}, 7);
-
-add_action('woocommerce_after_shop_loop_item', function (): void {
-    global $product;
-
-    if (! $product instanceof WC_Product) {
-        return;
-    }
-
+/**
+ * Nakupni blok produktne kartice (kliče ga woocommerce/content-product.php):
+ * variabilni izdelki dobijo izbiro količine + AJAX gumb, ostali ceno + gumb.
+ */
+function zvij_product_loop_buy_block(WC_Product $product): void
+{
     if (is_product()) {
+        echo '<div class="zv-shop-buy">';
+        echo '<p class="zv-shop-vars__price">' . wp_kses_post($product->get_price_html()) . '</p>';
         woocommerce_template_loop_add_to_cart();
+        echo '</div>';
         return;
     }
 
@@ -142,8 +111,11 @@ add_action('woocommerce_after_shop_loop_item', function (): void {
         }
     }
 
+    echo '<div class="zv-shop-buy">';
+    echo '<p class="zv-shop-vars__price">' . wp_kses_post($product->get_price_html()) . '</p>';
     woocommerce_template_loop_add_to_cart();
-}, 10);
+    echo '</div>';
+}
 
 add_action('woocommerce_single_product_summary', function (): void {
     global $product;

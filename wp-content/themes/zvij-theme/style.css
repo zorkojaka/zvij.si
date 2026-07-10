@@ -495,26 +495,63 @@ a {
   content: none;
 }
 
+/* Kartica po vzoru domačega karusela: slikovni pas čez celo širino zgoraj,
+   telo spodaj. Eksplicitne grid vrstice (brez flex + auto marginov, ker
+   Chromium tam napačno izračuna višino grid vrstice v ul.products). */
 .woocommerce ul.products li.product,
 .woocommerce-page ul.products li.product {
   float: none;
   margin: 0;
   width: auto;
-  padding: 0.85rem;
-  min-height: 340px;
-  display: flex;
-  flex-direction: column;
+  padding: 0;
+  display: grid;
+  grid-template-rows: clamp(220px, 21vw, 300px) 1fr;
+  overflow: hidden;
 }
 
-.woocommerce ul.products li.product a img {
+.woocommerce ul.products li.product .zv-pcard__media {
   background:
     linear-gradient(135deg, rgba(49, 95, 73, 0.08), transparent 45%),
     linear-gradient(135deg, #efe0c8, #fffaf1);
-  border-radius: var(--zvij-radius);
-  aspect-ratio: 1 / 1;
+  display: block;
+  height: 100%;
+  position: relative;
+}
+
+.woocommerce ul.products li.product .zv-pcard__media img {
+  border-radius: 0;
+  display: block;
+  height: 100%;
+  margin: 0;
   object-fit: cover;
-  margin: 0 0 1rem;
   padding: 0;
+  width: 100%;
+}
+
+.woocommerce ul.products li.product .zv-pcard__body {
+  display: grid;
+  gap: 0;
+  grid-template-rows: 1fr auto;
+  padding: 1rem 1.05rem 1.15rem;
+}
+
+/* Woo "Akcija!" značka kot overlay na sliki, poenotena s karuselom. */
+.woocommerce ul.products li.product .onsale {
+  background: #c8934e;
+  border-radius: 999px;
+  color: #17120f;
+  font-size: 0.72rem;
+  font-weight: 950;
+  left: auto;
+  line-height: 1;
+  margin: 0;
+  min-height: 0;
+  min-width: 0;
+  padding: 0.35rem 0.6rem;
+  position: absolute;
+  right: 0.7rem;
+  top: 0.7rem;
+  z-index: 2;
 }
 
 .woocommerce ul.products li.product .woocommerce-loop-product__title {
@@ -529,36 +566,26 @@ a {
   margin-bottom: 0.6rem;
 }
 
+/* Značka »Prvič …« kot overlay v zgornjem levem kotu slike. */
 .product-card__badge {
   background: var(--zvij-accent-warm);
   border-radius: 999px;
   color: var(--zvij-panel);
-  display: inline-flex;
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 900;
-  margin: 0 0 0.75rem 0.45rem;
-  padding: 0.25rem 0.6rem;
+  left: 0.7rem;
+  line-height: 1;
+  margin: 0;
+  padding: 0.35rem 0.6rem;
+  position: absolute;
+  top: 0.7rem;
+  z-index: 2;
 }
 
+/* Woo ceno znotraj povezave skrijemo povsod — cena se izpiše v spodnjem
+   nakupnem bloku (.zv-shop-buy / .zv-shop-vars), da so kartice poenotene. */
 .woocommerce ul.products li.product .price {
-  color: var(--zvij-text);
-  font-size: 1.28rem;
-  font-weight: 900;
-  letter-spacing: -0.01em;
-  margin: 0.55rem 0 0;
-}
-
-.woocommerce ul.products li.product.product-type-variable .price {
   display: none;
-}
-
-.woocommerce ul.products li.product .price del {
-  color: var(--zvij-muted);
-  font-weight: 500;
-}
-
-.woocommerce ul.products li.product .price ins {
-  text-decoration: none;
 }
 
 .woocommerce ul.products li.product .button {
@@ -566,6 +593,18 @@ a {
   margin-top: 0.9rem;
   text-align: center;
   width: 100%;
+}
+
+/* Nakupni blok enostavnih izdelkov: cena + gumb, pripeta na dno kartice. */
+.woocommerce ul.products li.product .zv-shop-buy {
+  display: grid;
+  gap: 0.55rem;
+  padding-top: 0.85rem;
+  width: 100%;
+}
+
+.woocommerce ul.products li.product .zv-shop-buy .button {
+  margin-top: 0;
 }
 
 .product-card__credit {
@@ -594,9 +633,10 @@ a {
   box-shadow: none;
   grid-template-columns: none;
   grid-template-rows: none;
+  margin-top: 0;
   min-height: 0;
   overflow: visible;
-  padding: 0;
+  padding: 0.85rem 0 0;
 }
 
 .zv-shop-vars__price {
@@ -605,6 +645,17 @@ a {
   font-weight: 900;
   letter-spacing: -0.01em;
   margin: 0.3rem 0 0;
+}
+
+.zv-shop-vars__price del {
+  color: var(--zvij-muted);
+  font-size: 0.82em;
+  font-weight: 700;
+  margin-right: 0.3rem;
+}
+
+.zv-shop-vars__price ins {
+  text-decoration: none;
 }
 
 .woocommerce ul.products li.product .zv-shop-vars .zv-carousel-card__hint {
@@ -681,6 +732,7 @@ a {
   font: inherit;
   font-weight: 900;
   justify-content: center;
+  margin-top: 0;
   min-height: 46px;
   padding: 0.7rem 1rem;
   text-decoration: none;
@@ -1851,7 +1903,6 @@ a {
 .woocommerce-page ul.products li.product {
   background: var(--zvij-panel);
   border-radius: var(--zvij-radius);
-  min-height: 315px;
 }
 
 .woocommerce ul.products li.product a img {
@@ -3495,12 +3546,14 @@ body::before {
     flex-basis: calc((100% - 2rem) / 3);
   }
 
-  .site-footer__inner {
+  /* Specifičnost mora prebiti osnovni .site-footer .site-footer__inner,
+     sicer dvokolonska noga na telefonu odrine obrazec iz zaslona. */
+  .site-footer .site-footer__inner {
     grid-template-columns: 1fr;
     min-height: auto;
   }
 
-  .site-footer__brand {
+  .site-footer .site-footer__brand {
     justify-items: start;
     justify-self: stretch;
     text-align: left;
