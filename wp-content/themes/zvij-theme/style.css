@@ -548,7 +548,7 @@ a {
   margin: 0.55rem 0 0;
 }
 
-.woocommerce ul.products li.product.product-type-variable > .price {
+.woocommerce ul.products li.product.product-type-variable .price {
   display: none;
 }
 
@@ -562,8 +562,10 @@ a {
 }
 
 .woocommerce ul.products li.product .button {
-  align-self: flex-start;
-  margin-top: auto;
+  align-self: stretch;
+  margin-top: 0.9rem;
+  text-align: center;
+  width: 100%;
 }
 
 .product-card__credit {
@@ -577,8 +579,24 @@ a {
 .zv-shop-vars {
   display: grid;
   gap: 0.55rem;
-  margin-top: auto;
+  margin-top: 0.85rem;
   width: 100%;
+}
+
+/* .zv-shop-vars ima tudi razred .zv-carousel-card (rabi ga home.js za izbiro
+   količine), ki pa podeduje škatlo + visoko slikovno vrstico domače kartice.
+   V trgovini to ponastavimo, sicer cena napolni 226px vrstico in kontrole
+   odrine ven. */
+.woocommerce ul.products li.product .zv-shop-vars {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  grid-template-columns: none;
+  grid-template-rows: none;
+  min-height: 0;
+  overflow: visible;
+  padding: 0;
 }
 
 .zv-shop-vars__price {
