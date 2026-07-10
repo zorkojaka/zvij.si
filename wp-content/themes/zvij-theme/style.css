@@ -542,8 +542,9 @@ a {
 
 .woocommerce ul.products li.product .price {
   color: var(--zvij-text);
-  font-size: 1.05rem;
-  font-weight: 850;
+  font-size: 1.28rem;
+  font-weight: 900;
+  letter-spacing: -0.01em;
   margin: 0.55rem 0 0;
 }
 
@@ -582,51 +583,72 @@ a {
 
 .zv-shop-vars__price {
   color: var(--zvij-text);
-  font-size: 1.02rem;
+  font-size: 1.28rem;
   font-weight: 900;
-  margin: 0.35rem 0 0;
+  letter-spacing: -0.01em;
+  margin: 0.3rem 0 0;
 }
 
 .woocommerce ul.products li.product .zv-shop-vars .zv-carousel-card__hint {
+  border-top: 1px solid rgba(199, 177, 148, 0.4);
   color: var(--zvij-muted);
-  font-size: 0.82rem;
-  font-weight: 800;
-  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 850;
+  letter-spacing: 0.05em;
+  margin: 0.15rem 0 0;
+  padding-top: 0.65rem;
+  text-transform: uppercase;
 }
 
 .woocommerce ul.products li.product .zv-shop-vars .zv-carousel-card__vars {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
+  gap: 0.4rem;
 }
 
 .woocommerce ul.products li.product .zv-shop-vars .zv-carousel-card__vars button {
-  align-items: center;
-  background: #f6ead7;
-  border: 1px solid #d9c7ac;
-  border-radius: 999px;
+  background: #fff;
+  border: 1px solid rgba(199, 177, 148, 0.55);
+  border-radius: 10px;
   color: var(--zvij-text);
   cursor: pointer;
-  display: inline-flex;
-  gap: 0.35rem;
-  min-height: 38px;
-  padding: 0.35rem 0.7rem;
+  display: inline-grid;
+  flex: 1;
+  gap: 0.05rem;
+  justify-items: center;
+  line-height: 1.05;
+  min-height: 48px;
+  padding: 0.34rem 0.5rem;
+  text-align: center;
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.woocommerce ul.products li.product .zv-shop-vars .zv-carousel-card__vars button:hover {
+  border-color: var(--zvij-accent-warm);
 }
 
 .woocommerce ul.products li.product .zv-shop-vars .zv-carousel-card__vars button.on {
-  background: var(--zvij-text);
-  border-color: var(--zvij-text);
-  color: var(--zvij-bg);
+  background: #fbf1de;
+  border-color: #c8934e;
+  box-shadow: inset 0 0 0 1px #c8934e;
+  color: var(--zvij-text);
 }
 
 .woocommerce ul.products li.product .zv-shop-vars .zv-carousel-card__var-label {
+  display: block;
+  font-size: 0.95rem;
   font-weight: 950;
 }
 
 .woocommerce ul.products li.product .zv-shop-vars .zv-carousel-card__var-price {
-  color: inherit;
-  font-size: 0.78rem;
-  opacity: 0.68;
+  color: #8a7f6e;
+  display: block;
+  font-size: 0.66rem;
+  font-weight: 800;
+  opacity: 1;
+}
+
+.woocommerce ul.products li.product .zv-shop-vars .zv-carousel-card__vars button.on .zv-carousel-card__var-price {
+  color: #9a633d;
 }
 
 .woocommerce ul.products li.product .zv-shop-vars .zv-carousel__add {
@@ -634,17 +656,24 @@ a {
   align-self: stretch;
   background: var(--zvij-text);
   border: 1px solid var(--zvij-text);
-  border-radius: 7px;
+  border-radius: 8px;
   color: var(--zvij-bg);
   cursor: pointer;
   display: inline-flex;
   font: inherit;
-  font-weight: 950;
+  font-weight: 900;
   justify-content: center;
-  min-height: 44px;
+  min-height: 46px;
   padding: 0.7rem 1rem;
   text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
   width: 100%;
+}
+
+.woocommerce ul.products li.product .zv-shop-vars .zv-carousel__add:hover:not(.is-loading):not(:disabled) {
+  background: var(--zvij-accent);
+  border-color: var(--zvij-accent);
+  color: #fff;
 }
 
 .woocommerce ul.products li.product .zv-shop-vars .zv-carousel__add.is-loading,
@@ -654,8 +683,8 @@ a {
 }
 
 .woocommerce ul.products li.product .zv-shop-vars .zv-carousel-card__status {
-  color: var(--zvij-muted);
-  font-size: 0.82rem;
+  color: var(--zvij-accent);
+  font-size: 0.8rem;
   font-weight: 800;
   min-height: 1em;
   margin: 0;
@@ -3887,3 +3916,76 @@ body::before {
     width: auto;
   }
 }
+
+/* O nas — zgodba */
+.zv-about-story {
+  padding: clamp(1.5rem, 4vw, 3.5rem) clamp(1rem, 3.2vw, 4rem);
+}
+.zv-about-story__inner {
+  background: var(--zvij-panel-solid, #fff8ec);
+  border: 1px solid var(--zvij-line);
+  border-radius: 14px;
+  box-shadow: var(--zvij-shadow);
+  margin: 0 auto;
+  max-width: 760px;
+  padding: clamp(1.5rem, 4vw, 3rem);
+}
+.zv-about-story__inner h2 {
+  font-size: clamp(1.8rem, 3.4vw, 2.8rem);
+  line-height: 1.03;
+  margin: 0.3rem 0 1.1rem;
+}
+.zv-about-story__inner p {
+  color: var(--zvij-text);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin: 0 0 0.9rem;
+}
+.zv-about-story__note {
+  color: var(--zvij-muted) !important;
+  font-size: 0.9rem !important;
+  font-weight: 700;
+}
+.zv-about-story .page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 1.5rem;
+}
+
+/* FAQ — akordeon */
+.zv-faq {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.zv-faq details {
+  background: var(--zvij-panel, #fffaf1);
+  border: 1px solid var(--zvij-line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.zv-faq summary {
+  cursor: pointer;
+  font-size: 1.05rem;
+  font-weight: 800;
+  list-style: none;
+  padding: 1rem 3rem 1rem 1.2rem;
+  position: relative;
+}
+.zv-faq summary::-webkit-details-marker { display: none; }
+.zv-faq summary::after {
+  color: var(--zvij-accent-warm);
+  content: "+";
+  font-size: 1.5rem;
+  font-weight: 400;
+  position: absolute;
+  right: 1.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.zv-faq details[open] summary::after { content: "\2013"; }
+.zv-faq summary:hover { color: var(--zvij-accent-warm); }
+.zv-faq__a { padding: 0 1.2rem 1.1rem; }
+.zv-faq__a p { color: var(--zvij-muted); line-height: 1.6; margin: 0; }
+.zv-faq__a a { color: var(--zvij-accent-warm); text-decoration: underline; }

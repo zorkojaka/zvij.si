@@ -116,11 +116,19 @@ while (have_posts()) :
           <div><b>Diskretno</b><span>Tvoja zasebnost je naša stvar.</span></div>
           <div><b>Za skupnost</b><span>Podpiramo kulturo.</span></div>
         </section>
-        <section class="zv-about-stats" id="ekipa">
-          <div><b>Domače</b><span>Iz Slovenije.</span></div>
-          <div><b>Diskretno</b><span>Brez oznak.</span></div>
-          <div><b>Fer</b><span>Poštene cene.</span></div>
-          <div><b>@zvij.si</b><span>Sledi nam</span></div>
+        <section class="zv-about-story" id="ekipa">
+          <div class="zv-about-story__inner">
+            <p class="eyebrow">Kdo smo</p>
+            <h2>Domača ekipa, ki uporablja to, kar ponuja.</h2>
+            <p>Zvij.si je nastal iz preproste ideje: vse za tvoj ritual naj bo na enem mestu — kvalitetno, pošteno in brez iskanja po petih trgovinah.</p>
+            <p>DUBI filtri, tulci, papir, vžigalniki in CBD čaj — vsako stvar izberemo z mero in okusom, ker jo sami uporabljamo. Za vsakim izdelkom stoji nekdo, ki ga je preizkusil.</p>
+            <p>Verjamemo v diskretnost — pakiranje brez oznak, poštene cene brez presenečenj in skupnost, ki jo gradimo skupaj. Tvoj vajb, tvoja pravila. Mi poskrbimo, da imaš vse pri roki.</p>
+            <p class="zv-about-story__note">Zvij.si je namenjen polnoletnim osebam (18+).</p>
+            <div class="page-actions">
+              <a class="button" href="<?php echo esc_url(home_url('/trgovina/')); ?>">Poglej trgovino</a>
+              <a class="button button--ghost" href="<?php echo esc_url(home_url('/clan-zvij-si/')); ?>">Postani član</a>
+            </div>
+          </div>
         </section>
         <?php
         continue;
