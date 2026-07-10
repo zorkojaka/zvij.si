@@ -3917,40 +3917,50 @@ body::before {
   }
 }
 
-/* O nas — zgodba */
+/* O nas — zgodba (polna širina, uredniško dvokolonsko) */
 .zv-about-story {
-  padding: clamp(1.5rem, 4vw, 3.5rem) clamp(1rem, 3.2vw, 4rem);
+  align-items: start;
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 4rem);
+  grid-template-columns: 0.82fr 1.18fr;
+  margin-top: 1rem;
+  padding: clamp(1.8rem, 4vw, 3.5rem);
 }
-.zv-about-story__inner {
-  background: var(--zvij-panel-solid, #fff8ec);
-  border: 1px solid var(--zvij-line);
-  border-radius: 14px;
-  box-shadow: var(--zvij-shadow);
-  margin: 0 auto;
-  max-width: 760px;
-  padding: clamp(1.5rem, 4vw, 3rem);
-}
-.zv-about-story__inner h2 {
-  font-size: clamp(1.8rem, 3.4vw, 2.8rem);
+.zv-about-story__head h2 {
+  font-size: clamp(1.9rem, 3.4vw, 3.1rem);
   line-height: 1.03;
-  margin: 0.3rem 0 1.1rem;
+  margin: 0.4rem 0 1.5rem;
 }
-.zv-about-story__inner p {
+.zv-about-story__body p {
   color: var(--zvij-text);
-  font-size: 1.05rem;
-  line-height: 1.6;
-  margin: 0 0 0.9rem;
+  font-size: 1.08rem;
+  line-height: 1.65;
+  margin: 0 0 1rem;
+  max-width: 62ch;
+}
+.zv-about-story__body p:last-child {
+  margin-bottom: 0;
 }
 .zv-about-story__note {
   color: var(--zvij-muted) !important;
-  font-size: 0.9rem !important;
+  font-size: 0.92rem !important;
   font-weight: 700;
+  margin-top: 1.2rem !important;
 }
 .zv-about-story .page-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.7rem;
-  margin-top: 1.5rem;
+  margin: 0;
+}
+@media (max-width: 920px) {
+  .zv-about-story {
+    grid-template-columns: 1fr;
+    gap: 1.4rem;
+  }
+  .zv-about-story__head h2 {
+    margin-bottom: 1rem;
+  }
 }
 
 /* FAQ — akordeon */
