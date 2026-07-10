@@ -4,6 +4,10 @@ name: zvij-prod
 # Popolnoma ločen od zvij-dev: svoj projekt, svoji containerji, svoji volumi,
 # svoj port (8099) in svoj .env (/var/www/zvij.si-app/.env). Nikoli ne deli
 # baze ali volumov z dev okoljem.
+#
+# POZOR: v mapi repozitorija je dev .env, ki ga compose brez --env-file tiho
+# pobere. Ta stack VEDNO poganjaj prek scripts/deploy-prod.sh ali ročno z
+# `--env-file /var/www/zvij.si-app/.env`, sicer interpolira dev vrednosti.
 
 services:
   mariadb:

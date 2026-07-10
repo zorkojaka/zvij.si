@@ -55,11 +55,14 @@ Iz release checklista (`RELEASE_PLAN.md` §5):
    ```
 3. **Uvoz v prod DB** (v `zvij-prod` projektu) in **search-replace**:
    ```bash
-   docker compose -f docker-compose.prod.yml run --rm wp-cli \
+   PROD="docker compose --project-name zvij-prod --env-file /var/www/zvij.si-app/.env -f docker-compose.prod.yml"
+   $PROD run --rm wp-cli \
      wp search-replace 'https://dev.inteligent.si' 'https://zvij.si' --all-tables --precise --report-changed-only
-   docker compose -f docker-compose.prod.yml run --rm wp-cli wp cache flush
+   $PROD run --rm wp-cli wp cache flush
    ```
    (search-replace prek WP-CLI pravilno obdela serializirane vrednosti — ne uporabljaj sed po SQL dumpu.)
+
+   > **POZOR:** vse `docker compose` ukaze za prod poganjaj z `--env-file /var/www/zvij.si-app/.env` — brez tega compose tiho pobere dev `.env` iz mape repozitorija.
 4. **Uploads sync**: prekopiraj `wp-content/uploads` iz `zvij-dev` volume v `zvij-prod` volume (docker cp ali rsync med mount potmi volumov).
 5. **Produkcijske nastavitve po uvozu** (WP-CLI):
    - izbriši testno naročilo #369 in testne člane (`test-narocilo@example.com`),
