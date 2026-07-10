@@ -3269,69 +3269,87 @@ body::before {
 .zv-carousel-card__body {
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
-  padding: 1rem;
+  gap: 0.4rem;
+  padding: 1.05rem 1.1rem 1.2rem;
 }
 
 .zv-carousel-card h3 {
-  font-size: 1rem;
-  line-height: 1.08;
-  margin: 0;
-  min-height: 2.6rem;
+  font-size: 1.05rem;
+  font-weight: 850;
+  line-height: 1.12;
+  margin: 0.05rem 0 0;
+  min-height: 2.4rem;
 }
 
 .zv-carousel-card h3 a {
   color: var(--zvij-text);
   text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.zv-carousel-card h3 a:hover {
+  color: var(--zvij-accent-warm);
 }
 
 .zv-carousel-card__price {
-  font-size: 0.92rem;
+  color: var(--zvij-text);
+  font-size: 1.28rem;
   font-weight: 900;
-  margin: 0;
-  min-height: 1.4rem;
+  letter-spacing: -0.01em;
+  margin: 0.1rem 0 0.05rem;
+  min-height: 1.5rem;
 }
 
 .zv-carousel-card__price del {
-  color: #7d7367;
+  color: #9a8f80;
+  font-size: 0.82em;
   font-weight: 700;
+  margin-right: 0.35rem;
 }
 
 .zv-carousel-card__hint {
-  color: #5d5247;
-  font-size: 0.78rem;
-  font-weight: 750;
-  min-height: 1.1rem;
+  border-top: 1px solid rgba(199, 177, 148, 0.4);
+  color: var(--zvij-muted);
+  font-size: 0.68rem;
+  font-weight: 850;
+  letter-spacing: 0.05em;
+  margin: 0.25rem 0 0.1rem;
+  padding-top: 0.65rem;
+  text-transform: uppercase;
 }
 
 .zv-carousel-card__vars {
   display: flex;
-  gap: 0.45rem;
-  min-height: 42px;
+  gap: 0.4rem;
+  min-height: 46px;
 }
 
 .zv-carousel-card__vars button {
-  background: #f7ead7;
-  border: 1px solid rgba(25, 21, 17, 0.14);
-  border-radius: 999px;
+  background: #fff;
+  border: 1px solid rgba(199, 177, 148, 0.55);
+  border-radius: 10px;
   color: var(--zvij-text);
   cursor: pointer;
   display: inline-grid;
-  font-size: 0.78rem;
-  font-weight: 900;
-  gap: 0.02rem;
+  flex: 1;
+  gap: 0.05rem;
   justify-items: center;
   line-height: 1.05;
-  min-height: 42px;
-  min-width: 72px;
-  padding: 0.34rem 0.7rem;
+  min-height: 46px;
+  padding: 0.32rem 0.5rem;
   text-align: center;
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.zv-carousel-card__vars button:hover {
+  border-color: var(--zvij-accent-warm);
 }
 
 .zv-carousel-card__vars button.on,
 .zv-carousel-card__vars button.is-selected {
-  background: var(--zvij-text);
-  color: #fffaf2;
+  background: #fbf1de;
+  border-color: #c8934e;
+  box-shadow: inset 0 0 0 1px #c8934e;
 }
 
 .zv-carousel-card__var-label,
@@ -3340,39 +3358,45 @@ body::before {
 }
 
 .zv-carousel-card__var-label {
-  font-size: 0.86rem;
+  font-size: 0.9rem;
   font-weight: 950;
 }
 
 .zv-carousel-card__var-price {
-  color: #7d7367;
-  font-size: 0.62rem;
-  font-weight: 900;
+  color: #8a7f6e;
+  font-size: 0.64rem;
+  font-weight: 800;
 }
 
 .zv-carousel-card__vars button.on .zv-carousel-card__var-price,
 .zv-carousel-card__vars button.is-selected .zv-carousel-card__var-price {
-  color: rgba(255, 250, 242, 0.82);
+  color: #9a633d;
 }
 
 .zv-carousel__add {
   align-items: center;
   background: var(--zvij-text);
   border: 0;
-  border-radius: 6px;
+  border-radius: 8px;
   box-sizing: border-box;
   color: #fff;
   cursor: pointer;
   display: inline-flex;
-  font-size: 0.88rem;
-  font-weight: 950;
-  height: 42px;
+  font-size: 0.9rem;
+  font-weight: 900;
+  gap: 0.45rem;
+  height: 46px;
   justify-content: center;
   margin-top: auto;
   padding: 0 0.9rem;
   text-align: center;
   text-decoration: none;
+  transition: background 0.15s ease;
   width: 100%;
+}
+
+.zv-carousel__add:hover:not(:disabled):not(.is-loading) {
+  background: var(--zvij-accent);
 }
 
 .zv-carousel__add:disabled,
@@ -3382,8 +3406,8 @@ body::before {
 }
 
 .zv-carousel-card__status {
-  color: #2f6a50;
-  font-size: 0.78rem;
+  color: var(--zvij-accent);
+  font-size: 0.75rem;
   font-weight: 800;
   min-height: 1rem;
   margin: 0;
