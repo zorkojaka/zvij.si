@@ -86,7 +86,7 @@ Ta dokument je operativni vir resnice za pot do prve prodajne verzije. Nadgrajuj
 4. **Fotografije v katalog** — ko so posnete: nadomesti AI flat-laye, product gallery za grinder/tulce, hero kompozicija.
 5. **Kit kot kupljiv produkt** — ko so komponente in cene: grouped/bundle pristop, Black kit prvi.
 6. **Analitika** — Plausible (samohostan na Hetznerju) ali GA4; event model: view_item, add_to_cart (carousel source že v DOM), begin_checkout, purchase.
-7. ~~Produkcijska migracija — runbook~~ **Urejeno (10. 7.):** `docs/PROD_MIGRATION_RUNBOOK.md`. Ostane izvedba: `docker-compose.prod.yml` + `deploy-prod.sh` (Faza 1, korak 3) se pripravita, ko Jaka potrdi predpogoje.
+7. ~~Produkcijska migracija — runbook~~ **Urejeno (10. 7.):** `docs/PROD_MIGRATION_RUNBOOK.md` + pripravljena `docker-compose.prod.yml` (projekt zvij-prod, port 8099, WP_DEBUG off, zahteva .env) in `scripts/deploy-prod.sh` (zahteva prod .env, `ZVIJ_ALLOW_PUBLIC_FAIL=1` za deploy pred DNS preklopom). Izvedba čaka na predpogoje (Faza 0).
 8. **Čiščenje pred produkcijo** — izbriši testno naročilo #369 in testne člane, preveri da so vsi draft izdelki skriti, izklopi WP_DEBUG.
 
 ## 5. Release checklist (pred preklopom na zvij.si)

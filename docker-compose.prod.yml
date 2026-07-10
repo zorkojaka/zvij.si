@@ -1,0 +1,117 @@
+name: zvij-prod
+
+# Produkcijski stack za zvij.si (glej docs/PROD_MIGRATION_RUNBOOK.md).
+# Popolnoma ločen od zvij-dev: svoj projekt, svoji containerji, svoji volumi,
+# svoj port (8099) in svoj .env (/var/www/zvij.si-app/.env). Nikoli ne deli
+# baze ali volumov z dev okoljem.
+
+services:
+  mariadb:
+    image: mariadb:11.4
+    container_name: zvij-prod-mariadb
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${WORDPRESS_DB_NAME:?nastavi v .env}
+      MARIADB_USER: ${WORDPRESS_DB_USER:?nastavi v .env}
+      MARIADB_PASSWORD: ${WORDPRESS_DB_PASSWORD:?nastavi v .env}
+      MARIADB_ROOT_PASSWORD: ${WORDPRESS_DB_ROOT_PASSWORD:?nastavi v .env}
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - zvij_prod
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "healthcheck.sh --connect --innodb_initialized || exit 1"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  wordpress:
+    image: wordpress:6.5-php8.2-apache
+    container_name: zvij-prod-wordpress
+    restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${WORDPRESS_PORT:-8099}:80"
+    environment:
+      WP_CLI_CACHE_DIR: /tmp/wp-cli-cache
+      WORDPRESS_DB_HOST: mariadb:3306
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME:?nastavi v .env}
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER:?nastavi v .env}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD:?nastavi v .env}
+      WORDPRESS_CONFIG_EXTRA: |
+        if (! defined('WP_HOME')) {
+            define('WP_HOME', '${WORDPRESS_URL:-https://zvij.si}');
+        }
+        if (! defined('WP_SITEURL')) {
+            define('WP_SITEURL', '${WORDPRESS_URL:-https://zvij.si}');
+        }
+        if (! defined('WP_ENVIRONMENT_TYPE')) {
+            define('WP_ENVIRONMENT_TYPE', 'production');
+        }
+        if (! defined('WP_DEBUG')) {
+            define('WP_DEBUG', false);
+        }
+        if (! defined('DISALLOW_FILE_EDIT')) {
+            define('DISALLOW_FILE_EDIT', true);
+        }
+        if (! defined('FORCE_SSL_ADMIN')) {
+            define('FORCE_SSL_ADMIN', true);
+        }
+        if (isset($$_SERVER['HTTP_X_FORWARDED_PROTO']) && $$_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+            $$_SERVER['HTTPS'] = 'on';
+        }
+    volumes:
+      - wordpress_data:/var/www/html
+      - ./wp-content/themes/zvij-theme:/var/www/html/wp-content/themes/zvij-theme:ro
+      - ./wp-content/plugins/zvij-core:/var/www/html/wp-content/plugins/zvij-core:ro
+      - ./scripts:/var/www/html/scripts:ro
+      - ./data:/var/www/html/data:ro
+    networks:
+      - zvij_prod
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "php -r \"exit(@file_get_contents('http://localhost/wp-login.php') === false ? 1 : 0);\""
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  wp-cli:
+    image: wordpress:cli-php8.2
+    container_name: zvij-prod-wp-cli
+    user: "33:33"
+    profiles:
+      - tools
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    environment:
+      WORDPRESS_DB_HOST: mariadb:3306
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME:?nastavi v .env}
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER:?nastavi v .env}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD:?nastavi v .env}
+      WORDPRESS_URL: ${WORDPRESS_URL:-https://zvij.si}
+    volumes:
+      - wordpress_data:/var/www/html
+      - ./wp-content/themes/zvij-theme:/var/www/html/wp-content/themes/zvij-theme:ro
+      - ./wp-content/plugins/zvij-core:/var/www/html/wp-content/plugins/zvij-core:ro
+      - ./scripts:/var/www/html/scripts:ro
+      - ./data:/var/www/html/data:ro
+    networks:
+      - zvij_prod
+
+volumes:
+  mariadb_data:
+  wordpress_data:
+
+networks:
+  zvij_prod:
+    driver: bridge
