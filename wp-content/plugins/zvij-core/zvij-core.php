@@ -3,7 +3,7 @@
  * Plugin Name: Zvij Core
  * Plugin URI: https://dev.inteligent.si
  * Description: Core dev features for the Zvij.si WordPress/WooCommerce app.
- * Version: 0.6.0
+ * Version: 0.7.0
  * Author: Zvij.si
  * Requires at least: 6.5
  * Requires PHP: 8.2
@@ -14,7 +14,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-define('ZVIJ_CORE_VERSION', '0.6.0');
+define('ZVIJ_CORE_VERSION', '0.7.0');
 define('ZVIJ_MEMBER_PRIVACY_VERSION', '2026-06-30');
 
 require_once __DIR__ . '/includes/zvij-orders.php';
@@ -23,6 +23,7 @@ require_once __DIR__ . '/includes/zvij-invoice.php';
 require_once __DIR__ . '/includes/zvij-payment-qr.php';
 require_once __DIR__ . '/includes/zvij-cookie-consent.php';
 require_once __DIR__ . '/includes/zvij-credit.php';
+require_once __DIR__ . '/includes/zvij-referral.php';
 
 register_activation_hook(__FILE__, 'zvij_membership_install');
 add_action('plugins_loaded', 'zvij_membership_install');
@@ -56,6 +57,7 @@ function zvij_membership_install(): void {
             consent_ip_hash varchar(64) NOT NULL DEFAULT '',
             privacy_version varchar(40) NOT NULL DEFAULT '',
             first_order_coupon varchar(64) NOT NULL DEFAULT '',
+            zvij_code varchar(20) NOT NULL DEFAULT '',
             provider varchar(40) NOT NULL DEFAULT 'mailerlite',
             provider_status varchar(40) NOT NULL DEFAULT 'not_configured',
             provider_message text NULL,
@@ -66,7 +68,8 @@ function zvij_membership_install(): void {
             PRIMARY KEY  (id),
             UNIQUE KEY email (email),
             KEY status (status),
-            KEY source (source)
+            KEY source (source),
+            KEY zvij_code (zvij_code)
         ) {$charset};"
     );
 
@@ -284,6 +287,15 @@ function zvij_membership_send_welcome_email(string $email, string $coupon): bool
     $message .= "Tukaj je tvoja koda za prvi nakup:\n\n";
     $message .= ($coupon !== '' ? $coupon : 'Koda bo pripravljena kmalu') . "\n\n";
     $message .= "Z njo dobiš 10 % popusta pri prvem naročilu.\n\n";
+
+    if (function_exists('zvij_referral_ensure_code')) {
+        $zvij_code = zvij_referral_ensure_code($email);
+        if ($zvij_code !== '') {
+            $message .= "Tvoja Zvij koda: {$zvij_code}\n";
+            $message .= "Z nakupi zbiraš kristale (10 kristalov = 1 € popusta pri naslednjem naročilu). Ko tvojo Zvij kodo na blagajni vpiše prijatelj, dobi popust na prvo naročilo, ti pa kristale. Če kupuješ kot gost, s svojo kodo na blagajni unovčiš svoje kristale.\n\n";
+        }
+    }
+
     $message .= "Na mail ti bomo občasno poslali tudi kakšno Zvijačo za zvijače: nove izdelke, uporabne ideje, članske ponudbe in stvari, ki ti olajšajo ritual.\n\n";
     $message .= "Poglej ponudbo: {$shop_url}\n\n";
     $message .= "Odjava: povezava za odjavo bo aktivna po povezavi z MailerLite.\n";
