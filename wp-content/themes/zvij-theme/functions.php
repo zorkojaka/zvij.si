@@ -31,6 +31,50 @@ add_action('wp_enqueue_scripts', function (): void {
         }
         wp_enqueue_script('zvij-home', get_template_directory_uri() . '/assets/home.js', ['jquery'], '0.9.35', true);
     }
+
+    wp_enqueue_script('zvij-analytics', get_template_directory_uri() . '/assets/analytics.js', ['jquery'], '0.1.0', true);
+});
+
+/**
+ * Plausible (samohostan na analitika.zvij.si): brez piškotkov, zato se
+ * nalaga brez privolitve. data-domain sledi trenutni domeni, da ob
+ * migraciji dev -> zvij.si samodejno poroča v pravi dashboard.
+ */
+add_action('wp_head', function (): void {
+    $host = (string) wp_parse_url(home_url(), PHP_URL_HOST);
+    if ($host === '') {
+        return;
+    }
+
+    echo '<script defer data-domain="' . esc_attr($host) . '" src="https://analitika.zvij.si/js/script.revenue.js"></script>' . "\n";
+    echo '<script>window.plausible=window.plausible||function(){(window.plausible.q=window.plausible.q||[]).push(arguments)};</script>' . "\n";
+}, 5);
+
+/**
+ * Purchase dogodek s prihodkom na strani »naročilo prejeto«.
+ * Meta ključ preprečuje podvojitev ob osvežitvi strani.
+ */
+add_action('woocommerce_thankyou', function ($order_id): void {
+    $order = wc_get_order($order_id);
+    if (! $order instanceof WC_Order) {
+        return;
+    }
+
+    if ($order->get_meta('_zvij_plausible_purchase') !== '') {
+        return;
+    }
+
+    $order->update_meta_data('_zvij_plausible_purchase', '1');
+    $order->save();
+    ?>
+    <script>
+      window.plausible = window.plausible || function () { (window.plausible.q = window.plausible.q || []).push(arguments); };
+      window.plausible('purchase', {
+        revenue: { currency: '<?php echo esc_js($order->get_currency()); ?>', amount: '<?php echo esc_js($order->get_total()); ?>' },
+        props: { order: '<?php echo esc_js((string) $order_id); ?>' }
+      });
+    </script>
+    <?php
 });
 
 remove_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10);
