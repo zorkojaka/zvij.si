@@ -69,7 +69,8 @@ Iz release checklista (`RELEASE_PLAN.md` §5):
    - preveri, da so draft izdelki še draft, javnih je 5 realnih izdelkov,
    - Revolut: preklopi na produkcijski ključ, izklopi sandbox način,
    - WooCommerce → naslov trgovine/emaili kažejo na `zvij.si` domeno,
-   - `wp option get home` in `siteurl` → `https://zvij.si`.
+   - `wp option get home` in `siteurl` → `https://zvij.si`,
+   - **MailerLite webhook:** prek API izbriši webhook z dev URL in registriraj novega na `https://zvij.si/wp-json/zvij/v1/mailerlite-webhook`; nov `secret` iz odgovora shrani v `zvij_mailerlite_webhook_secret` (autoload=no).
 6. **Lokalni smoke** (pred DNS preklopom): `curl -i --resolve zvij.si:443:127.0.0.1 https://zvij.si/` oz. prek HTTP porta `curl -i -H "Host: zvij.si" http://127.0.0.1:8099/` — domov, trgovina, izdelek, košarica.
 7. **[JAKA] DNS preklop**: `zvij.si` (in `www`) A zapis → `178.104.24.47`. **Pozor:** `mail.zvij.si` / MX zapisi morajo ostati na starem gostovanju — preveri, da se spreminja SAMO A zapis za web!
 8. **SSL**: ko DNS propagira (TTL 300 s), `sudo certbot certonly --webroot -w /var/www/zvij.si-app/public -d zvij.si -d www.zvij.si …`, nato HTTPS vhost + redirect HTTP→HTTPS in `www`→apex, `sudo nginx -t && sudo systemctl reload nginx`.

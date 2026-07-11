@@ -3,7 +3,7 @@
  * Plugin Name: Zvij Core
  * Plugin URI: https://dev.inteligent.si
  * Description: Core dev features for the Zvij.si WordPress/WooCommerce app.
- * Version: 0.4.0
+ * Version: 0.5.0
  * Author: Zvij.si
  * Requires at least: 6.5
  * Requires PHP: 8.2
@@ -14,7 +14,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-define('ZVIJ_CORE_VERSION', '0.4.0');
+define('ZVIJ_CORE_VERSION', '0.5.0');
 define('ZVIJ_MEMBER_PRIVACY_VERSION', '2026-06-30');
 
 require_once __DIR__ . '/includes/zvij-orders.php';
@@ -413,6 +413,98 @@ function zvij_membership_handle_signup(): void {
 
     wp_safe_redirect(add_query_arg('zvij_member', $result['ok'] ? 'ok' : 'fail', $fallback));
     exit;
+}
+
+/**
+ * MailerLite webhook: sinhronizacija odjav nazaj v lokalno evidenco članov.
+ * Endpoint: POST /wp-json/zvij/v1/mailerlite-webhook
+ * Zahteve podpiše MailerLite s HMAC-SHA256 surovega telesa; skrivnost vrne
+ * API ob registraciji webhoka in je shranjena v zvij_mailerlite_webhook_secret
+ * (ali env MAILERLITE_WEBHOOK_SECRET). Ob migraciji na zvij.si je treba
+ * webhook v MailerLite ponovno registrirati z novim URL (glej
+ * docs/PROD_MIGRATION_RUNBOOK.md).
+ */
+add_action('rest_api_init', function (): void {
+    register_rest_route('zvij/v1', '/mailerlite-webhook', [
+        'methods' => 'POST',
+        'callback' => 'zvij_membership_handle_mailerlite_webhook',
+        'permission_callback' => '__return_true',
+    ]);
+});
+
+function zvij_membership_webhook_extract_email(array $event): string {
+    foreach ([
+        $event['data']['email'] ?? null,
+        $event['data']['subscriber']['email'] ?? null,
+        $event['subscriber']['email'] ?? null,
+        $event['email'] ?? null,
+    ] as $candidate) {
+        if (is_string($candidate) && $candidate !== '') {
+            return sanitize_email($candidate);
+        }
+    }
+
+    return '';
+}
+
+function zvij_membership_handle_mailerlite_webhook(WP_REST_Request $request): WP_REST_Response {
+    $secret = getenv('MAILERLITE_WEBHOOK_SECRET') ?: (string) get_option('zvij_mailerlite_webhook_secret', '');
+    if ($secret === '') {
+        return new WP_REST_Response(['status' => 'not_configured'], 503);
+    }
+
+    $body = $request->get_body();
+    $signature = (string) ($request->get_header('signature') ?: $request->get_header('x-mailerlite-signature'));
+    if ($signature === '' || ! hash_equals(hash_hmac('sha256', $body, $secret), $signature)) {
+        return new WP_REST_Response(['status' => 'invalid_signature'], 401);
+    }
+
+    $payload = json_decode($body, true);
+    if (! is_array($payload)) {
+        return new WP_REST_Response(['status' => 'invalid_payload'], 400);
+    }
+
+    // MailerLite pošlje en dogodek na zahtevo ali batch pod "events".
+    $events = isset($payload['events']) && is_array($payload['events']) ? $payload['events'] : [$payload];
+    $unsubscribe_types = ['subscriber.unsubscribed', 'subscriber.spam_reported'];
+    $updated = 0;
+
+    global $wpdb;
+    $table = zvij_membership_table();
+
+    foreach ($events as $event) {
+        if (! is_array($event)) {
+            continue;
+        }
+
+        $type = (string) ($event['type'] ?? ($event['event'] ?? ''));
+        if (! in_array($type, $unsubscribe_types, true)) {
+            continue;
+        }
+
+        $email = zvij_membership_webhook_extract_email($event);
+        if ($email === '') {
+            continue;
+        }
+
+        $updated += (int) $wpdb->update(
+            $table,
+            [
+                'status' => 'unsubscribed',
+                'provider_status' => 'unsubscribed',
+                'updated_at' => current_time('mysql'),
+            ],
+            ['email' => $email]
+        );
+    }
+
+    update_option('zvij_mailerlite_last_webhook', [
+        'at' => current_time('mysql'),
+        'types' => array_values(array_filter(array_map(static fn ($e) => is_array($e) ? (string) ($e['type'] ?? ($e['event'] ?? '')) : '', $events))),
+        'updated' => $updated,
+    ], false);
+
+    return new WP_REST_Response(['status' => 'ok', 'updated' => $updated], 200);
 }
 
 add_action('woocommerce_after_order_notes', function ($checkout): void {
