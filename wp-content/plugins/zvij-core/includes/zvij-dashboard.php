@@ -118,6 +118,9 @@ function zvij_dashboard_page(): void {
         <div class="kpi"><span>Zadnjih 30 dni</span><b><?php echo wp_kses_post(wc_price($rev_30)); ?></b><?php echo count($orders_30); ?> naročil</div>
         <div class="kpi"><span>Povprečno naročilo (30 d)</span><b><?php echo wp_kses_post(wc_price($aov_30)); ?></b></div>
         <div class="kpi"><span>Člani Zvij.si</span><b><?php echo (int) $members_total; ?></b><?php echo (int) $members_customers; ?> jih je že kupilo</div>
+        <?php if (function_exists('zvij_credit_total_outstanding')) : ?>
+          <div class="kpi"><span>Dobroimetje (obveznost)</span><b><?php echo wp_kses_post(wc_price(zvij_credit_total_outstanding())); ?></b>neizkoriščeno stanje članov</div>
+        <?php endif; ?>
       </div>
 
       <div class="cols">

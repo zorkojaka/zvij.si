@@ -61,10 +61,11 @@ Ta dokument je operativni vir resnice za pot do prve prodajne verzije. Nadgrajuj
 
 ### LAHKO POČAKA (po prvem lansiranju)
 
+> **Dobroimetje — implementirano 11. 7. 2026 (zvij-core 0.6.0, na Jakovo zahtevo pred lansiranjem):** ledger tabela `wp_zvij_credit_ledger` (earn/redeem/refund/adjust, revizijska sled), pripis ob plačanem naročilu po zneskih z izdelkov/variacij (meta `_zvij_dobroimetje_eur` ali razčlenjeno iz javnega napisa), storno ob preklicu v obe smeri, unovčenje na blagajni (checkbox → negativni fee do vrednosti izdelkov, dostava se plača; samo prijavljeni člani — gost bi lahko porabil tuje stanje), stanje + zgodovina v Moj račun, obvestilo v emailu in na »naročilo prejeto«, KPI obveznosti v Zvij.si adminu. **E2E potrjeno:** nakup → pripis 1,25 € → poraba pri drugem naročilu (total 9,64 = 7,99 + 2,90 − 1,25) → preklica obeh naročil pravilno vrneta/stornirata, končno stanje 0. Referral del ostaja post-launch.
+
 - Kiti kot kupljivi bundle produkti (zdaj showcase; blokirano na nabavo komponent in cene)
 - Reload email avtomatika, segmentacija ponovnih nakupov
 - Zapuščene košarice, GA4/Plausible analitika in campaign attribution
-- Dobroimetje / referral sistem
 - Slovenski permalinki (`/izdelek/`, `/kosarica/`) — zdaj `/product/`, `/cart/` (delujejo)
 - CBD kapljice, širši katalog
 - Mailpit v docker-compose za lokalni email test
