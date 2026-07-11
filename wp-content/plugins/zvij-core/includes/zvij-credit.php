@@ -263,17 +263,25 @@ add_action('woocommerce_review_order_before_submit', function (): void {
         return;
     }
 
-    $checked = WC()->session && WC()->session->get('zvij_use_credit') ? ' checked' : '';
+    $requested = WC()->session ? max(0, (int) WC()->session->get('zvij_use_kristali', 0)) : 0;
     ?>
     <div class="zvij-credit-toggle">
-      <label>
-        <input type="checkbox" name="zvij_use_credit" value="1"<?php echo $checked; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
-        <?php echo esc_html(sprintf(__('Uporabi kristale (na voljo %1$s = %2$s €)', 'zvij-core'), zvij_kristali_izpis($available), zvij_credit_format_eur(zvij_kristali_eur($available)))); ?>
-      </label>
+      <label for="zvij_use_kristali"><?php echo esc_html(sprintf(__('Uporabi kristale — na voljo %1$s (= %2$s €)', 'zvij-core'), zvij_kristali_izpis($available), zvij_credit_format_eur(zvij_kristali_eur($available)))); ?></label>
+      <span class="zvij-credit-toggle__row">
+        <input type="number" id="zvij_use_kristali" name="zvij_use_kristali" inputmode="numeric" min="0" max="<?php echo esc_attr((string) $available); ?>" step="1" value="<?php echo esc_attr((string) ($requested > 0 ? min($requested, $available) : 0)); ?>" style="width:6.5em;">
+        <button type="button" class="button zvij-credit-toggle__all" data-all="<?php echo esc_attr((string) $available); ?>"><?php esc_html_e('Uporabi vse', 'zvij-core'); ?></button>
+      </span>
+      <small><?php esc_html_e('10 kristalov = 1 € popusta. Kristali krijejo izdelke, dostava se plača.', 'zvij-core'); ?></small>
     </div>
     <script>
       jQuery(function ($) {
-        $(document.body).on('change', 'input[name="zvij_use_credit"]', function () {
+        var t;
+        $(document.body).on('input change', '#zvij_use_kristali', function () {
+          clearTimeout(t);
+          t = setTimeout(function () { $(document.body).trigger('update_checkout'); }, 700);
+        });
+        $(document.body).on('click', '.zvij-credit-toggle__all', function () {
+          $('#zvij_use_kristali').val($(this).data('all'));
           $(document.body).trigger('update_checkout');
         });
       });
@@ -281,33 +289,39 @@ add_action('woocommerce_review_order_before_submit', function (): void {
     <?php
 });
 
-/** Ob AJAX osvežitvi blagajne preberi checkbox iz serializiranih podatkov. */
+/** Ob AJAX osvežitvi blagajne preberi želeno količino iz serializiranih podatkov. */
 add_action('woocommerce_checkout_update_order_review', function ($post_data): void {
     if (! WC()->session) {
         return;
     }
     parse_str((string) $post_data, $data);
-    WC()->session->set('zvij_use_credit', ! empty($data['zvij_use_credit']));
+    if (array_key_exists('zvij_use_kristali', $data)) {
+        WC()->session->set('zvij_use_kristali', max(0, (int) $data['zvij_use_kristali']));
+    }
 });
 
 /**
- * Negativni fee: celo število kristalov, največ do vrednosti izdelkov
- * (dostava se vedno plača).
+ * Dejanska poraba: želena količina, navzgor omejena s stanjem in z
+ * vrednostjo izdelkov (dostava se vedno plača).
  */
 function zvij_credit_checkout_spend(WC_Cart $cart): int {
+    $requested = WC()->session ? max(0, (int) WC()->session->get('zvij_use_kristali', 0)) : 0;
+    if ($requested <= 0) {
+        return 0;
+    }
     $available = zvij_credit_available_for_checkout();
     if ($available <= 0) {
         return 0;
     }
     $cap_kristali = (int) floor(((float) $cart->get_cart_contents_total()) * ZVIJ_KRISTALI_PER_EUR);
-    return max(0, min($available, $cap_kristali));
+    return max(0, min($requested, $available, $cap_kristali));
 }
 
 add_action('woocommerce_cart_calculate_fees', function (WC_Cart $cart): void {
     if (is_admin() && ! defined('DOING_AJAX')) {
         return;
     }
-    if (! WC()->session || ! WC()->session->get('zvij_use_credit')) {
+    if (! WC()->session) {
         return;
     }
 
@@ -350,7 +364,7 @@ add_action('woocommerce_checkout_order_processed', function (int $order_id): voi
     $order->add_order_note(sprintf('Kristali: porabljeno %s.', zvij_kristali_izpis($kristali)));
 
     if (WC()->session) {
-        WC()->session->set('zvij_use_credit', false);
+        WC()->session->set('zvij_use_kristali', 0);
     }
 }, 20);
 
@@ -409,18 +423,23 @@ add_action('woocommerce_thankyou', function ($order_id): void {
         return;
     }
 
-    $email = sanitize_email($order->get_billing_email());
-    if ($email === '' || ! zvij_membership_find_by_email($email)) {
-        return;
-    }
-
     $earnable = zvij_credit_order_earnable($order);
     if ($earnable <= 0) {
         return;
     }
 
+    $email = sanitize_email($order->get_billing_email());
+    $is_member = $email !== '' && zvij_membership_find_by_email($email);
+
+    if ($is_member) {
+        $message = sprintf(__('Član prejme %s za naslednji reload — pripišejo se, ko je naročilo plačano.', 'zvij-core'), zvij_kristali_izpis($earnable));
+    } else {
+        // kristale zbirajo samo člani — nečlanu povemo, kaj zamuja
+        $message = sprintf(__('S tem nakupom bi kot Član Zvij.si prejel %s za naslednji reload. Včlani se (obrazec na dnu strani) — kristale zbiraš pri prihodnjih nakupih.', 'zvij-core'), zvij_kristali_izpis($earnable));
+    }
+
     echo '<div class="zvij-credit-thankyou" style="margin:1rem 0;padding:0.9rem 1.1rem;border:1px solid rgba(199,177,148,0.58);border-radius:8px;">'
-        . esc_html(sprintf(__('Član prejme %s za naslednji reload — pripišejo se, ko je naročilo plačano.', 'zvij-core'), zvij_kristali_izpis($earnable)))
+        . esc_html($message)
         . '</div>';
 }, 4);
 
