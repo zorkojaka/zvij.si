@@ -15,22 +15,14 @@ while (have_posts()) :
 
     if ($slug === 'zvij-kit' || $slug === 'kiti' || $slug === 'zvij-setup') :
         $tone_map = ['black' => 'dark', 'silver' => 'silver', 'gold' => 'gold'];
+        $all_kits = (array) get_option('zvij_kits', []);
         $kits = [];
-        $kit_roles = [];
-        foreach ((array) get_option('zvij_kits', []) as $kd) {
+        foreach ($all_kits as $kd) {
             $key = $kd['key'] ?? '';
             if (! isset($tone_map[$key])) {
                 continue;
             }
             $kits[] = ['key' => $key, 'name' => ($kd['name'] ?? ucfirst($key) . ' Kit') . ' Zvij.si', 'tone' => $tone_map[$key]];
-            if (! $kit_roles) {
-                foreach (($kd['items'] ?? []) as $it) {
-                    $kit_roles[] = (string) ($it['label'] ?? '');
-                }
-            }
-        }
-        if (! $kit_roles) {
-            $kit_roles = ['Tulec', 'Vžigalnik', 'Grinder', 'Rolice', 'DUBI 42'];
         }
         ?>
         <section class="zv-page-head">
@@ -38,26 +30,21 @@ while (have_posts()) :
           <p>En kit, tvoj stil.<br>Izberi barvo.<br>Ostalo je že sestavljeno.</p>
         </section>
         <section class="zv-kit-page-grid">
-          <?php foreach ($kits as $kit) : ?>
+          <?php foreach ($kits as $i => $kit) : ?>
             <?php $img = zvij_kit_flatlay_url($kit['key']); ?>
-            <article class="zv-kit-pick zv-kit-tab--<?php echo esc_attr($kit['tone']); ?>">
+            <article class="zv-kit-pick zv-kit-tab--<?php echo esc_attr($kit['tone']); ?><?php echo $i === 0 ? ' is--active' : ''; ?>" data-kit-select="<?php echo esc_attr($kit['key']); ?>">
               <?php if ($img !== '') : ?><img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr($kit['name']); ?>" loading="lazy"><?php endif; ?>
               <h2><?php echo esc_html($kit['name']); ?></h2>
-              <p>Cena kmalu.</p>
-              <a class="button" href="<?php echo esc_url(home_url('/trgovina/')); ?>">Izberi <?php echo esc_html(ucfirst($kit['key'])); ?></a>
+              <p class="zv-kit-pick__note">Sestavi spodaj.</p>
+              <a class="button" href="#kit-builder" data-kit-select-btn="<?php echo esc_attr($kit['key']); ?>">Izberi <?php echo esc_html(ucfirst($kit['key'])); ?></a>
             </article>
           <?php endforeach; ?>
         </section>
+        <?php zvij_kit_builder_render($all_kits); ?>
         <section class="zv-benefits">
           <div data-ico="package"><b>Vse na enem mestu</b><span>Brez iskanja po trgovinah.</span></div>
           <div data-ico="spark"><b>Usklajeno</b><span>Tvoj stil. Tvoja izbira.</span></div>
           <div data-ico="bolt"><b>Pripravljeno za akcijo</b><span>Odpri in uživaj.</span></div>
-        </section>
-        <section class="zv-card zv-card--kit-list">
-          <h2>Kaj je v kitu?</h2>
-          <div class="zv-mini-list">
-            <?php foreach ($kit_roles as $role_label) : ?><span><?php echo esc_html($role_label); ?></span><?php endforeach; ?>
-          </div>
         </section>
         <?php
         continue;

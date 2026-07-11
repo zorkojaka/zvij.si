@@ -1818,6 +1818,181 @@ a {
   min-height: auto;
 }
 
+/* Kit sestavljalnik (/kiti/): sličice komponent izbrane barve, checkboxi,
+   skupna cena in dodajanje v košarico. Kartice zgoraj so preklopniki. */
+.zv-kit-pick {
+  cursor: pointer;
+  transition: outline-color 0.15s ease, transform 0.15s ease;
+  outline: 3px solid transparent;
+  outline-offset: 2px;
+}
+
+.zv-kit-pick.is--active {
+  outline-color: var(--zvij-accent-warm);
+}
+
+.zv-kit-pick__note {
+  color: inherit;
+  font-weight: 600;
+  opacity: 0.75;
+}
+
+.zv-kit-builder {
+  margin-top: 1rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
+}
+
+.zv-kit-builder h2 {
+  margin: 0 0 0.35rem;
+}
+
+.zv-kit-builder__hint {
+  color: var(--zvij-muted);
+  margin: 0 0 1.1rem;
+}
+
+.zv-kit-builder__items {
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.zv-kb-item {
+  background: #fff;
+  border: 1px solid rgba(199, 177, 148, 0.55);
+  border-radius: 10px;
+  cursor: pointer;
+  display: grid;
+  gap: 0.2rem;
+  overflow: hidden;
+  padding: 0 0 0.8rem;
+  position: relative;
+  text-align: center;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.zv-kb-item input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.zv-kb-item__media {
+  aspect-ratio: 1 / 1;
+  background: linear-gradient(135deg, #f4eadb, #fff8ec);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.zv-kb-item__media img {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.zv-kb-item__role {
+  color: var(--zvij-accent);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.zv-kb-item__name {
+  font-size: 0.86rem;
+  font-weight: 800;
+  line-height: 1.15;
+  min-height: 2.3em;
+  padding: 0 0.5rem;
+}
+
+.zv-kb-item__price {
+  font-size: 0.92rem;
+  font-weight: 900;
+}
+
+.zv-kb-item__check {
+  background: var(--zvij-accent-warm);
+  border-radius: 999px;
+  color: #fff;
+  height: 22px;
+  left: 0.55rem;
+  opacity: 0;
+  position: absolute;
+  top: 0.55rem;
+  transition: opacity 0.15s ease;
+  width: 22px;
+}
+
+.zv-kb-item__check::after {
+  content: "✓";
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 900;
+  line-height: 22px;
+}
+
+.zv-kb-item:has(input:checked) {
+  border-color: #c8934e;
+  box-shadow: inset 0 0 0 1px #c8934e;
+}
+
+.zv-kb-item:has(input:checked) .zv-kb-item__check {
+  opacity: 1;
+}
+
+.zv-kb-item:not(:has(input:checked)):not(.is--soon) {
+  opacity: 0.55;
+}
+
+.zv-kb-item.is--soon {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.zv-kb-item.is--soon .zv-kb-item__price em {
+  color: var(--zvij-muted);
+  font-style: normal;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+}
+
+.zv-kit-builder__footer {
+  align-items: center;
+  border-top: 1px solid rgba(199, 177, 148, 0.4);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.1rem;
+  padding-top: 1rem;
+}
+
+.zv-kit-builder__total {
+  font-size: 1.15rem;
+  margin: 0;
+}
+
+.zv-kit-builder__status {
+  color: var(--zvij-accent);
+  font-weight: 800;
+  margin: 0;
+  min-height: 1em;
+}
+
+@media (max-width: 920px) {
+  .zv-kit-builder__items {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .zv-kit-builder__items {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 .zv-mini-list {
   display: grid;
   gap: 0.75rem;

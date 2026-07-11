@@ -19,10 +19,17 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.47');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.48');
 
     if (is_page('zvij-kit')) {
         wp_enqueue_script('zvij-kits', get_template_directory_uri() . '/assets/kits.js', [], '0.9.0', true);
+    }
+
+    if (is_page(['zvij-kit', 'kiti', 'zvij-setup'])) {
+        if (function_exists('WC')) {
+            wp_enqueue_script('wc-add-to-cart');
+        }
+        wp_enqueue_script('zvij-kit-builder', get_template_directory_uri() . '/assets/kit-builder.js', ['jquery'], '0.1.0', true);
     }
 
     if (is_front_page() || is_shop() || is_product_taxonomy() || is_product()) {
@@ -426,6 +433,55 @@ function zvij_render_kit_showcase(): void {
       <?php endforeach; ?>
 
       <p class="kit-showcase__note"><?php esc_html_e('Komponente kitov so v dev fazi označene kot »kmalu«, dokler niso potrjeni dobavitelj, cene in fotografije. Naročanje kita je placeholder, dokler checkout ni pripravljen.', 'zvij-theme'); ?></p>
+    </section>
+    <?php
+}
+
+/**
+ * Interaktivni sestavljalnik kita za /kiti/ (zahteva Jaka, 11. 7. 2026):
+ * kartice Black/Silver/Gold zgoraj preklapljajo barvo, tu spodaj so sličice
+ * komponent izbranega kita s checkboxi (privzeto vse izbrano, nedobavljive
+ * »Kmalu« onemogočene), skupna cena in resnični »Dodaj kit v košarico«
+ * (AJAX, izdelek po izdelek — glej assets/kit-builder.js).
+ */
+function zvij_kit_builder_render(array $kits): void {
+    $panels = array_values(array_filter($kits, static fn ($k) => in_array($k['key'] ?? '', ['black', 'silver', 'gold'], true)));
+    if ($panels === []) {
+        return;
+    }
+    ?>
+    <section class="zv-card zv-kit-builder" id="kit-builder">
+      <h2><?php esc_html_e('Kaj je v kitu?', 'zvij-theme'); ?></h2>
+      <p class="zv-kit-builder__hint"><?php esc_html_e('Izberi barvo zgoraj, odkljukaj, česar ne rabiš, in dodaj kit v košarico.', 'zvij-theme'); ?></p>
+
+      <?php foreach ($panels as $i => $kit) :
+          $key = sanitize_html_class((string) $kit['key']);
+      ?>
+        <div class="zv-kit-builder__panel<?php echo $i === 0 ? ' is--active' : ''; ?>" data-kit-panel="<?php echo esc_attr($key); ?>"<?php echo $i === 0 ? '' : ' hidden'; ?>>
+          <div class="zv-kit-builder__items">
+            <?php foreach ((array) ($kit['items'] ?? []) as $item) :
+                $view = zvij_kit_item_view((string) ($item['slug'] ?? ''));
+                $available = $view['available'] && $view['price'] > 0;
+                $img = $view['image'] !== '' ? $view['image'] : (function_exists('wc_placeholder_img_src') ? wc_placeholder_img_src('woocommerce_thumbnail') : '');
+            ?>
+              <label class="zv-kb-item<?php echo $available ? '' : ' is--soon'; ?>">
+                <input type="checkbox" <?php checked($available); ?> <?php disabled(! $available); ?> data-kb-item data-product-id="<?php echo esc_attr((string) $view['id']); ?>" data-price="<?php echo esc_attr((string) $view['price']); ?>">
+                <span class="zv-kb-item__media"><?php if ($img !== '') : ?><img src="<?php echo esc_url($img); ?>" alt="" loading="lazy"><?php endif; ?></span>
+                <span class="zv-kb-item__role"><?php echo esc_html((string) ($item['label'] ?? '')); ?></span>
+                <span class="zv-kb-item__name"><?php echo esc_html($view['title']); ?></span>
+                <span class="zv-kb-item__price"><?php echo $available ? wp_kses_post(wc_price($view['price'])) : '<em>' . esc_html__('Kmalu', 'zvij-theme') . '</em>'; ?></span>
+                <span class="zv-kb-item__check" aria-hidden="true"></span>
+              </label>
+            <?php endforeach; ?>
+          </div>
+        </div>
+      <?php endforeach; ?>
+
+      <div class="zv-kit-builder__footer">
+        <p class="zv-kit-builder__total"><?php esc_html_e('Skupaj:', 'zvij-theme'); ?> <strong data-kb-total>0,00 €</strong></p>
+        <button type="button" class="button" data-kb-add><?php esc_html_e('Dodaj kit v košarico', 'zvij-theme'); ?></button>
+        <p class="zv-kit-builder__status" data-kb-status role="status" aria-live="polite"></p>
+      </div>
     </section>
     <?php
 }
