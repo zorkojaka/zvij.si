@@ -358,6 +358,22 @@ add_action('woocommerce_checkout_order_processed', function (int $order_id): voi
         $email = sanitize_email($order->get_billing_email());
     }
 
+    // Zaščita pred dvojno porabo (dva sočasna checkouta z istim stanjem):
+    // poraba nikoli ne preseže trenutnega stanja; razliko zabeležimo na naročilo.
+    $balance = zvij_credit_balance($email);
+    if ($kristali > $balance) {
+        $order->add_order_note(sprintf(
+            'Kristali: zahtevana poraba %d presega stanje %d — knjiženo samo razpoložljivo (preveri popust na naročilu).',
+            $kristali,
+            max(0, $balance)
+        ));
+        $kristali = max(0, $balance);
+        if ($kristali === 0) {
+            $order->save();
+            return;
+        }
+    }
+
     zvij_credit_add($email, -$kristali, 'redeem', $order_id, 'Poraba pri naročilu #' . $order_id);
     $order->update_meta_data('_zvij_credit_redeemed', (string) $kristali);
     $order->save();

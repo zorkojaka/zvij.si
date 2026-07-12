@@ -1,5 +1,7 @@
 # Repeat Order And Reload Spec
 
+Status: **»Ponovi naročilo« implementirano 12. 7. 2026 (zvij-core 0.7.1)** — `includes/zvij-repeat-order.php`: Woo »order again« razširjen na processing/pripravljeno/completed, gumb v Moj račun → Naročila in blok »Reload zadnjega naročila« na dashboardu (E2E: klik obnovi košarico s postavkami). Reload REMINDERJI ostajajo post-launch (rabijo intervale po izdelkih + privolitve).
+
 ## Purpose
 
 Repeat order and reload logic should make the next purchase easier without over-automating before product quantities, prices, and legal checkout rules are known.
