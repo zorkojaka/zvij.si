@@ -1,7 +1,9 @@
 # Slike produktov — kaj generirati / fotografirati in kam jih dati
 
 Datum: 11. 7. 2026 · Vir resnice za slikovne potrebe kataloga.
-Ta dokument je napisan tako, da lahko po njem **AI generira manjkajoče slike** in jih agent pravilno umesti. Realne fotografije imajo prednost — AI slika je vmesni nadomestek, dokler ni prave.
+Ta dokument je popis STANJA slik. **Samostojni prompti za AI generiranje so v `data/slike/NAVODILA-ZA-AI-SLIKE.md`** — generirane datoteke gredo v `data/slike/`, agent jih umesti. Realne fotografije imajo prednost — AI slika je vmesni nadomestek.
+
+> **Placeholderji (12. 7.):** izdelki brez slike imajo zdaj označene brand placeholderje (»SLIKA V PRIPRAVI«, generira `scripts/wp-make-placeholders-dev.php`, attachment meta `_zvij_placeholder=1`) — na strani ni več praznih ikon.
 
 ## Slogovni vodič za generiranje (obvezno za VSE nove slike)
 
