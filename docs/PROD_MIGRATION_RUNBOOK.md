@@ -12,7 +12,7 @@ zahtevajo dostope, ki jih ima samo on).
 - Live `zvij.si` → `152.89.234.190` (obstoječi ponudnik / cPanel; tam teče tudi `mail.zvij.si`).
 - Dev `dev.inteligent.si` → `178.104.24.47` (Hetzner, Docker Compose projekt `zvij-dev`, WP na `127.0.0.1:8098` za nginx proxyjem).
 - Migracija = na Hetznerju postaviti ločen produkcijski compose projekt in preusmeriti DNS `zvij.si` na `178.104.24.47`.
-- **SEO past:** live permalinki so slovenski (`/izdelek/...`), dev uporablja `/product/...`. Pred preklopom je treba odločiti: slovenski permalinki na produkciji ali 301 mapa starih URL-jev (glej Fazo 1, korak 6).
+- ~~**SEO past:** live permalinki so slovenski (`/izdelek/...`), dev uporablja `/product/...`.~~ **Razrešeno (13. 7.):** dev preklopljen na slovenske permalinke (opcija A) — poravnan z live. Glej Fazo 1, korak 6.
 
 ---
 
@@ -38,10 +38,12 @@ Iz release checklista (`RELEASE_PLAN.md` §5):
    - `scripts/deploy-prod.sh` po vzoru `deploy-dev.sh` (lock, fiksne poti, health check).
 4. **Nginx vhost** za `zvij.si` + `www.zvij.si` (agent pripravi, **[JAKA]**/sudo namesti): najprej HTTP z ACME webroot (`/var/www/zvij.si-app/public`), proxy na `127.0.0.1:8099`. Ne dotikaj se drugih vhostov.
 5. **Generalka na dev**: celoten postopek izvoza/uvoza (Faza 2, koraki 2–5) izvedi v `zvij-prod` stack **pred** preklopom DNS in stran preveri prek `curl --resolve zvij.si:443:127.0.0.1` oz. začasnega hosts vnosa.
-6. **Permalinki/SEO odločitev [JAKA]**:
-   - opcija A (priporočeno): na produkciji vklopi slovenske osnove (`/izdelek/`, `/kosarica/` …) — stari live URL-ji izdelkov, ki obstajajo tudi v novem katalogu, ostanejo živi;
-   - opcija B: obdrži `/product/` in dodaj nginx 301 mapo za znane live URL-je (seznam v `LIVE_CONTENT_AUDIT.md`);
-   - v obeh primerih: stare URL-je, ki nimajo naslednika (ukinjeni izdelki), 301 na `/trgovina/`.
+6. **Permalinki/SEO — odločeno 13. 7. (opcija A, slovenski):** dev že preklopljen prek `scripts/wp-configure-permalinks.php`; ker se baza migrira iz dev, se nastavitev prenese sama. Po uvozu v prod vseeno poženi za vsak slučaj:
+   ```bash
+   docker compose --project-name zvij-prod run --rm wp-cli wp eval-file scripts/wp-configure-permalinks.php
+   docker compose --project-name zvij-prod run --rm wp-cli wp rewrite flush --hard
+   ```
+   Ostane: stari live URL-ji izdelkov z drugačnim slugom (npr. `/izdelek/dubi-aktivni-ogljikovi-filtri-42-kosov/` → dev slug `dubi-42-aktivnih-ogljikovih-filtrov`) in ukinjeni izdelki → nginx 301 mapa na naslednika oz. `/trgovina/` (seznam v `LIVE_CONTENT_AUDIT.md`).
 
 ## Faza 2 — Cutover (T-0, izven prometnih ur)
 
