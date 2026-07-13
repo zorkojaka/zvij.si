@@ -3,7 +3,7 @@
  * Plugin Name: Zvij Core
  * Plugin URI: https://dev.inteligent.si
  * Description: Core dev features for the Zvij.si WordPress/WooCommerce app.
- * Version: 0.8.0
+ * Version: 0.8.1
  * Author: Zvij.si
  * Requires at least: 6.5
  * Requires PHP: 8.2
@@ -14,7 +14,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-define('ZVIJ_CORE_VERSION', '0.8.0');
+define('ZVIJ_CORE_VERSION', '0.8.1');
 define('ZVIJ_MEMBER_PRIVACY_VERSION', '2026-06-30');
 
 require_once __DIR__ . '/includes/zvij-orders.php';
@@ -246,11 +246,13 @@ function zvij_membership_sync_mailerlite(string $email, string $name, string $so
         return ['status' => 'not_configured', 'message' => 'Missing MailerLite API key or group ID.'];
     }
 
+    zvij_membership_ensure_ml_fields();
+
     $payload = [
         'email' => $email,
         'fields' => [
             'name' => $name,
-            'source' => $source,
+            'signup_source' => $source,
             'signup_date' => current_time('Y-m-d'),
             'customer_status' => $customer_status,
             'first_order_coupon' => $coupon,
@@ -279,6 +281,136 @@ function zvij_membership_sync_mailerlite(string $email, string $name, string $so
 
     return ['status' => 'failed', 'message' => 'MailerLite HTTP ' . $code];
 }
+
+/** Skupni MailerLite API klic; vrne ['code' => HTTP koda ali 0, 'body' => dekodiran JSON]. */
+function zvij_membership_ml_request(string $method, string $path, ?array $body = null): array {
+    $config = zvij_membership_provider_config();
+    if (! $config['api_key_set']) {
+        return ['code' => 0, 'body' => null];
+    }
+
+    $args = [
+        'method' => $method,
+        'timeout' => 12,
+        'headers' => [
+            'Authorization' => 'Bearer ' . $config['api_key'],
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+        ],
+    ];
+    if ($body !== null) {
+        $args['body'] = wp_json_encode($body);
+    }
+
+    $response = wp_remote_request('https://connect.mailerlite.com/api' . $path, $args);
+    if (is_wp_error($response)) {
+        return ['code' => 0, 'body' => null];
+    }
+
+    return [
+        'code' => (int) wp_remote_retrieve_response_code($response),
+        'body' => json_decode((string) wp_remote_retrieve_body($response), true),
+    ];
+}
+
+/**
+ * Custom polja v MailerLite morajo obstajati, sicer jih API ob upsertu
+ * naročnika TIHO IGNORIRA (ugotovljeno 13. 7.: polja iz prijave se niso
+ * shranjevala). Enkratno (option flag) ustvari polja za segmentacijo
+ * kampanj; ob dodajanju polja dvigni verzijo, da se ensure ponovno požene.
+ */
+function zvij_membership_ensure_ml_fields(): bool {
+    $wanted_version = '1';
+    if ((string) get_option('zvij_ml_fields_version', '') === $wanted_version) {
+        return true;
+    }
+    if (! zvij_membership_is_provider_ready()) {
+        return false;
+    }
+
+    $existing = zvij_membership_ml_request('GET', '/fields?limit=100');
+    if ($existing['code'] !== 200) {
+        return false;
+    }
+    $keys = array_map(static fn ($f) => (string) ($f['key'] ?? ''), (array) ($existing['body']['data'] ?? []));
+
+    // Pozor: "source" je v MailerLite rezervirano ime (422) — zato signup_source.
+    $fields = [
+        'signup_source' => 'text',
+        'signup_date' => 'date',
+        'customer_status' => 'text',
+        'first_order_coupon' => 'text',
+        'last_order_date' => 'date',
+        'total_orders' => 'number',
+    ];
+
+    $all_ok = true;
+    foreach ($fields as $name => $type) {
+        if (in_array($name, $keys, true)) {
+            continue;
+        }
+        $created = zvij_membership_ml_request('POST', '/fields', ['name' => $name, 'type' => $type]);
+        if ($created['code'] < 200 || $created['code'] >= 300) {
+            $all_ok = false;
+        }
+    }
+
+    if ($all_ok) {
+        update_option('zvij_ml_fields_version', $wanted_version, false);
+    }
+    return $all_ok;
+}
+
+/**
+ * Segmentacija ponovnih nakupov: ob prehodu naročila v plačan status se v
+ * MailerLite posodobijo customer_status, last_order_date in total_orders
+ * (št. plačanih naročil tega emaila) — kampanje lahko ciljajo npr.
+ * total_orders >= 2. Samo člani s privolitvijo; idempotentno prek order meta.
+ */
+function zvij_membership_sync_purchase_on_paid($order_id, $from, $to, $order): void {
+    if (! $order instanceof WC_Order || ! function_exists('zvij_invoice_statuses')) {
+        return;
+    }
+    if (! in_array($to, zvij_invoice_statuses(), true)) {
+        return;
+    }
+    if ($order->get_meta('_zvij_ml_purchase_synced') !== '') {
+        return;
+    }
+
+    $email = sanitize_email($order->get_billing_email());
+    $member = $email !== '' ? zvij_membership_find_by_email($email) : null;
+    if (! $member || (string) $member['status'] !== 'subscribed' || ! zvij_membership_is_provider_ready()) {
+        return;
+    }
+
+    zvij_membership_ensure_ml_fields();
+
+    $total_orders = count(wc_get_orders([
+        'billing_email' => $email,
+        'status' => zvij_paid_statuses(),
+        'return' => 'ids',
+        'limit' => -1,
+    ]));
+
+    $result = zvij_membership_ml_request('POST', '/subscribers', [
+        'email' => $email,
+        'fields' => [
+            'customer_status' => 'customer',
+            'last_order_date' => current_time('Y-m-d'),
+            'total_orders' => max(1, $total_orders),
+        ],
+    ]);
+
+    if ($result['code'] >= 200 && $result['code'] < 300) {
+        $order->update_meta_data('_zvij_ml_purchase_synced', '1');
+        $order->save();
+        $order->add_order_note('MailerLite: nakup sinhroniziran (customer_status, last_order_date, total_orders).');
+    } else {
+        $order->add_order_note('MailerLite: sinhronizacija nakupa ni uspela (HTTP ' . $result['code'] . ') — poskusi se ob naslednji spremembi statusa.');
+    }
+}
+add_action('woocommerce_order_status_changed', 'zvij_membership_sync_purchase_on_paid', 50, 4);
 
 function zvij_membership_send_welcome_email(string $email, string $coupon): bool {
     $shop_url = home_url('/trgovina/');
