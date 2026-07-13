@@ -3,7 +3,7 @@
  * Plugin Name: Zvij Core
  * Plugin URI: https://dev.inteligent.si
  * Description: Core dev features for the Zvij.si WordPress/WooCommerce app.
- * Version: 0.8.1
+ * Version: 0.9.0
  * Author: Zvij.si
  * Requires at least: 6.5
  * Requires PHP: 8.2
@@ -14,7 +14,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-define('ZVIJ_CORE_VERSION', '0.8.1');
+define('ZVIJ_CORE_VERSION', '0.9.0');
 define('ZVIJ_MEMBER_PRIVACY_VERSION', '2026-06-30');
 
 require_once __DIR__ . '/includes/zvij-orders.php';
@@ -26,6 +26,7 @@ require_once __DIR__ . '/includes/zvij-credit.php';
 require_once __DIR__ . '/includes/zvij-referral.php';
 require_once __DIR__ . '/includes/zvij-repeat-order.php';
 require_once __DIR__ . '/includes/zvij-reload-reminder.php';
+require_once __DIR__ . '/includes/zvij-abandoned-cart.php';
 
 register_activation_hook(__FILE__, 'zvij_membership_install');
 add_action('plugins_loaded', 'zvij_membership_install');

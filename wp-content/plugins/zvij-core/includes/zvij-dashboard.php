@@ -124,6 +124,9 @@ function zvij_dashboard_page(): void {
         <?php if (function_exists('zvij_reload_pending_orders')) : ?>
           <div class="kpi"><span>Reload opomniki</span><b><?php echo count(zvij_reload_pending_orders()); ?></b>čakajočih (interval nastaviš na izdelku)</div>
         <?php endif; ?>
+        <?php if (function_exists('zvij_cart_stats')) : $cart_stats = zvij_cart_stats(); ?>
+          <div class="kpi"><span>Zapuščene košarice</span><b><?php echo (int) $cart_stats['active'] + (int) $cart_stats['reminded']; ?></b><?php echo (int) $cart_stats['reminded']; ?> opomnjenih · <?php echo (int) $cart_stats['recovered']; ?> rešenih</div>
+        <?php endif; ?>
       </div>
 
       <div class="cols">
