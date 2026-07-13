@@ -70,6 +70,7 @@ Iz release checklista (`RELEASE_PLAN.md` §5):
    - izbriši testno naročilo #369 in testne člane (`test-narocilo@example.com`),
    - preveri, da so draft izdelki še draft, javnih je 5 realnih izdelkov,
    - Revolut: preklopi na produkcijski ključ, izklopi sandbox način,
+   - **SMTP: obvezno preklopi z Mailpita na živi strežnik** — `wp eval-file scripts/wp-mail-mode.php live` (dev privzeto pošilja v Mailpit in ta nastavitev pride z bazo; prod stack Mailpita nima, emaili bi tiho odpovedali),
    - WooCommerce → naslov trgovine/emaili kažejo na `zvij.si` domeno,
    - `wp option get home` in `siteurl` → `https://zvij.si`,
    - **MailerLite webhook:** prek API izbriši webhook z dev URL in registriraj novega na `https://zvij.si/wp-json/zvij/v1/mailerlite-webhook`; nov `secret` iz odgovora shrani v `zvij_mailerlite_webhook_secret` (autoload=no).

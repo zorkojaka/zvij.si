@@ -5,6 +5,8 @@ Veja: `chore/docker-wordpress-dev` · Dev: https://dev.inteligent.si
 
 Ta dokument je operativni vir resnice za pot do prve prodajne verzije. Nadgrajuje handoff dokument (1. 7. 2026); zaklenjene odločitve iz handoffa ostajajo v veljavi.
 
+> **Posodobitev 13. 7. 2026 (4):** **Mailpit** — dev emaili se odslej zajemajo lokalno (`zvij-dev-mailpit`, UI `127.0.0.1:8101`) namesto pošiljanja prek mail.zvij.si; preklop `scripts/wp-mail-mode.php mailpit|live|status`. V runbook dodan obvezen korak: ob migraciji preklopi prod na `live`. S tem je backlog »lahko počaka« tehnično prazen — vse preostalo čaka Jako (Revolut ključ, fotke, pravni pregled).
+>
 > **Posodobitev 13. 7. 2026 (3):** **zapuščene košarice** (zvij-core 0.9.0) — samo za člane s privolitvijo: košarica prijavljenega člana ali gosta-člana, ki na blagajni vpiše email, se zajame v tabelo `wp_zvij_carts`; po 6 urah brez spremembe (opcija `zvij_cart_reminder_hours`) urni cron pošlje EN opomnik (vsebina košarice, znesek, kristali, UTM linki za Plausible atribucijo `utm_campaign=zapuscena-kosarica`, odjavni link). Varovalke: max en email na člana na 7 dni, vmesni nakup = rešena košarica (KPI »rešenih« na dashboardu), odjava se spoštuje. E2E: 15 preverb logike + zajem na pravi blagajni s playwrightom potrjen; testni podatki počiščeni.
 >
 > **Posodobitev 13. 7. 2026 (2):** **slovenski permalinki** — odprta odločitev razrešena po priporočilu (opcija A iz runbooka): `/izdelek/`, `/kategorija/`, `/oznaka/`, `/kosarica/`, `/blagajna/`, `/moj-racun/` + slovenski endpointi (`narocila`, `narocilo-prejeto`, `odjava` …). Poravnano z živo stranjo, ki že uporablja `/izdelek/` → obstoječi live URL-ji izdelkov ostanejo živi brez redirect map. Stari dev `/product/...` se 301-preusmeri na `/izdelek/...`. Ponovljivo prek `scripts/wp-configure-permalinks.php` (+ `wp rewrite flush --hard`) — pognati tudi ob produkcijski migraciji. E2E potrjen celoten nakupni tok na novih URL-jih (trgovina → izdelek → košarica → blagajna → naročilo prejeto z UPN QR → moj račun); testno naročilo pobrisano.
@@ -44,7 +46,7 @@ Ta dokument je operativni vir resnice za pot do prve prodajne verzije. Nadgrajuj
 
 ### Znane omejitve dev okolja
 
-- **Email dostava:** dev nima SMTP — emaili se ne dostavijo (vsebina welcome emaila je vidna v adminu). Za produkcijo obvezen SMTP ali transakcijski ponudnik.
+- **Email dostava (posodobljeno 13. 7.):** dev privzeto pošilja v **Mailpit** (`127.0.0.1:8101`) — nič ne gre v prave nabiralnike, vsa sporočila so vidna v UI. Preklop na živi mail.zvij.si: `scripts/wp-mail-mode.php live`. **Ob produkcijski migraciji obvezno preklopiti na `live`** (opcija `wp_mail_smtp` se prenese z bazo — glej runbook).
 - Testno naročilo #369 (test-narocilo@example.com) je ostalo v bazi kot demo za dashboard — pred preklopom na produkcijo počistiti.
 - **Katalog aktiviran (11. 7.):** 25 javnih izdelkov — dodatnih 15 (Clipper Silver, grinderji, rolce, fajr, throwie) objavljenih z **DEV cenami** za pravi občutek strani; cene pred produkcijo potrdi Jaka. Kit sestavljalnik s tem popoln (vseh 5 komponent kupljivih). Neaktivni ostajajo samo še dev placeholderji, paketni osnutki in »later« izdelki (tray, Champ).
 
@@ -76,7 +78,7 @@ Ta dokument je operativni vir resnice za pot do prve prodajne verzije. Nadgrajuj
 - ~~Zapuščene košarice~~ **Urejeno (13. 7., zvij-core 0.9.0):** opomnik po 6 h (nastavljivo), samo člani s privolitvijo, en email / 7 dni, UTM atribucija v Plausible, KPI na dashboardu. ~~GA4/Plausible analitika~~ (urejeno 11. 7.); campaign attribution pokrivajo UTM parametri v opomnikih + Plausible
 - ~~Slovenski permalinki~~ **Urejeno (13. 7.):** `/izdelek/`, `/kategorija/`, `/oznaka/`, `/kosarica/`, `/blagajna/`, `/moj-racun/` + slovenski endpointi; poravnano z živo stranjo (`/izdelek/` že na live). Ponovljivo: `scripts/wp-configure-permalinks.php` + `wp rewrite flush --hard` (pognati tudi ob migraciji). Stari `/product/...` → 301 na `/izdelek/...`. E2E nakupni tok potrjen.
 - CBD kapljice, širši katalog
-- Mailpit v docker-compose za lokalni email test
+- ~~Mailpit v docker-compose~~ **Urejeno (13. 7.):** servis `zvij-dev-mailpit`, UI na `127.0.0.1:8101`; dev SMTP privzeto preklopljen na Mailpit (nič več pravih pošiljanj z dev-a), preklop nazaj na mail.zvij.si prek `scripts/wp-mail-mode.php` (`mailpit|live|status`, žive nastavitve shranjene)
 
 ---
 

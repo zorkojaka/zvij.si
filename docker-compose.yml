@@ -106,6 +106,17 @@ services:
     networks:
       - zvij_dev
 
+  mailpit:
+    image: axllent/mailpit:v1.27
+    container_name: zvij-dev-mailpit
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${MAILPIT_PORT:-8101}:8025"
+    environment:
+      MP_MAX_MESSAGES: 500
+    networks:
+      - zvij_dev
+
   adminer:
     image: adminer:4
     container_name: zvij-dev-adminer

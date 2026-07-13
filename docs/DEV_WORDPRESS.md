@@ -59,6 +59,22 @@ Adminer is optional and only starts with the tools profile:
 docker compose --env-file /var/www/dev.inteligent.si/.env --profile tools up -d adminer
 ```
 
+## Mailpit (lokalni zajem emailov)
+
+Dev privzeto pošilja vse `wp_mail` emaile v Mailpit namesto na živi SMTP —
+nič ne zapusti strežnika, vsa sporočila (welcome, računi, opomniki) pa so
+vidna v UI na `http://127.0.0.1:8101` (port `MAILPIT_PORT`; na strežnik brez
+brskalnika pridi prek `ssh -L 8101:127.0.0.1:8101`).
+
+Preklop med Mailpit in živim SMTP (mail.zvij.si; žive nastavitve se hranijo
+v opciji `zvij_smtp_live_settings`, gesla ni treba ponovno vpisovati):
+
+```bash
+docker compose run --rm wp-cli wp eval-file scripts/wp-mail-mode.php mailpit
+docker compose run --rm wp-cli wp eval-file scripts/wp-mail-mode.php live
+docker compose run --rm wp-cli wp eval-file scripts/wp-mail-mode.php status
+```
+
 ## Nginx
 
 Only the `dev.inteligent.si` server block should proxy to the container:
