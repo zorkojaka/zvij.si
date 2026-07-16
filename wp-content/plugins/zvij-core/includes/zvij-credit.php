@@ -410,9 +410,9 @@ add_action('woocommerce_account_dashboard', function (): void {
           <tbody>
           <?php foreach ($recent as $row) : ?>
             <tr>
-              <td><?php echo esc_html(mysql2date('j. n. Y', (string) $row['created_at'])); ?></td>
-              <td><?php echo esc_html((string) $row['note']); ?></td>
-              <td><?php echo esc_html(($row['amount'] >= 0 ? '+' : '') . (int) $row['amount']); ?></td>
+              <td data-title="<?php esc_attr_e('Datum', 'zvij-core'); ?>"><?php echo esc_html(mysql2date('j. n. Y', (string) $row['created_at'])); ?></td>
+              <td data-title="<?php esc_attr_e('Opis', 'zvij-core'); ?>"><?php echo esc_html((string) $row['note']); ?></td>
+              <td data-title="<?php esc_attr_e('Kristali', 'zvij-core'); ?>"><?php echo esc_html(($row['amount'] >= 0 ? '+' : '') . (int) $row['amount']); ?></td>
             </tr>
           <?php endforeach; ?>
           </tbody>

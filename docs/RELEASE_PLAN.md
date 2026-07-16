@@ -1,10 +1,12 @@
 # Zvij.si — Release plan in gap analiza
 
-Datum: 5. 7. 2026 · Zadnja posodobitev: 13. 7. 2026
+Datum: 5. 7. 2026 · Zadnja posodobitev: 16. 7. 2026
 Veja: `chore/docker-wordpress-dev` · Dev: https://dev.inteligent.si
 
 Ta dokument je operativni vir resnice za pot do prve prodajne verzije. Nadgrajuje handoff dokument (1. 7. 2026); zaklenjene odločitve iz handoffa ostajajo v veljavi.
 
+> **Posodobitev 16. 7. 2026:** **kristali — produkcijska preverba profila** (zvij-core 0.9.1) — E2E s playwrightom potrjeno, da prijavljen član v Moj račun vidi stanje kristalov (+ € protivrednost), zadnjih 5 transakcij, rok trajanja in svojo Zvij kodo. Popravljen hrošč mobilnega prikaza: responsivna tabela zgodovine ni imela `data-title` atributov → na telefonu so bile oznake Datum/Opis/Kristali prazne (samo `:`); zdaj pravilno. Preverjena pokritost meta `_zvij_kristali`: vseh 8 reload izdelkov/variacij iz strategije se ujema (DUBI 42=13, DUBI 420=75, vršički po tabeli); 20 dodatkov (pribor) po specifikaciji NE daje kristalov — če jih Jaka želi tudi na priboru, vpiše vrednosti ob potrjevanju DEV cen. Počiščeni testni podatki: E2E član + osirotela ledger vrstica `reload-test@example.com` (13 kristalov brez obstoječega člana, ostanek reload testov) — ledger je zdaj prazen, KPI obveznosti 0 €. Revolut sandbox ključ (#1) ostaja edini tehnični blokator.
+>
 > **Posodobitev 13. 7. 2026 (4):** **Mailpit** — dev emaili se odslej zajemajo lokalno (`zvij-dev-mailpit`, UI `127.0.0.1:8101`) namesto pošiljanja prek mail.zvij.si; preklop `scripts/wp-mail-mode.php mailpit|live|status`. V runbook dodan obvezen korak: ob migraciji preklopi prod na `live`. S tem je backlog »lahko počaka« tehnično prazen — vse preostalo čaka Jako (Revolut ključ, fotke, pravni pregled).
 >
 > **Posodobitev 13. 7. 2026 (3):** **zapuščene košarice** (zvij-core 0.9.0) — samo za člane s privolitvijo: košarica prijavljenega člana ali gosta-člana, ki na blagajni vpiše email, se zajame v tabelo `wp_zvij_carts`; po 6 urah brez spremembe (opcija `zvij_cart_reminder_hours`) urni cron pošlje EN opomnik (vsebina košarice, znesek, kristali, UTM linki za Plausible atribucijo `utm_campaign=zapuscena-kosarica`, odjavni link). Varovalke: max en email na člana na 7 dni, vmesni nakup = rešena košarica (KPI »rešenih« na dashboardu), odjava se spoštuje. E2E: 15 preverb logike + zajem na pravi blagajni s playwrightom potrjen; testni podatki počiščeni.
