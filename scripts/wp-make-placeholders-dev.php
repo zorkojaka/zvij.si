@@ -27,6 +27,18 @@ $targets = [
     332 => 'Rolice',
     333 => 'Rolice',
     226 => 'Setup dodatek',
+    // Ziggi katalog + Clipper plin (dodano 31. 8. 2026, do pravih fotografij)
+    435 => 'Rizle',
+    436 => 'Rizle',
+    437 => 'Rizle',
+    438 => 'Rizle',
+    439 => 'Rizle',
+    440 => 'Rizle',
+    441 => 'Rizle',
+    442 => 'Rolice',
+    443 => 'Rolice',
+    444 => 'Rizle',
+    445 => 'Vžigalniki',
 ];
 
 require_once ABSPATH . 'wp-admin/includes/image.php';
