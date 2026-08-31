@@ -79,11 +79,10 @@ services:
     networks:
       - zvij_prod
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "php -r \"exit(@file_get_contents('http://localhost/wp-login.php') === false ? 1 : 0);\""
-        ]
+      # Preverja samo, da PHP/Apache odgovori z veljavno HTTP glavo. Ne sme
+      # slediti preusmeritvam: FORCE_SSL_ADMIN preusmeri wp-login.php na
+      # https://zvij.si/…, kar pred DNS preklopom kaze na tuj streznik.
+      test: ["CMD-SHELL", "php /var/www/html/scripts/healthcheck.php"]
       interval: 10s
       timeout: 5s
       retries: 12
