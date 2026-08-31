@@ -96,6 +96,20 @@ health_check() {
     sleep 2
   done
 
+  # Pred DNS preklopom se zvij.si se vedno razresi na staro gostovanje, zato
+  # bi curl na $URL uspel proti TUJI strani in dal lazen obcutek varnosti.
+  # Javni check ima smisel samo, ce domena kaze na ta streznik.
+  host_ip="$(getent ahostsv4 zvij.si 2>/dev/null | awk 'NR==1{print $1}')"
+  server_ips="$(hostname -I 2>/dev/null || true)"
+  if [ -z "$host_ip" ]; then
+    log "WARNING: zvij.si se ne razresi — javni health check preskocen"
+    return 0
+  fi
+  if ! printf '%s' "$server_ips" | grep -qw "$host_ip"; then
+    log "WARNING: zvij.si kaze na $host_ip, ta streznik je ${server_ips% } — javni health check preskocen (DNS se ni preklopljen)"
+    return 0
+  fi
+
   log "Health check: $URL"
   if curl -fsS --max-time 20 "$URL" >/dev/null; then
     log "Public URL health check passed"
