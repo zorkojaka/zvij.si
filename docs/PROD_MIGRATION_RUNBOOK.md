@@ -1,6 +1,7 @@
 # Produkcijska migracija: dev.inteligent.si → zvij.si
 
-Datum priprave: 10. 7. 2026 · Status: **runbook pripravljen, izvedba čaka na predpogoje**
+Datum priprave: 10. 7. 2026 · Zadnja posodobitev: 31. 8. 2026
+Status: **Faza 1 izvedena — prod stack teče in je preverjen; čaka na Revolut ključ, pravni pregled in DNS preklop**
 
 Ta dokument je izvedbeni načrt za preklop trgovine z dev okolja na produkcijski
 `zvij.si`. Do izvedbe se live `zvij.si` **ne dotika** — vse spodaj je priprava
@@ -16,14 +17,56 @@ zahtevajo dostope, ki jih ima samo on).
 
 ---
 
+## Stanje po generalki (31. 8. 2026)
+
+Faza 1 je izvedena. Na Hetznerju (178.104.24.47) teče produkcijski stack in je
+bil preverjen z uvozom prave dev baze — **brez dotikanja DNS in brez dotikanja
+žive strani**:
+
+- `zvij-prod` stack gori na `127.0.0.1:8099` (WordPress 7.1, WooCommerce 10.8.1,
+  zvij-core 0.9.1, tema Zvij Theme), ločena baza `zvij_prod`, ločena volumna,
+  ločen `.env` v `/var/www/zvij.si-app/.env` (geslа generirana, izven gita).
+- Baza uvožena iz dev-a, `search-replace` opravljen (267 + 6 zamenjav);
+  `home`/`siteurl` = `https://zvij.si`, brez ostankov `dev.inteligent.si`.
+- Uploads (109 MB) prekopirani v prod volume.
+- Slovenski permalinki pognani, rewrite pravila sprana.
+- SMTP preklopljen z Mailpita na živi `mail.zvij.si`.
+- `blog_public` = 1 (na dev ostaja 0) — brez tega nova stran ne bi bila indeksirana.
+- nginx vhost `zvij.si` + `www.zvij.si` aktiven (HTTP + ACME webroot, proxy na 8099).
+  Datoteki v repu: `.deploy/nginx/zvij.si.http.conf` (zdaj) in
+  `.deploy/nginx/zvij.si.https.conf` (po certbotu).
+- Dnevni backup prod baze (`scripts/backup-prod-db.sh`) in prod wp-cron vpisana v cron.
+- Smoke prek nginxa s `Host: zvij.si`: domov, trgovina, izdelek, košarica, /o-nas/,
+  /kontakt/ vse 200; ACME pot deluje; brez mixed contenta.
+
+**Odkrito med generalko (in popravljeno):**
+
+1. `docker-compose.prod.yml` je bil pripet na `wordpress:6.5`, jedro v dev volumnu
+   pa je že 7.1 → uvoz 7.1 baze v 6.5 jedro bi bil downgrade. Obe compose datoteki
+   sta zdaj na `wordpress:7.1-php8.2-apache`.
+2. Prod stack **nima WooCommerce** — compose bind-mounta samo `zvij-theme` in
+   `zvij-core`, ostale vtičnike v dev namesti `wp-install-dev.sh` v volume. Sveži
+   prod je padel na »WooCommerce not loaded«. Rešeno s `scripts/provision-prod-plugins.sh`
+   (kopira WooCommerce, WP Mail SMTP, Revolut gateway in `sl_SI` iz dev-a).
+3. `scripts/deploy-prod.sh` je javni health check delal proti `https://zvij.si`, ki
+   pred preklopom kaže na **staro gostovanje** → check je uspel proti tuji strani in
+   dajal lažen občutek varnosti. Zdaj preveri, ali domena kaže na ta strežnik, in
+   sicer javi opozorilo.
+4. `deploy-prod.sh` dela `git checkout main` + `git reset --hard` v **isti** delovni
+   mapi, ki jo uporablja dev stack (bind mounti teme in vtičnika). Trenutno je
+   neškodljivo, ker sta `main` in delovna veja identična — a če se razideta, prod
+   deploy tiho spremeni tudi dev. Dolgoročno: ločena delovna kopija za prod.
+
+---
+
 ## Faza 0 — Predpogoji (brez teh se cutover ne začne)
 
 Iz release checklista (`RELEASE_PLAN.md` §5):
 
 - [ ] Revolut: sandbox test opravljen, **produkcijski ključ** vpisan in preverjen
-- [ ] SMTP: potrditveni email prispe v pravi nabiralnik; **[JAKA]** SPF/DKIM/DMARC za `zvij.si` urejeni
-- [ ] MailerLite ključ vpisan ali zavestno odloženo na po-lansiranje
-- [ ] Cene, zaloge in pravna besedila potrjeni
+- [x] SMTP: WP Mail SMTP prek `mail.zvij.si`, SPF/DKIM/DMARC urejeni (11. 7.), prod preklopljen na `live` (31. 8.)
+- [x] MailerLite ključ vpisan (webhook je treba ob cutoverju preregistrirati na zvij.si URL)
+- [ ] Cene, zaloge in pravna besedila potrjeni — cene vžigalnikov in Ziggi urejene 31. 8.; **zaloge za 18 izdelkov še niso vnesene**, pravni pregled še ni opravljen
 - [ ] **[JAKA]** dostop do DNS upravljanja za `zvij.si` (kje se ureja? cPanel/registrar — preveri vnaprej!)
 - [ ] **[JAKA]** dostop do obstoječega gostovanja za polni backup
 
