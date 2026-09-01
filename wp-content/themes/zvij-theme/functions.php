@@ -267,7 +267,19 @@ function zvij_kit_item_view(string $slug): array {
 
     $page = get_page_by_path($slug, OBJECT, 'product');
     if (! $page) {
-        $page = get_page_by_path($slug, OBJECT, 'product_variation');
+        // get_page_by_path() zahteva post_parent = 0, variacije pa imajo za
+        // starsa nadrejeni izdelek — zato po njej variacije NIKOLI ni nasla in
+        // so CBD/CBG mesta v vseh kitih ostajala prazna. Iscemo po post_name.
+        $variations = get_posts([
+            'name'                   => $slug,
+            'post_type'              => 'product_variation',
+            'post_status'            => ['publish', 'private'],
+            'posts_per_page'         => 1,
+            'no_found_rows'          => true,
+            'update_post_meta_cache' => false,
+            'update_post_term_cache' => false,
+        ]);
+        $page = $variations[0] ?? null;
     }
     if (! $page) {
         return $view;
