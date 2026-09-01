@@ -307,6 +307,89 @@ function zvij_kit_item_view(string $slug): array {
     return $view;
 }
 
+
+/**
+ * Vodič po formatih papirja — lastna risba v brand slogu.
+ *
+ * Mere so dejstva iz Ziggijeve specifikacije, risba pa je naša: Ziggijeve
+ * katalozne ilustracije so njihova registrirana modelna pravica (RCD) in jih
+ * ne prevzemamo. Oblike so v pravem medsebojnem razmerju (1 mm = 2 px).
+ *
+ * Uporaba: samodejno na kategorijah Rizle in Rolce, drugje prek [zvij_formati].
+ */
+function zvij_paper_format_guide(): string {
+    // Skupni viewBox za vse risbe, da so med seboj res v merilu: ce ima
+    // vsaka svojega, jo brskalnik raztegne cez stolpec in razlika izgine.
+    $mm = 2.0;                       // px na mm
+    $vb_w = 268; $vb_h = 150;        // enak oder za vse
+    $base_y = 128;                   // skupna talna crta, oblike rastejo navzgor
+    $x = 18;
+
+    $formats = [
+        ['King Size Slim', 110, 44, 'Najpogostejši format. Vse naše klasične rizle.'],
+        ['King Size Wide', 110, 53, 'Enako dolg, 9 mm širši — Ziggi Wide Extra.'],
+    ];
+
+    ob_start();
+    ?>
+    <section class="zv-formats zv-card">
+      <h2><?php esc_html_e('Kateri format je kateri?', 'zvij-theme'); ?></h2>
+      <p class="zv-formats__lead"><?php esc_html_e('Risbe so med seboj v pravem merilu — tako vidiš razliko, preden kupiš.', 'zvij-theme'); ?></p>
+      <div class="zv-formats__grid">
+        <?php foreach ($formats as [$name, $w, $h, $note]) :
+            $pw = $w * $mm;
+            $ph = $h * $mm;
+            $y  = $base_y - $ph;
+        ?>
+          <figure class="zv-format">
+            <svg viewBox="0 0 <?php echo esc_attr((string) $vb_w); ?> <?php echo esc_attr((string) $vb_h); ?>" role="img"
+                 aria-label="<?php echo esc_attr(sprintf('%s, %d krat %d milimetrov', $name, $w, $h)); ?>">
+              <rect x="<?php echo esc_attr((string) $x); ?>" y="<?php echo esc_attr((string) $y); ?>"
+                    width="<?php echo esc_attr((string) $pw); ?>" height="<?php echo esc_attr((string) $ph); ?>"
+                    rx="3" fill="#fffdf8" stroke="#c8934e" stroke-width="2"/>
+              <line x1="<?php echo esc_attr((string) $x); ?>" y1="<?php echo esc_attr((string) ($base_y - 14)); ?>"
+                    x2="<?php echo esc_attr((string) ($x + $pw)); ?>" y2="<?php echo esc_attr((string) ($base_y - 14)); ?>"
+                    stroke="#c8934e" stroke-width="1" stroke-dasharray="4 4" opacity="0.55"/>
+              <text x="<?php echo esc_attr((string) ($x + $pw / 2)); ?>" y="<?php echo esc_attr((string) ($y - 8)); ?>"
+                    text-anchor="middle" font-size="13" font-weight="700" fill="#8a7f6e"><?php echo esc_html((string) $w); ?> mm</text>
+              <text x="<?php echo esc_attr((string) ($x + $pw + 16)); ?>" y="<?php echo esc_attr((string) ($y + $ph / 2)); ?>"
+                    text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#8a7f6e"
+                    transform="rotate(-90 <?php echo esc_attr((string) ($x + $pw + 16)); ?> <?php echo esc_attr((string) ($y + $ph / 2)); ?>)"><?php echo esc_html((string) $h); ?> mm</text>
+            </svg>
+            <figcaption><strong><?php echo esc_html($name); ?></strong><span><?php echo esc_html($note); ?></span></figcaption>
+          </figure>
+        <?php endforeach;
+
+        // Zvitek: sirina 44 mm je fiksna in v istem merilu, dolzina je odprta.
+        $rw = 44 * $mm;
+        $ry = $base_y - $rw;
+        ?>
+        <figure class="zv-format">
+          <svg viewBox="0 0 <?php echo esc_attr((string) $vb_w); ?> <?php echo esc_attr((string) $vb_h); ?>" role="img"
+               aria-label="<?php esc_attr_e('Zvitek, širina 44 milimetrov, dolžino odvijaš sam', 'zvij-theme'); ?>">
+            <path d="M<?php echo esc_attr((string) $x); ?> <?php echo esc_attr((string) $ry); ?>
+                     h<?php echo esc_attr((string) (200 - $x)); ?>
+                     v<?php echo esc_attr((string) $rw); ?>
+                     h-<?php echo esc_attr((string) (200 - $x)); ?> z"
+                  fill="#fffdf8" stroke="#c8934e" stroke-width="2"/>
+            <path d="M200 <?php echo esc_attr((string) $ry); ?> q22 <?php echo esc_attr((string) ($rw / 2)); ?> 0 <?php echo esc_attr((string) $rw); ?>"
+                  fill="none" stroke="#c8934e" stroke-width="2" stroke-dasharray="5 5"/>
+            <text x="<?php echo esc_attr((string) ($x + 80)); ?>" y="<?php echo esc_attr((string) ($ry - 8)); ?>"
+                  text-anchor="middle" font-size="13" font-weight="700" fill="#8a7f6e"><?php esc_html_e('poljubna dolžina', 'zvij-theme'); ?></text>
+            <text x="238" y="<?php echo esc_attr((string) ($ry + $rw / 2)); ?>"
+                  text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#8a7f6e"
+                  transform="rotate(-90 238 <?php echo esc_attr((string) ($ry + $rw / 2)); ?>)">44 mm</text>
+          </svg>
+          <figcaption><strong><?php esc_html_e('Zvitek (roll)', 'zvij-theme'); ?></strong><span><?php esc_html_e('Širina je enaka kot pri Slim, dolžino odtrgaš sam. Priložene so filter konice in podlaga.', 'zvij-theme'); ?></span></figcaption>
+        </figure>
+      </div>
+      <p class="zv-formats__note"><?php esc_html_e('Vse naše rizle so iz papirja 14 g/m² s počasnim gorenjem, filter konice 170 g/m².', 'zvij-theme'); ?></p>
+    </section>
+    <?php
+    return (string) ob_get_clean();
+}
+add_shortcode('zvij_formati', 'zvij_paper_format_guide');
+
 /**
  * Kandidati za eno mesto v kitu.
  *

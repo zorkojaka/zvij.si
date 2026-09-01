@@ -1544,7 +1544,7 @@ a {
 }
 
 .zv-product-row {
-  align-items: end;
+  align-items: start;
   bottom: 1.2rem;
   display: flex;
   gap: 0.6rem;
@@ -3493,7 +3493,7 @@ body::before {
 }
 
 .zv-carousel__header {
-  align-items: end;
+  align-items: start;
   display: flex;
   gap: 1rem;
   justify-content: space-between;
@@ -4336,3 +4336,66 @@ body::before {
 .zv-faq__a { padding: 0 1.2rem 1.1rem; }
 .zv-faq__a p { color: var(--zvij-muted); line-height: 1.6; margin: 0; }
 .zv-faq__a a { color: var(--zvij-accent-warm); text-decoration: underline; }
+
+/* ------------------------------------------------------------------
+   Vodič po formatih papirja (zvij_paper_format_guide / [zvij_formati])
+------------------------------------------------------------------ */
+
+.zv-formats {
+  margin: 1.6rem 0 2.2rem;
+}
+
+.zv-formats h2 {
+  margin: 0 0 0.25rem;
+}
+
+.zv-formats__lead {
+  color: var(--zvij-muted);
+  margin: 0 0 1.2rem;
+}
+
+.zv-formats__grid {
+  align-items: start;
+  display: grid;
+  gap: 1.4rem;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+
+.zv-format {
+  margin: 0;
+}
+
+.zv-format svg {
+  display: block;
+  height: auto;
+  max-width: 100%;
+}
+
+.zv-format figcaption {
+  display: grid;
+  gap: 0.15rem;
+  padding-top: 0.6rem;
+}
+
+.zv-format figcaption strong {
+  font-size: 0.95rem;
+  font-weight: 900;
+}
+
+.zv-format figcaption span {
+  color: var(--zvij-muted);
+  font-size: 0.84rem;
+  line-height: 1.35;
+}
+
+.zv-formats__note {
+  border-top: 1px solid rgba(199, 177, 148, 0.45);
+  color: var(--zvij-muted);
+  font-size: 0.86rem;
+  margin: 1.4rem 0 0;
+  padding-top: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .zv-formats__grid { grid-template-columns: 1fr; gap: 1.1rem; }
+}

@@ -36,6 +36,13 @@ $kit_filters = [
   <?php endforeach; ?>
 </nav>
 
+<?php
+// Vodič po formatih na kategorijah, kjer je relevanten.
+if (is_tax('product_cat', ['rizle', 'rolce'])) {
+    echo zvij_paper_format_guide(); // phpcs:ignore WordPress.Security.EscapeOutput -- lastni markup
+}
+?>
+
 <?php if (woocommerce_product_loop()) : ?>
   <div class="shop-toolbar">
     <?php woocommerce_result_count(); ?>
