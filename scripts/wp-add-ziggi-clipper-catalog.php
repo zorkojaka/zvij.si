@@ -116,8 +116,8 @@ $updates = [
     213 => [ // Clipper Gold — metall, 12/display
         'price' => 14.20,
         'stock' => 12,
-        'short' => 'Clipper large v kovinski zlati izvedbi.',
-        'desc'  => 'Clipper large Metall Gold: kovinsko ohišje, zamenljiv kresilni sistem in ponovno polnjenje. Težji in obstojnejši od plastičnega — kos setupa, ne potrošni material.',
+        'short' => 'Kovinski zlat Clipper large v darilni pločevinki.',
+        'desc'  => 'Clipper large Metall Gold: kovinsko ohišje, zamenljiv kresilni sistem in ponovno polnjenje. Priložena je kovinska darilna pločevinka — zato je to tudi edini vžigalnik pri nas, ki ga lahko podariš, ne da bi karkoli dodal. Težji in obstojnejši od plastičnega: kos setupa, ne potrošni material.',
     ],
 ];
 
