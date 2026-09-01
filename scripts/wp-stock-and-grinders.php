@@ -77,3 +77,32 @@ foreach ($grinders as $id => $data) {
     $product->save();
     printf("objavljen #%d %s — %.2f EUR, zaloga %d (SKU %s)\n", $id, $data['name'], $data['price'], $data['stock'], $data['sku']);
 }
+
+/**
+ * Čisti sluga. Grinderja sta bila v času placeholderjev objavljena s slugom
+ * »…-placeholder«, kar bi bil viden javni URL. WordPress ob spremembi sam
+ * ohrani 301 s starega sluga.
+ */
+$slugs = [
+    216 => 'zlat-grinder-52-mm',
+    217 => 'srebrn-grinder-40-mm',
+];
+
+foreach ($slugs as $id => $slug) {
+    $post = get_post($id);
+    if (! $post || $post->post_name === $slug) {
+        continue;
+    }
+    wp_update_post([ 'ID' => $id, 'post_name' => $slug ]);
+    printf("slug #%d: %s → %s\n", $id, $post->post_name, $slug);
+}
+
+/** Preverba: noben javni izdelek naj nima internega izraza v slugu. */
+$q = new WP_Query([ 'post_type' => 'product', 'post_status' => 'publish', 'posts_per_page' => -1 ]);
+foreach ($q->posts as $post) {
+    foreach ([ 'placeholder', 'draft', 'tbd', 'dev-', 'test' ] as $bad) {
+        if (str_contains($post->post_name, $bad)) {
+            printf("POZOR: slug '%s' vsebuje '%s'\n", $post->post_name, $bad);
+        }
+    }
+}
