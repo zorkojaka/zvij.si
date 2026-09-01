@@ -19,7 +19,7 @@ $kit_filters = [
     'black-kit' => 'Black Kit',
     'silver-kit' => 'Silver Kit',
     'gold-kit' => 'Gold Kit',
-    'throwie' => 'Throwie',
+    // Throwie je skrit, dokler ni vrečk na zalogi (glej zvij_kits['hidden']).
     'reload' => 'Reload',
 ];
 ?>

@@ -432,10 +432,15 @@ function zvij_render_kit_showcase(): void {
       <div class="section-heading">
         <p class="eyebrow"><?php esc_html_e('Zvij.si Kit', 'zvij-theme'); ?></p>
         <h2 id="kit-showcase-title"><?php esc_html_e('Vse, kar rabiš, da si zviješ.', 'zvij-theme'); ?></h2>
-        <p class="kit-showcase__lead"><?php esc_html_e('Tu je paket. Odstrani, kar nočeš. Black, Silver in Gold so stil, ne cenovni razred. Throwie je utility kit za s sabo. DUBI filtri so v vsakem kitu, vršički so opcijski dodatek.', 'zvij-theme'); ?></p>
+        <p class="kit-showcase__lead"><?php esc_html_e('Tu je paket. Black, Silver in Gold so stil, ne cenovni razred. Vsak kos lahko zamenjaš za drugega ali ga odstraniš — DUBI filtri so v vsakem kitu, vršički so opcijski dodatek.', 'zvij-theme'); ?></p>
       </div>
 
       <?php foreach ($kits as $kit) :
+          // Skriti kiti ostanejo v opciji (definicija se ohrani), a se ne
+          // prikazujejo — npr. Throwie, dokler ni vrečk na zalogi.
+          if (! empty($kit['hidden'])) {
+              continue;
+          }
           $kit_key = sanitize_html_class($kit['key'] ?? 'kit');
 
           $core_items = (array) ($kit['items'] ?? []);
