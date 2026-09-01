@@ -5,6 +5,45 @@ Ta dokument je popis STANJA slik. **Samostojni prompti za AI generiranje so v `d
 
 > **Placeholderji (12. 7.):** izdelki brez slike imajo zdaj označene brand placeholderje (»SLIKA V PRIPRAVI«, generira `scripts/wp-make-placeholders-dev.php`, attachment meta `_zvij_placeholder=1`) — na strani ni več praznih ikon.
 
+## Stanje 1. 9. 2026 — 13 objavljenih izdelkov brez prave fotografije
+
+| Izdelek | Kaj rabimo |
+|---|---|
+| Ziggi Original Classic Slim | pack shot zavitka |
+| Ziggi Hemp Classic Slim | pack shot zavitka |
+| Ziggi Natural Classic Slim | pack shot zavitka |
+| Ziggi Mystery Mix Special Edition | pack shot zavitka |
+| Ziggi Mycelium Mystique Special Edition | pack shot zavitka |
+| Ziggi Rocket's Odyssey Special Edition | pack shot zavitka |
+| Ziggi Wide Extra | pack shot zavitka |
+| Ziggi Original Roll + Tips + Tray | pack shot škatlice |
+| Ziggi Natural Roll + Tips + Tray | pack shot škatlice |
+| Ziggi Original Double | pack shot zavitka |
+| Clipper plin za polnjenje, 16 ml | pločevinka z nastavki |
+| Throwie vrečka / setup pouch | vrečka, po možnosti napolnjena |
+| RAW Rolls | zvitek + embalaža |
+
+**Vsi ti izdelki so fizično pri Jaki**, zato je najhitrejša pot ena fotografska
+serija: kremasto ozadje po slogovnem vodiču spodaj, telefon, ~20 minut. Deset
+Ziggi zavitkov se da posneti v isti postavitvi zapored.
+
+**Zakaj ne dobaviteljeve slike:**
+
+- **Knistermann** (vžigalniki, plin, grinderji) — celoten `shop.knistermann.de` je za
+  prijavo trgovca (»Händler Log-In«). Brez Jakovih B2B poverilnic slik ni mogoče
+  prenesti. Ko je prijavljen, jih lahko shrani iz brskalnika ali pri njih zaprosi
+  za media paket — veletrgovci ga imajo praktično vedno.
+- **Ziggi** — uradna stran je `ziggipapers.com` (ne `ziggi.com`, ta je parkirana).
+  Ima `/products/`, `/distributors/` in `/lets-collaborate/`, a javno objavlja
+  pretežno lifestyle fotografije, ne čistih pack shotov po šifrah. Za slike po
+  posameznih artiklih je treba pisati prek `/lets-collaborate/`.
+
+Ne glede na vir velja: tuje pack shote uporabljaj le, če jih dobavitelj izrecno
+da na voljo preprodajalcem — lastna fotografija je vedno bolj varna in se ujema z
+obstoječimi 30 fotografijami v `~/apps/zvijsi/produkti`.
+
+---
+
 ## Slogovni vodič za generiranje (obvezno za VSE nove slike)
 
 Da bo katalog enoten, mora vsaka generirana slika slediti obstoječim realnim fotografijam:
