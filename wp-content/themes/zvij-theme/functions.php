@@ -308,6 +308,71 @@ function zvij_kit_item_view(string $slug): array {
 }
 
 /**
+ * Kandidati za eno mesto v kitu.
+ *
+ * Prednastavljeni kiti so priporočilo — stranka lahko vsak kos zamenja za
+ * katerega koli sorodnega ali ga odstrani. Kandidate določa `alt` na mestu:
+ * seznam slugov (`['slug' => [...]]`) ali kategorij (`['cat' => [...]]`).
+ * Brez `alt` je edini kandidat privzeti izdelek.
+ *
+ * @return array<int,array{title:string,url:string,image:string,available:bool,price:float,sku:string,id:int}>
+ */
+function zvij_kit_slot_alternatives(array $item): array {
+    $default_slug = (string) ($item['slug'] ?? '');
+    $slugs = [];
+
+    foreach ((array) ($item['alt']['slug'] ?? []) as $slug) {
+        $slugs[] = (string) $slug;
+    }
+
+    $categories = array_filter(array_map('strval', (array) ($item['alt']['cat'] ?? [])));
+    if ($categories !== []) {
+        $ids = get_posts([
+            'post_type'              => 'product',
+            'post_status'            => 'publish',
+            'posts_per_page'         => -1,
+            'fields'                 => 'ids',
+            'orderby'                => 'title',
+            'order'                  => 'ASC',
+            'no_found_rows'          => true,
+            'update_post_meta_cache' => false,
+            'tax_query'              => [[
+                'taxonomy' => 'product_cat',
+                'field'    => 'slug',
+                'terms'    => $categories,
+            ]],
+        ]);
+        foreach ($ids as $id) {
+            $post = get_post($id);
+            if ($post) {
+                $slugs[] = $post->post_name;
+            }
+        }
+    }
+
+    // Privzeti izdelek je vedno prvi, potem ostali brez podvojitev.
+    array_unshift($slugs, $default_slug);
+
+    $out = [];
+    $seen = [];
+    foreach ($slugs as $slug) {
+        if ($slug === '' || isset($seen[$slug])) {
+            continue;
+        }
+        $seen[$slug] = true;
+        $view = zvij_kit_item_view($slug);
+        // Nedobavljiv privzeti izdelek pokažemo (kot »Kmalu«), nedobavljive
+        // alternative pa ne — v izbirniku nimajo česa početi.
+        if ($view['id'] === 0 || (! $view['available'] && $slug !== $default_slug)) {
+            continue;
+        }
+        $out[] = $view;
+    }
+
+    return $out;
+}
+
+/**
  * Render one selectable kit product chip.
  *
  * @param array{title:string,url:string,image:string,available:bool,price:float,sku:string,id:int} $view
@@ -464,7 +529,7 @@ function zvij_kit_builder_render(array $kits): void {
     ?>
     <section class="zv-card zv-kit-builder" id="kit-builder">
       <h2><?php esc_html_e('Kaj je v kitu?', 'zvij-theme'); ?></h2>
-      <p class="zv-kit-builder__hint"><?php esc_html_e('Izberi barvo zgoraj, odkljukaj, česar ne rabiš, in dodaj kit v košarico.', 'zvij-theme'); ?></p>
+      <p class="zv-kit-builder__hint"><?php esc_html_e('Prednastavljeni kiti so priporočilo. Izberi barvo zgoraj, vsak kos lahko zamenjaš za drugega ali ga odkljukaš stran — in dobiš svoj setup.', 'zvij-theme'); ?></p>
 
       <?php foreach ($panels as $i => $kit) :
           $key = sanitize_html_class((string) $kit['key']);
@@ -472,18 +537,41 @@ function zvij_kit_builder_render(array $kits): void {
         <div class="zv-kit-builder__panel<?php echo $i === 0 ? ' is--active' : ''; ?>" data-kit-panel="<?php echo esc_attr($key); ?>"<?php echo $i === 0 ? '' : ' hidden'; ?>>
           <div class="zv-kit-builder__items">
             <?php foreach ((array) ($kit['items'] ?? []) as $item) :
-                $view = zvij_kit_item_view((string) ($item['slug'] ?? ''));
+                $options = zvij_kit_slot_alternatives($item);
+                if ($options === []) {
+                    continue;
+                }
+                $view = $options[0];
                 $available = $view['available'] && $view['price'] > 0;
-                $img = $view['image'] !== '' ? $view['image'] : (function_exists('wc_placeholder_img_src') ? wc_placeholder_img_src('woocommerce_thumbnail') : '');
+                $fallback = function_exists('wc_placeholder_img_src') ? wc_placeholder_img_src('woocommerce_thumbnail') : '';
+                $img = $view['image'] !== '' ? $view['image'] : $fallback;
+                $role = (string) ($item['label'] ?? '');
             ?>
-              <label class="zv-kb-item<?php echo $available ? '' : ' is--soon'; ?>">
-                <input type="checkbox" <?php checked($available); ?> <?php disabled(! $available); ?> data-kb-item data-product-id="<?php echo esc_attr((string) $view['id']); ?>" data-price="<?php echo esc_attr((string) $view['price']); ?>">
-                <span class="zv-kb-item__media"><?php if ($img !== '') : ?><img src="<?php echo esc_url($img); ?>" alt="" loading="lazy"><?php endif; ?></span>
-                <span class="zv-kb-item__role"><?php echo esc_html((string) ($item['label'] ?? '')); ?></span>
-                <span class="zv-kb-item__name"><?php echo esc_html($view['title']); ?></span>
-                <span class="zv-kb-item__price"><?php echo $available ? wp_kses_post(wc_price($view['price'])) : '<em>' . esc_html__('Kmalu', 'zvij-theme') . '</em>'; ?></span>
-                <span class="zv-kb-item__check" aria-hidden="true"></span>
-              </label>
+              <div class="zv-kb-item<?php echo $available ? '' : ' is--soon'; ?>" data-kb-slot>
+                <label class="zv-kb-item__pick">
+                  <input type="checkbox" <?php checked($available); ?> <?php disabled(! $available); ?> data-kb-item data-product-id="<?php echo esc_attr((string) $view['id']); ?>" data-price="<?php echo esc_attr((string) $view['price']); ?>">
+                  <span class="zv-kb-item__media"><?php if ($img !== '') : ?><img src="<?php echo esc_url($img); ?>" alt="" loading="lazy" data-kb-image><?php endif; ?></span>
+                  <span class="zv-kb-item__role"><?php echo esc_html($role); ?></span>
+                  <span class="zv-kb-item__name" data-kb-name><?php echo esc_html($view['title']); ?></span>
+                  <span class="zv-kb-item__price" data-kb-price><?php echo $available ? wp_kses_post(wc_price($view['price'])) : '<em>' . esc_html__('Kmalu', 'zvij-theme') . '</em>'; ?></span>
+                  <span class="zv-kb-item__check" aria-hidden="true"></span>
+                </label>
+                <?php if (count($options) > 1) : ?>
+                  <label class="zv-kb-item__swap">
+                    <span class="screen-reader-text"><?php printf(esc_html__('Zamenjaj: %s', 'zvij-theme'), esc_html($role)); ?></span>
+                    <select data-kb-alt>
+                      <?php foreach ($options as $option) : ?>
+                        <option value="<?php echo esc_attr((string) $option['id']); ?>"
+                                data-price="<?php echo esc_attr((string) $option['price']); ?>"
+                                data-image="<?php echo esc_url($option['image'] !== '' ? $option['image'] : $fallback); ?>"
+                                data-name="<?php echo esc_attr($option['title']); ?>">
+                          <?php echo esc_html($option['title'] . ' — ' . trim(html_entity_decode(wp_strip_all_tags(wc_price($option['price']))))); ?>
+                        </option>
+                      <?php endforeach; ?>
+                    </select>
+                  </label>
+                <?php endif; ?>
+              </div>
             <?php endforeach; ?>
           </div>
         </div>

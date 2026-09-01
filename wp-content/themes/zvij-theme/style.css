@@ -1861,14 +1861,50 @@ a {
   background: #fff;
   border: 1px solid rgba(199, 177, 148, 0.55);
   border-radius: 10px;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  overflow: hidden;
+  position: relative;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+/* Klikabilni del kartice (slika, vloga, ime, cena) — checkbox je znotraj. */
+.zv-kb-item__pick {
   cursor: pointer;
   display: grid;
   gap: 0.2rem;
-  overflow: hidden;
+  grid-template-rows: auto auto 1fr auto;
   padding: 0 0 0.8rem;
-  position: relative;
   text-align: center;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+/* Izbirnik za zamenjavo kosa. Ne sme sprozati checkboxa, zato je izven
+   .zv-kb-item__pick — klik po njem torej ne odklopi izdelka. */
+.zv-kb-item__swap {
+  border-top: 1px solid rgba(199, 177, 148, 0.4);
+  display: block;
+  padding: 0.45rem 0.5rem 0.55rem;
+}
+
+.zv-kb-item__swap select {
+  background: #fff8ec;
+  border: 1px solid rgba(199, 177, 148, 0.7);
+  border-radius: 7px;
+  color: inherit;
+  font-size: 0.74rem;
+  font-weight: 700;
+  max-width: 100%;
+  padding: 0.3rem 0.35rem;
+  width: 100%;
+}
+
+.zv-kb-item__swap select:focus-visible {
+  outline: 2px solid var(--zvij-accent-warm);
+  outline-offset: 1px;
+}
+
+.zv-kb-item.is--soon .zv-kb-item__swap {
+  display: none;
 }
 
 .zv-kb-item input {
@@ -1946,8 +1982,11 @@ a {
   opacity: 0.55;
 }
 
-.zv-kb-item.is--soon {
+.zv-kb-item.is--soon .zv-kb-item__pick {
   cursor: default;
+}
+
+.zv-kb-item.is--soon {
   opacity: 0.5;
 }
 

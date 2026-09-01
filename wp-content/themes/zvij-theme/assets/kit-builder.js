@@ -2,6 +2,8 @@
  * Zvij.si kit sestavljalnik (/kiti/).
  * - Klik na kartico Black/Silver/Gold preklopi panel s komponentami tiste barve.
  * - Checkboxi določajo, kaj gre v košarico (privzeto vse dobavljivo).
+ * - Izbirnik ob vsakem kosu zamenja izdelek na tistem mestu — prednastavljeni
+ *   kit je samo priporočilo, stranka si sestavi svojega.
  * - »Dodaj kit v košarico« doda izbrane izdelke enega za drugim prek
  *   WooCommerce AJAX (isti vzorec kot home.js) in sproži added_to_cart,
  *   da se osvežita števec košarice in analitika.
@@ -79,8 +81,49 @@
     });
   });
 
+  function formatPrice(value) {
+    return formatEur(parseFloat(value || '0'));
+  }
+
+  // Zamenjava kosa v kitu: izbirnik prepise izdelek, ki visi na checkboxu,
+  // in osvezi slicico, ime in ceno v isti vrstici.
+  function swapSlot(select) {
+    var slot = select.closest('[data-kb-slot]');
+    if (!slot) {
+      return;
+    }
+    var option = select.options[select.selectedIndex];
+    if (!option) {
+      return;
+    }
+    var box = slot.querySelector('[data-kb-item]');
+    if (box) {
+      box.setAttribute('data-product-id', option.value);
+      box.setAttribute('data-price', option.getAttribute('data-price') || '0');
+    }
+    var image = slot.querySelector('[data-kb-image]');
+    var src = option.getAttribute('data-image');
+    if (image && src) {
+      image.src = src;
+    }
+    var name = slot.querySelector('[data-kb-name]');
+    if (name) {
+      name.textContent = option.getAttribute('data-name') || '';
+    }
+    var price = slot.querySelector('[data-kb-price]');
+    if (price) {
+      price.textContent = formatPrice(option.getAttribute('data-price'));
+    }
+  }
+
   builder.addEventListener('change', function (event) {
     if (event.target.matches('[data-kb-item]')) {
+      setStatus('');
+      updateTotal();
+      return;
+    }
+    if (event.target.matches('[data-kb-alt]')) {
+      swapSlot(event.target);
       setStatus('');
       updateTotal();
     }

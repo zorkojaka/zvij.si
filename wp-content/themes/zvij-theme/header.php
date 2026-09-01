@@ -23,7 +23,7 @@ if (! defined('ABSPATH')) {
   <nav class="site-nav" aria-label="<?php esc_attr_e('Main menu', 'zvij-theme'); ?>">
     <ul>
       <li><a href="<?php echo esc_url(home_url('/')); ?>">Domov</a></li>
-      <li><a href="<?php echo esc_url(home_url('/trgovina/')); ?>">Shop</a></li>
+      <li><a href="<?php echo esc_url(home_url('/trgovina/')); ?>">Trgovina</a></li>
       <li><a href="<?php echo esc_url(home_url('/kiti/')); ?>">Kiti</a></li>
       <li><a href="<?php echo esc_url(home_url('/reload/')); ?>">Reload</a></li>
       <li><a href="<?php echo esc_url(home_url('/o-nas/')); ?>">O nas</a></li>
