@@ -39,6 +39,8 @@ $targets = [
     443 => 'Rolice',
     444 => 'Rizle',
     445 => 'Vžigalniki',
+    // Clipper Black — prave fotografije soft touch različice še ni (1. 9. 2026)
+    211 => 'Vžigalnik',
 ];
 
 require_once ABSPATH . 'wp-admin/includes/image.php';
