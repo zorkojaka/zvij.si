@@ -4479,66 +4479,131 @@ body::before {
 }
 
 /* ------------------------------------------------------------------
-   Ponudba cele škatle (zvij-box-pricing)
+   Količinska lestvica (zvij-quantity-pricing)
 ------------------------------------------------------------------ */
 
-.zv-box-offer {
+.zv-qty-offer {
   background: linear-gradient(135deg, #f4eadb, #fff8ec);
   border: 1px solid rgba(199, 177, 148, 0.7);
   border-radius: 12px;
   margin: 1.1rem 0 1.4rem;
-  padding: 0.95rem 1.05rem;
+  padding: 0.95rem 1.05rem 1.05rem;
 }
 
-.zv-box-offer__head {
-  align-items: center;
-  display: flex;
-  gap: 0.55rem;
-  margin: 0 0 0.35rem;
+.zv-qty-offer__head {
+  margin: 0 0 0.15rem;
 }
 
-.zv-box-offer__head strong {
+.zv-qty-offer__head strong {
   font-size: 0.98rem;
   font-weight: 900;
 }
 
-.zv-box-offer__badge {
-  background: var(--zvij-accent-warm);
-  border-radius: 999px;
-  color: #fff;
-  font-size: 0.74rem;
-  font-weight: 900;
-  letter-spacing: 0.02em;
-  padding: 0.14rem 0.5rem;
-}
-
-.zv-box-offer__price {
-  align-items: baseline;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin: 0 0 0.7rem;
-}
-
-.zv-box-offer__price .woocommerce-Price-amount {
-  font-size: 1.25rem;
-  font-weight: 900;
-}
-
-.zv-box-offer__price span {
+.zv-qty-offer__lead {
   color: var(--zvij-muted);
-  font-size: 0.84rem;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  margin: 0 0 0.8rem;
+}
+
+.zv-qty-offer__tiers {
+  display: grid;
+  gap: 0.45rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.zv-qty-tier {
+  align-items: center;
+  background: #fff;
+  border: 1px solid rgba(199, 177, 148, 0.55);
+  border-radius: 9px;
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.8fr) minmax(0, 0.85fr) minmax(0, 0.8fr) auto;
+  padding: 0.5rem 0.6rem;
+}
+
+.zv-qty-tier--box {
+  border-color: #c8934e;
+  box-shadow: inset 0 0 0 1px #c8934e;
+}
+
+.zv-qty-tier__qty {
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.zv-qty-tier__unit {
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.zv-qty-tier__unit small {
+  color: var(--zvij-muted);
+  font-size: 0.72rem;
   font-weight: 700;
 }
 
-.zv-box-offer__btn {
-  display: inline-block;
+.zv-qty-tier__save {
+  color: var(--zvij-accent);
+  display: grid;
+  font-size: 0.85rem;
+  font-weight: 900;
+  line-height: 1.15;
 }
 
-.zv-box-offer__save {
+.zv-qty-tier__save small {
   color: var(--zvij-muted);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.zv-qty-tier__kr {
+  color: var(--zvij-accent-warm);
+  display: grid;
   font-size: 0.82rem;
-  margin: 0.55rem 0 0;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.zv-qty-tier__kr small {
+  color: var(--zvij-muted);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.zv-qty-tier__btn {
+  background: #271e14;
+  border-radius: 7px;
+  color: #fff;
+  display: grid;
+  font-size: 0.8rem;
+  font-weight: 800;
+  line-height: 1.15;
+  padding: 0.42rem 0.7rem;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.zv-qty-tier__btn small {
+  font-size: 0.72rem;
+  font-weight: 700;
+  opacity: 0.75;
+}
+
+.zv-qty-tier--box .zv-qty-tier__btn {
+  background: var(--zvij-accent-warm);
+}
+
+@media (max-width: 560px) {
+  .zv-qty-tier {
+    grid-template-columns: 1fr 1fr;
+    row-gap: 0.35rem;
+  }
+  .zv-qty-tier__btn { grid-column: 1 / -1; }
 }
 
 .zv-box-nudge {
