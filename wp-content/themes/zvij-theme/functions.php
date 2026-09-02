@@ -606,7 +606,7 @@ function zvij_render_kit_showcase(): void {
  * Interaktivni sestavljalnik kita za /kiti/ (zahteva Jaka, 11. 7. 2026):
  * kartice Black/Silver/Gold zgoraj preklapljajo barvo, tu spodaj so sličice
  * komponent izbranega kita s checkboxi (privzeto vse izbrano, nedobavljive
- * »Kmalu« onemogočene), skupna cena in resnični »Dodaj kit v košarico«
+ * »Kmalu« onemogočene), skupna cena in resnični »Dodaj kit v grinder«
  * (AJAX, izdelek po izdelek — glej assets/kit-builder.js).
  */
 function zvij_kit_builder_render(array $kits): void {
@@ -667,7 +667,7 @@ function zvij_kit_builder_render(array $kits): void {
 
       <div class="zv-kit-builder__footer">
         <p class="zv-kit-builder__total"><?php esc_html_e('Skupaj:', 'zvij-theme'); ?> <strong data-kb-total>0,00 €</strong></p>
-        <button type="button" class="button" data-kb-add><?php esc_html_e('Dodaj kit v košarico', 'zvij-theme'); ?></button>
+        <button type="button" class="button" data-kb-add><?php esc_html_e('Dodaj kit v grinder', 'zvij-theme'); ?></button>
         <p class="zv-kit-builder__status" data-kb-status role="status" aria-live="polite"></p>
       </div>
     </section>
@@ -847,7 +847,7 @@ function zvij_homepage_carousel_add_button(WC_Product $product, int $position, a
             esc_attr($variation_id),
             esc_attr((string) $attrs),
             esc_attr((string) $position),
-            esc_html__('Dodaj v košarico', 'zvij-theme')
+            esc_html__('Dodaj v grinder', 'zvij-theme')
         );
     }
 
@@ -856,7 +856,7 @@ function zvij_homepage_carousel_add_button(WC_Product $product, int $position, a
         esc_url($product->add_to_cart_url()),
         esc_attr((string) $product->get_id()),
         esc_attr((string) $position),
-        esc_html__('Dodaj v košarico', 'zvij-theme')
+        esc_html__('Dodaj v grinder', 'zvij-theme')
     );
 }
 

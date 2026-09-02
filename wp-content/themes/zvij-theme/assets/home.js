@@ -299,7 +299,7 @@
             window.jQuery(document.body).trigger('added_to_cart', [data.fragments, data.cart_hash, window.jQuery(add)]);
           }
           if (status) {
-            status.textContent = 'Dodano v košarico.';
+            status.textContent = 'Dodano v grinder.';
           }
         }).catch(function () {
           if (status) {

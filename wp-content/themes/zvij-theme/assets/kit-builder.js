@@ -1,10 +1,10 @@
 /**
  * Zvij.si kit sestavljalnik (/kiti/).
  * - Klik na kartico Black/Silver/Gold preklopi panel s komponentami tiste barve.
- * - Checkboxi določajo, kaj gre v košarico (privzeto vse dobavljivo).
+ * - Checkboxi določajo, kaj gre v grinder (privzeto vse dobavljivo).
  * - Izbirnik ob vsakem kosu zamenja izdelek na tistem mestu — prednastavljeni
  *   kit je samo priporočilo, stranka si sestavi svojega.
- * - »Dodaj kit v košarico« doda izbrane izdelke enega za drugim prek
+ * - »Dodaj kit v grinder« doda izbrane izdelke enega za drugim prek
  *   WooCommerce AJAX (isti vzorec kot home.js) in sproži added_to_cart,
  *   da se osvežita števec košarice in analitika.
  */
@@ -172,7 +172,7 @@
 
       addButton.disabled = true;
       addButton.classList.add('is-loading');
-      setStatus('Dodajam v košarico …');
+      setStatus('Dodajam v grinder …');
 
       var chain = Promise.resolve();
       ids.forEach(function (id) {
@@ -190,7 +190,7 @@
       chain.then(function () {
         setStatus('Kit je v košarici (' + ids.length + ' ' + izdelkovBeseda(ids.length) + ').');
       }).catch(function () {
-        setStatus('Nekaj je šlo narobe — preveri košarico in poskusi znova.');
+        setStatus('Nekaj je šlo narobe — preveri grinder in poskusi znova.');
       }).finally(function () {
         addButton.disabled = false;
         addButton.classList.remove('is-loading');
