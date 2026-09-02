@@ -38,7 +38,7 @@ function zvij_cookie_consent_render(): void {
     <section class="zv-cookie" id="zvij-cookie" aria-label="<?php esc_attr_e('Obvestilo o piškotkih', 'zvij-core'); ?>" hidden>
       <div class="zv-cookie__inner">
         <p class="zv-cookie__text">
-          <?php esc_html_e('Uporabljamo nujne piškotke za delovanje trgovine. Z vašo privolitvijo bomo uporabljali tudi analitične piškotke.', 'zvij-core'); ?>
+          <?php esc_html_e('Uporabljamo nujne piškotke za delovanje trgovine. S tvojo privolitvijo bomo uporabljali tudi analitične piškotke.', 'zvij-core'); ?>
           <?php if ($more) : ?><a href="<?php echo esc_url($more); ?>"><?php esc_html_e('Več o piškotkih', 'zvij-core'); ?></a><?php endif; ?>
         </p>
         <div class="zv-cookie__actions">

@@ -4399,3 +4399,81 @@ body::before {
 @media (max-width: 640px) {
   .zv-formats__grid { grid-template-columns: 1fr; gap: 1.1rem; }
 }
+
+/* ------------------------------------------------------------------
+   Korakovnik nakupa (zvij_copy_steps) — grinder / zvijanje / prižgi
+------------------------------------------------------------------ */
+
+.zv-steps {
+  counter-reset: none;
+  display: grid;
+  gap: 0.6rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  list-style: none;
+  margin: 0 0 1.6rem;
+  padding: 0;
+}
+
+.zv-steps__step {
+  align-items: center;
+  background: #fff;
+  border: 1px solid rgba(199, 177, 148, 0.55);
+  border-radius: 10px;
+  display: grid;
+  gap: 0.1rem 0.7rem;
+  grid-template-columns: auto 1fr;
+  padding: 0.7rem 0.85rem;
+}
+
+.zv-steps__n {
+  align-items: center;
+  background: rgba(199, 177, 148, 0.28);
+  border-radius: 999px;
+  color: var(--zvij-muted);
+  display: flex;
+  font-size: 0.82rem;
+  font-weight: 900;
+  grid-row: span 2;
+  height: 26px;
+  justify-content: center;
+  width: 26px;
+}
+
+.zv-steps__label {
+  font-size: 0.95rem;
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.zv-steps__note {
+  color: var(--zvij-muted);
+  font-size: 0.78rem;
+  line-height: 1.2;
+}
+
+.zv-steps__step.is--active {
+  border-color: #c8934e;
+  box-shadow: inset 0 0 0 1px #c8934e;
+}
+
+.zv-steps__step.is--active .zv-steps__n {
+  background: var(--zvij-accent-warm);
+  color: #fff;
+}
+
+.zv-steps__step.is--done {
+  opacity: 0.62;
+}
+
+.zv-submit-note {
+  color: var(--zvij-muted);
+  font-size: 0.82rem;
+  margin: 0.6rem 0 0;
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .zv-steps { grid-template-columns: 1fr; gap: 0.4rem; }
+  .zv-steps__note { display: none; }
+  .zv-steps__step { padding: 0.5rem 0.75rem; }
+}
