@@ -4477,3 +4477,104 @@ body::before {
   .zv-steps__note { display: none; }
   .zv-steps__step { padding: 0.5rem 0.75rem; }
 }
+
+/* ------------------------------------------------------------------
+   Ponudba cele škatle (zvij-box-pricing)
+------------------------------------------------------------------ */
+
+.zv-box-offer {
+  background: linear-gradient(135deg, #f4eadb, #fff8ec);
+  border: 1px solid rgba(199, 177, 148, 0.7);
+  border-radius: 12px;
+  margin: 1.1rem 0 1.4rem;
+  padding: 0.95rem 1.05rem;
+}
+
+.zv-box-offer__head {
+  align-items: center;
+  display: flex;
+  gap: 0.55rem;
+  margin: 0 0 0.35rem;
+}
+
+.zv-box-offer__head strong {
+  font-size: 0.98rem;
+  font-weight: 900;
+}
+
+.zv-box-offer__badge {
+  background: var(--zvij-accent-warm);
+  border-radius: 999px;
+  color: #fff;
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  padding: 0.14rem 0.5rem;
+}
+
+.zv-box-offer__price {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0 0 0.7rem;
+}
+
+.zv-box-offer__price .woocommerce-Price-amount {
+  font-size: 1.25rem;
+  font-weight: 900;
+}
+
+.zv-box-offer__price span {
+  color: var(--zvij-muted);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.zv-box-offer__btn {
+  display: inline-block;
+}
+
+.zv-box-offer__save {
+  color: var(--zvij-muted);
+  font-size: 0.82rem;
+  margin: 0.55rem 0 0;
+}
+
+.zv-box-nudge {
+  background: #fff;
+  border: 1px dashed rgba(199, 177, 148, 0.85);
+  border-radius: 10px;
+  margin: 0 0 1.3rem;
+  padding: 0.8rem 1rem;
+}
+
+.zv-box-nudge__head {
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  margin: 0 0 0.35rem;
+  text-transform: uppercase;
+  color: var(--zvij-accent);
+}
+
+.zv-box-nudge ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.zv-box-nudge li {
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.zv-box-tag {
+  background: rgba(199, 177, 148, 0.3);
+  border-radius: 999px;
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  margin-left: 0.4rem;
+  padding: 0.1rem 0.45rem;
+  white-space: nowrap;
+}

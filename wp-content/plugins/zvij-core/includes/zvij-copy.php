@@ -118,7 +118,7 @@ add_filter('woocommerce_order_button_text', static fn () => __('Oddaj naročilo'
  */
 function zvij_copy_steps(int $active): void {
     $steps = [
-        1 => [ 'Grinder',  __('izbereš izdelke', 'zvij-core') ],
+        1 => [ 'Grindanje', __('izbereš izdelke', 'zvij-core') ],
         2 => [ 'Zvijanje', __('vpišeš podatke', 'zvij-core') ],
         3 => [ 'Prižgi',   __('oddaš naročilo', 'zvij-core') ],
     ];
