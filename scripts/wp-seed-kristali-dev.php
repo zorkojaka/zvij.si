@@ -1,9 +1,13 @@
 <?php
 /**
  * Seed kristalov iz obstoječih € napisov (wp eval-file, idempotentno).
- * Za vsak izdelek/variacijo z `_zvij_dobroimetje_note`:
- * - razčleni € in nastavi `_zvij_kristali` = € × 10 (zaokroženo),
- * - napis prepiše v "Član prejme X kristalov za naslednji reload."
+ *
+ * ZGODOVINSKA SKRIPTA — ne poganjaj je več. Nastala je ob uvedbi kristalov
+ * (11. 7. 2026) pri tečaju 10 kristalov = 1 €. Od 4. 9. 2026 velja
+ * 100 kristalov = 1 € (glej scripts/wp-migrate-kristali-100.php), meta
+ * `_zvij_dobroimetje_note` pa je odstranjena — javni napis se izpelje iz
+ * `_zvij_kristali` prek zvij_credit_public_note(). Če bi to skripto pognal
+ * danes, bi vrednosti podesetkratno podcenil.
  */
 
 if (! defined('ABSPATH')) {

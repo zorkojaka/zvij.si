@@ -3,7 +3,7 @@
  * Plugin Name: Zvij Core
  * Plugin URI: https://dev.inteligent.si
  * Description: Core dev features for the Zvij.si WordPress/WooCommerce app.
- * Version: 0.12.0
+ * Version: 0.13.0
  * Author: Zvij.si
  * Requires at least: 6.5
  * Requires PHP: 8.2
@@ -429,7 +429,7 @@ function zvij_membership_send_welcome_email(string $email, string $coupon): bool
         $zvij_code = zvij_referral_ensure_code($email);
         if ($zvij_code !== '') {
             $message .= "Tvoja Zvij koda: {$zvij_code}\n";
-            $message .= "Z nakupi zbiraš kristale (10 kristalov = 1 € popusta pri naslednjem naročilu). Ko tvojo Zvij kodo na blagajni vpiše prijatelj, dobi popust na prvo naročilo, ti pa kristale. Če kupuješ kot gost, s svojo kodo na blagajni unovčiš svoje kristale.\n\n";
+            $message .= "Z nakupi zbiraš kristale (100 kristalov = 1 € popusta pri naslednjem naročilu). Ko tvojo Zvij kodo na blagajni vpiše prijatelj, dobi popust na prvo naročilo, ti pa kristale. Če kupuješ kot gost, s svojo kodo na blagajni unovčiš svoje kristale.\n\n";
         }
     }
 

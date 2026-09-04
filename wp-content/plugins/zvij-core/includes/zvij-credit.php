@@ -2,7 +2,12 @@
 /**
  * Zvij.si kristali (dobroimetje) — glej docs/DOBROIMETJE_STRATEGY.md.
  *
- * Valuta so KRISTALI (cela števila), menjava 10 kristalov = 1 €.
+ * Valuta so KRISTALI (cela števila), menjava 100 kristalov = 1 €.
+ *
+ * Tečaj je bil 4. 9. 2026 spremenjen z 10:1 na 100:1 (Jakova odločitev):
+ * številke so bolj igrive, en kristal pa je natanko en cent. Ledger je bil
+ * ob spremembi prazen, zato ni bilo treba preračunavati stanj — vrednosti
+ * na izdelkih so bile pomnožene z 10, da evrska vrednost ostane ista.
  * - Pripis: ko naročilo preide v plačan status (isti kriterij kot računi,
  *   zvij_invoice_statuses), član (vrstica v zvij_members po billing emailu)
  *   prejme vsoto kristalov po postavkah. Kristale na izdelku/variaciji določa
@@ -23,7 +28,7 @@ if (! defined('ABSPATH')) {
 }
 
 const ZVIJ_CREDIT_LEDGER_VERSION_OPTION = 'zvij_credit_db_version';
-const ZVIJ_KRISTALI_PER_EUR = 10;
+const ZVIJ_KRISTALI_PER_EUR = 100;
 
 function zvij_credit_table(): string {
     global $wpdb;
@@ -150,6 +155,27 @@ function zvij_credit_product_kristali(WC_Product $product): int {
     return 0;
 }
 
+/**
+ * Javni napis o kristalih za izdelek, izpeljan iz zive vrednosti.
+ *
+ * Prej je bil ta stavek shranjen v meta `_zvij_dobroimetje_note` z vpisano
+ * stevilko. To pomeni isto dejstvo na dveh mestih — in ob spremembi tecaja
+ * 4. 9. 2026 sta se razsla: sistem je pripisoval 130 kristalov, na strani
+ * pa je pisalo 13. Zdaj se napis vedno izracuna.
+ */
+function zvij_credit_public_note(WC_Product $product): string {
+    $kristali = zvij_credit_product_kristali($product);
+    if ($kristali <= 0) {
+        return '';
+    }
+
+    return sprintf(
+        /* translators: %s: kolicina kristalov z besedo */
+        __('Član prejme %s za naslednji reload.', 'zvij-core'),
+        zvij_kristali_izpis($kristali)
+    );
+}
+
 function zvij_credit_order_earnable(WC_Order $order): int {
     $total = 0;
     foreach ($order->get_items() as $item) {
@@ -271,7 +297,7 @@ add_action('woocommerce_review_order_before_submit', function (): void {
         <input type="number" id="zvij_use_kristali" name="zvij_use_kristali" inputmode="numeric" min="0" max="<?php echo esc_attr((string) $available); ?>" step="1" value="<?php echo esc_attr((string) ($requested > 0 ? min($requested, $available) : 0)); ?>" style="width:6.5em;">
         <button type="button" class="button zvij-credit-toggle__all" data-all="<?php echo esc_attr((string) $available); ?>"><?php esc_html_e('Uporabi vse', 'zvij-core'); ?></button>
       </span>
-      <small><?php esc_html_e('10 kristalov = 1 € popusta. Kristali krijejo izdelke, dostava se plača.', 'zvij-core'); ?></small>
+      <small><?php esc_html_e('100 kristalov = 1 € popusta. Kristali krijejo izdelke, dostava se plača.', 'zvij-core'); ?></small>
     </div>
     <script>
       jQuery(function ($) {

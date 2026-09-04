@@ -11,8 +11,9 @@
  *   kristale. Samo-priporočanje in ponovni nakupi ne štejejo.
  *
  * Privzetki (spremenljivi prek opcij): popust prijatelja 10 %
- * (`zvij_referral_friend_percent`), nagrada lastnika 30 kristalov
- * (`zvij_referral_owner_kristali`). Storno nagrade ob preklicu naročila.
+ * (`zvij_referral_friend_percent`), nagrada lastnika 300 kristalov
+ * (`zvij_referral_owner_kristali`, privzeto 300 = 3 €). Storno nagrade ob
+ * preklicu naročila.
  * Brez izplačil — vse ostane dobroimetje za naslednji reload.
  */
 
@@ -25,7 +26,7 @@ function zvij_referral_friend_percent(): float {
 }
 
 function zvij_referral_owner_kristali(): int {
-    return (int) apply_filters('zvij_referral_owner_kristali', (int) get_option('zvij_referral_owner_kristali', 30));
+    return (int) apply_filters('zvij_referral_owner_kristali', (int) get_option('zvij_referral_owner_kristali', 300));
 }
 
 /** Generira in shrani Zvij kodo za člana, če je še nima. Vrne kodo. */
