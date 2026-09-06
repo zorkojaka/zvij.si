@@ -25,7 +25,7 @@ $zvij_cat_label = (empty($zvij_terms) || is_wp_error($zvij_terms)) ? '' : $zvij_
 $zvij_first_purchase_badge = (string) get_post_meta($product->get_id(), '_zvij_first_purchase_badge', true);
 $zvij_dobroimetje_note = function_exists('zvij_credit_public_note')
     ? zvij_credit_public_note($product)
-    : (string) get_post_meta($product->get_id(), '_zvij_dobroimetje_note', true);
+    : '';
 ?>
 <li <?php wc_product_class('zv-pcard', $product); ?>>
   <a class="zv-pcard__media" href="<?php echo esc_url($zvij_permalink); ?>" aria-hidden="true" tabindex="-1">

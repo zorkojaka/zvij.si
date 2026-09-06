@@ -3,7 +3,7 @@
  * Plugin Name: Zvij Core
  * Plugin URI: https://dev.inteligent.si
  * Description: Core dev features for the Zvij.si WordPress/WooCommerce app.
- * Version: 0.13.0
+ * Version: 0.14.0
  * Author: Zvij.si
  * Requires at least: 6.5
  * Requires PHP: 8.2

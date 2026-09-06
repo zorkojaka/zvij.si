@@ -198,10 +198,11 @@ add_action('woocommerce_after_single_product_summary', function (): void {
     $needs_review = (string) get_post_meta($product->get_id(), 'legal_copy_review_needed', true);
     $youtube_url = (string) get_post_meta($product->get_id(), '_zvij_dubi_youtube_url', true);
     $packaging_note = (string) get_post_meta($product->get_id(), '_zvij_packaging_note', true);
-    // Napis se izpelje iz zive vrednosti kristalov, ne iz shranjenega stavka.
+    // Napis izpelje zvij-core iz zive vrednosti kristalov. Shranjenega
+    // stavka ni vec — isti podatek na dveh mestih se je ze enkrat razsel.
     $dobroimetje_note = function_exists('zvij_credit_public_note')
         ? zvij_credit_public_note($product)
-        : (string) get_post_meta($product->get_id(), '_zvij_dobroimetje_note', true);
+        : '';
     $is_dubi = str_contains(strtolower($product->get_name()), 'dubi');
     ?>
     <?php if ($dobroimetje_note !== '') : ?>

@@ -1,18 +1,22 @@
 <?php
 /**
- * Zvij.si kristali (dobroimetje) — glej docs/DOBROIMETJE_STRATEGY.md.
+ * Zvij.si kristali (dobroimetje).
  *
- * Valuta so KRISTALI (cela števila), menjava 100 kristalov = 1 €.
+ * Model cen in kristalov je opisan v docs/CENE_IN_KRISTALI.md — tam je edini
+ * opis; strategija in zgodovina odlocitev sta v docs/DOBROIMETJE_STRATEGY.md.
  *
- * Tečaj je bil 4. 9. 2026 spremenjen z 10:1 na 100:1 (Jakova odločitev):
- * številke so bolj igrive, en kristal pa je natanko en cent. Ledger je bil
- * ob spremembi prazen, zato ni bilo treba preračunavati stanj — vrednosti
- * na izdelkih so bile pomnožene z 10, da evrska vrednost ostane ista.
+ * ENOTA je en kos izdelka. Valuta so KRISTALI (cela števila), en kristal je
+ * en cent — 100 kristalov = 1 €. Tečaj je na enem mestu
+ * (ZVIJ_KRISTALI_PER_EUR); nikjer drugje ni vpisan.
+ *
+ * Koliko kristalov da izdelek, določa PRAVILO iz cene, ne ročno vpisana
+ * številka. Podrobno pri zvij_credit_reward_percent(). Posledica: ob novem
+ * izdelku ni treba ničesar vpisovati, ob spremembi tečaja ali radodarnosti
+ * pa se popravi ena nastavitev namesto vseh izdelkov.
+ *
  * - Pripis: ko naročilo preide v plačan status (isti kriterij kot računi,
  *   zvij_invoice_statuses), član (vrstica v zvij_members po billing emailu)
- *   prejme vsoto kristalov po postavkah. Kristale na izdelku/variaciji določa
- *   meta `_zvij_kristali`; če je ni, se prebere € iz napisa
- *   `_zvij_dobroimetje_note` in pretvori (×10).
+ *   prejme vsoto kristalov po postavkah — kristali za kos krat količina.
  * - Poraba: na blagajni checkbox "Uporabi kristale" → negativni fee do
  *   vrednosti izdelkov (dostava se vedno plača). Na voljo prijavljenim
  *   članom, gostom pa po vpisu svoje Zvij kode (glej zvij-referral.php).
@@ -134,25 +138,85 @@ function zvij_credit_recent(string $email, int $limit = 5): array {
 }
 
 /**
- * Kristali za en kos izdelka/variacije: meta `_zvij_kristali` (variacija ima
- * prednost), sicer € iz javnega napisa × 10.
+ * Delež cene, ki se kupcu vrne v kristalih (v odstotkih).
+ *
+ * Tri ravni, od splosne k posebni:
+ *
+ *   1. privzeto pravilo    — opcija `zvij_credit_reward_percent` (10 %)
+ *   2. pravilo kategorije  — opcija `zvij_credit_reward_by_cat` (npr. rizle 5 %)
+ *   3. izjema na izdelku   — meta `_zvij_kristali`, absolutno stevilo
+ *
+ * Ob novem izdelku torej ni treba nikjer vpisovati stevilk, ob spremembi
+ * tecaja ali radodarnosti pa se ne popravlja 24 mest, ampak eno.
+ */
+function zvij_credit_reward_percent(?WC_Product $product = null): float {
+    $percent = (float) get_option('zvij_credit_reward_percent', 10);
+
+    // Raven kategorije: skupine izdelkov z drugacno razdajalnostjo (rizle so
+    // tanjsi izdelek kot filtri ali vrsicki) so pravilo, ne izjema na vsakem
+    // izdelku posebej. Opcija: ['rizle' => 5, 'rolce' => 5].
+    if ($product instanceof WC_Product) {
+        $by_cat = (array) get_option('zvij_credit_reward_by_cat', []);
+        if ($by_cat !== []) {
+            $id    = $product->get_parent_id() ?: $product->get_id();
+            $slugs = wp_get_post_terms($id, 'product_cat', ['fields' => 'slugs']);
+            if (! is_wp_error($slugs)) {
+                foreach ($slugs as $slug) {
+                    if (isset($by_cat[$slug])) {
+                        $percent = (float) $by_cat[$slug];
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    return (float) apply_filters('zvij_credit_reward_percent', $percent, $product);
+}
+
+/**
+ * Kristali za EN KOS izdelka ali variacije.
+ *
+ * Vrstni red: izjema na izdelku (`_zvij_kristali`) → sicer pravilo iz cene.
+ * Variacija ima prednost pred nadrejenim izdelkom.
+ *
+ * Meta `_zvij_kristali` je IZJEMA, ne privzeti način vpisa. Uporabi jo samo
+ * takrat, kadar izdelek namenoma odstopa od pravila; sicer jo pusti prazno,
+ * da vrednost sledi ceni.
  */
 function zvij_credit_product_kristali(WC_Product $product): int {
     foreach ([$product->get_id(), $product->get_parent_id()] as $id) {
         if (! $id) {
             continue;
         }
-        $meta = get_post_meta($id, '_zvij_kristali', true);
-        if ($meta !== '' && is_numeric($meta)) {
-            return max(0, (int) $meta);
-        }
-        $note = (string) get_post_meta($id, '_zvij_dobroimetje_note', true);
-        if ($note !== '' && preg_match('/([0-9]+(?:[.,][0-9]+)?)\s*€/u', $note, $m)) {
-            return (int) round(((float) str_replace(',', '.', $m[1])) * ZVIJ_KRISTALI_PER_EUR);
+        $override = get_post_meta($id, '_zvij_kristali', true);
+        if ($override !== '' && is_numeric($override)) {
+            return max(0, (int) $override);
         }
     }
 
-    return 0;
+    return zvij_credit_kristali_from_price($product);
+}
+
+/** Kristali po pravilu: delež veljavne cene, pretvorjen v kristale. */
+function zvij_credit_kristali_from_price(WC_Product $product): int {
+    $price = (float) $product->get_price();
+    if ($price <= 0) {
+        return 0;
+    }
+
+    return (int) round($price * zvij_credit_reward_percent($product) / 100 * ZVIJ_KRISTALI_PER_EUR);
+}
+
+/** Ali ima izdelek vpisano izjemo namesto pravila. */
+function zvij_credit_has_override(WC_Product $product): bool {
+    foreach ([$product->get_id(), $product->get_parent_id()] as $id) {
+        if ($id && get_post_meta($id, '_zvij_kristali', true) !== '') {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 /**

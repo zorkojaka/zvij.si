@@ -2,6 +2,8 @@
 /**
  * Količinski popust (Jaka, 1. 9. 2026).
  *
+ * Model je opisan v docs/CENE_IN_KRISTALI.md.
+ *
  * Rizle so potrošni material — kupec ve, da jih bo porabil. Edini razlog,
  * da vzame samo eno, je, da nima razloga vzeti treh. Lestvica mu ga da:
  * ena doma, ena v jakni, ena v avtu — in vse tri so cenejše.
@@ -118,12 +120,37 @@ function zvij_qty_discount(WC_Product $product, int $qty): float {
     return $best;
 }
 
-/** Cena na kos pri dani količini. */
-function zvij_qty_unit_price(WC_Product $product, int $qty): float {
-    $regular = (float) $product->get_regular_price();
-    $pct     = zvij_qty_discount($product, $qty);
+/**
+ * ENOTA je en kos izdelka, njena cena pa je veljavna WooCommerce cena —
+ * torej akcijska, kadar akcija teče. Osnova NI redna cena: sicer bi
+ * količinski popust računal z višje številke in bi kupec pri treh kosih
+ * plačal več kot pri enem, kadar je izdelek v akciji.
+ *
+ * To je edino mesto, kjer je definirana osnova. Vse ostalo računa iz nje.
+ */
+function zvij_qty_base_price(WC_Product $product): float {
+    return (float) $product->get_price();
+}
 
-    return $pct > 0 ? round($regular * (1 - $pct / 100), 2) : $regular;
+/**
+ * Cena enega kosa pri dani količini — EDINA formula popusta v modulu.
+ * Prikaz, košarica in spodbude jo kličejo, nikjer je ne ponavljajo.
+ */
+function zvij_qty_unit_price(WC_Product $product, int $qty): float {
+    $base = zvij_qty_base_price($product);
+    $pct  = zvij_qty_discount($product, $qty);
+
+    return $pct > 0 ? round($base * (1 - $pct / 100), 2) : $base;
+}
+
+/** Cena za celotno količino. */
+function zvij_qty_line_total(WC_Product $product, int $qty): float {
+    return round(zvij_qty_unit_price($product, $qty) * $qty, 2);
+}
+
+/** Koliko kupec prihrani pri tej količini v primerjavi z osnovno ceno. */
+function zvij_qty_saving(WC_Product $product, int $qty): float {
+    return round((zvij_qty_base_price($product) - zvij_qty_unit_price($product, $qty)) * $qty, 2);
 }
 
 /** Ali izdelek sploh ima količinsko lestvico. */
@@ -177,7 +204,7 @@ add_action('woocommerce_before_calculate_totals', static function ($cart): void 
             continue;
         }
         $unit = zvij_qty_unit_price($product, (int) $item['quantity']);
-        if ($unit < (float) $product->get_regular_price()) {
+        if ($unit < zvij_qty_base_price($product)) {
             $product->set_price((string) $unit);
         }
     }
@@ -193,7 +220,7 @@ add_action('woocommerce_single_product_summary', static function (): void {
         return;
     }
 
-    $regular = (float) $product->get_regular_price();
+    $base    = zvij_qty_base_price($product);
     $ladder  = zvij_qty_ladder($product);
     $box     = zvij_box_qty($product);
     // Kristali se mnozijo s kolicino, zato jih pokazemo ob vsaki stopnji:
@@ -213,9 +240,9 @@ add_action('woocommerce_single_product_summary', static function (): void {
             if ($min > $stock) {
                 continue;
             }
-            $unit  = round($regular * (1 - $pct / 100), 2);
-            $total = round($unit * $min, 2);
-            $save  = round(($regular - $unit) * $min, 2);
+            $unit  = zvij_qty_unit_price($product, $min);
+            $total = zvij_qty_line_total($product, $min);
+            $save  = zvij_qty_saving($product, $min);
             $url   = add_query_arg(['add-to-cart' => $product->get_id(), 'quantity' => $min], wc_get_cart_url());
             $is_box = ($min === $box);
         ?>
@@ -258,7 +285,6 @@ add_action('woocommerce_before_cart', static function (): void {
         }
 
         $qty     = (int) $item['quantity'];
-        $regular = (float) $product->get_regular_price();
         $stock   = $product->managing_stock() ? (int) $product->get_stock_quantity() : PHP_INT_MAX;
         $current = zvij_qty_discount($product, $qty);
 
@@ -274,9 +300,8 @@ add_action('woocommerce_before_cart', static function (): void {
         }
 
         [$min, $pct] = $next;
-        $unit  = round($regular * (1 - $pct / 100), 2);
-        $now   = round(zvij_qty_unit_price($product, $qty) * $qty, 2);
-        $then  = round($unit * $min, 2);
+        $now   = zvij_qty_line_total($product, $qty);
+        $then  = zvij_qty_line_total($product, $min);
         $extra = $min - $qty;
 
         $lines[] = sprintf(
