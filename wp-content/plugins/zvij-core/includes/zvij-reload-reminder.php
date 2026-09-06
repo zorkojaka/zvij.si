@@ -38,6 +38,19 @@ add_action('plugins_loaded', function (): void {
 }, 12);
 
 /** Interval v dneh za en izdelek/variacijo (0 = brez opomnika). */
+/**
+ * Ali je Reload javno vklopljen.
+ *
+ * Reload je 4. 9. 2026 umaknjen s strani do kasnejše faze — koda, podatki in
+ * intervali na izdelkih ostanejo nedotaknjeni, skrije se samo javna površina
+ * (postavka v meniju, blok na domači strani, filter v trgovini, stran
+ * /reload/) in ustavi pošiljanje opomnikov. Vklop nazaj: opcija
+ * `zvij_reload_public` na '1' in stran /reload/ nazaj v objavo.
+ */
+function zvij_reload_is_public(): bool {
+    return (bool) apply_filters('zvij_reload_is_public', get_option('zvij_reload_public', '0') === '1');
+}
+
 function zvij_reload_product_days(WC_Product $product): int {
     foreach ([$product->get_id(), $product->get_parent_id()] as $id) {
         if (! $id) {
@@ -148,6 +161,12 @@ function zvij_reload_pending_orders(array $extra = []): array {
 
 /** Dnevni cron: pošlji zapadle opomnike. Vrne število poslanih. */
 function zvij_reload_send_due_reminders(): int {
+    // Dokler Reload ni javno vklopljen, opomnikov ne pošiljamo — sicer bi
+    // član prejel email o funkciji, ki je na strani ni.
+    if (! zvij_reload_is_public()) {
+        return 0;
+    }
+
     $sent = 0;
     foreach (zvij_reload_pending_orders(['due_before' => gmdate('Y-m-d H:i:s', current_time('timestamp'))]) as $order) {
         $email = sanitize_email($order->get_billing_email());

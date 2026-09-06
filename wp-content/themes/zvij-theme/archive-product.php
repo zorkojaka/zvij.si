@@ -20,8 +20,12 @@ $kit_filters = [
     'silver-kit' => 'Silver Kit',
     'gold-kit' => 'Gold Kit',
     // Throwie je skrit, dokler ni vrečk na zalogi (glej zvij_kits['hidden']).
-    'reload' => 'Reload',
 ];
+
+// Reload je zaenkrat umaknjen s strani (glej zvij_reload_is_public()).
+if (! function_exists('zvij_reload_is_public') || zvij_reload_is_public()) {
+    $kit_filters['reload'] = 'Reload';
+}
 ?>
 <nav class="kit-filter" aria-label="<?php esc_attr_e('Filtri kitov', 'zvij-theme'); ?>">
   <a class="kit-filter__chip<?php echo (is_shop() && ! is_tax('product_tag')) ? ' is--active' : ''; ?>" href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>"><?php esc_html_e('Vse', 'zvij-theme'); ?></a>

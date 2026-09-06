@@ -25,7 +25,9 @@ if (! defined('ABSPATH')) {
       <li><a href="<?php echo esc_url(home_url('/')); ?>">Domov</a></li>
       <li><a href="<?php echo esc_url(home_url('/trgovina/')); ?>">Trgovina</a></li>
       <li><a href="<?php echo esc_url(home_url('/kiti/')); ?>">Kiti</a></li>
-      <li><a href="<?php echo esc_url(home_url('/reload/')); ?>">Reload</a></li>
+      <?php if (! function_exists('zvij_reload_is_public') || zvij_reload_is_public()) : ?>
+        <li><a href="<?php echo esc_url(home_url('/reload/')); ?>">Reload</a></li>
+      <?php endif; ?>
       <li><a href="<?php echo esc_url(home_url('/o-nas/')); ?>">O nas</a></li>
     </ul>
   </nav>

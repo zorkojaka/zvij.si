@@ -68,3 +68,20 @@ foreach ($wpdb->get_col("SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key='_
 
 $left = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->postmeta} WHERE meta_key='_zvij_kristali'");
 printf("\npreostalih izjem: %d (od 24 na začetku)\n", $left);
+
+/**
+ * Pribor po specifikaciji (RELEASE_PLAN, 16. 7. 2026) NE daje kristalov.
+ * Pravilo iz cene bi mu jih dalo, zato kategorijam pribora izrecno
+ * nastavimo 0 % — sprememba ponudbe ni stvar refaktoriranja.
+ */
+$by_cat = (array) get_option('zvij_credit_reward_by_cat', []);
+$by_cat['vzigalniki']    = 0;
+$by_cat['grinderji']     = 0;
+$by_cat['setup-dodatki'] = 0;
+$by_cat['embalaza']      = 0;
+update_option('zvij_credit_reward_by_cat', $by_cat);
+
+echo "\npravila po kategorijah:\n";
+foreach ($by_cat as $slug => $pct) {
+    printf("  %-16s %3d %%\n", $slug, $pct);
+}

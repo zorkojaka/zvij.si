@@ -220,6 +220,16 @@ function zvij_credit_has_override(WC_Product $product): bool {
 }
 
 /**
+ * Za kaj so kristali dobri — besedilo sledi temu, ali je Reload na strani.
+ * Brez tega bi stran obljubljala »naslednji reload«, ki ga ni nikjer videti.
+ */
+function zvij_credit_next_label(): string {
+    return (function_exists('zvij_reload_is_public') && zvij_reload_is_public())
+        ? __('naslednji reload', 'zvij-core')
+        : __('naslednji nakup', 'zvij-core');
+}
+
+/**
  * Javni napis o kristalih za izdelek, izpeljan iz zive vrednosti.
  *
  * Prej je bil ta stavek shranjen v meta `_zvij_dobroimetje_note` z vpisano
@@ -235,8 +245,9 @@ function zvij_credit_public_note(WC_Product $product): string {
 
     return sprintf(
         /* translators: %s: kolicina kristalov z besedo */
-        __('Član prejme %s za naslednji reload.', 'zvij-core'),
-        zvij_kristali_izpis($kristali)
+        __('Član prejme %1$s za %2$s.', 'zvij-core'),
+        zvij_kristali_izpis($kristali),
+        zvij_credit_next_label()
     );
 }
 
@@ -519,7 +530,7 @@ add_action('woocommerce_email_after_order_table', function ($order): void {
     }
     $earned = (int) $order->get_meta('_zvij_credit_earned');
     if ($earned > 0) {
-        echo '<p style="margin:12px 0;">' . esc_html(sprintf(__('Kristali: za ta nakup ti pripišemo %s za naslednji reload.', 'zvij-core'), zvij_kristali_izpis($earned))) . '</p>';
+        echo '<p style="margin:12px 0;">' . esc_html(sprintf(__('Kristali: za ta nakup ti pripišemo %1$s za %2$s.', 'zvij-core'), zvij_kristali_izpis($earned), zvij_credit_next_label())) . '</p>';
     }
 }, 20);
 
@@ -538,10 +549,10 @@ add_action('woocommerce_thankyou', function ($order_id): void {
     $is_member = $email !== '' && zvij_membership_find_by_email($email);
 
     if ($is_member) {
-        $message = sprintf(__('Član prejme %s za naslednji reload — pripišejo se, ko je naročilo plačano.', 'zvij-core'), zvij_kristali_izpis($earnable));
+        $message = sprintf(__('Član prejme %1$s za %2$s — pripišejo se, ko je naročilo plačano.', 'zvij-core'), zvij_kristali_izpis($earnable), zvij_credit_next_label());
     } else {
         // kristale zbirajo samo člani — nečlanu povemo, kaj zamuja
-        $message = sprintf(__('S tem nakupom bi kot Član Zvij.si prejel %s za naslednji reload. Včlani se (obrazec na dnu strani) — kristale zbiraš pri prihodnjih nakupih.', 'zvij-core'), zvij_kristali_izpis($earnable));
+        $message = sprintf(__('S tem nakupom bi kot Član Zvij.si prejel %1$s za %2$s. Včlani se (obrazec na dnu strani) — kristale zbiraš pri prihodnjih nakupih.', 'zvij-core'), zvij_kristali_izpis($earnable), zvij_credit_next_label());
     }
 
     echo '<div class="zvij-credit-thankyou" style="margin:1rem 0;padding:0.9rem 1.1rem;border:1px solid rgba(199,177,148,0.58);border-radius:8px;">'

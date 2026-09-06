@@ -121,7 +121,7 @@ function zvij_dashboard_page(): void {
         <?php if (function_exists('zvij_credit_total_outstanding')) : ?>
           <div class="kpi"><span>Dobroimetje (obveznost)</span><b><?php echo wp_kses_post(wc_price(zvij_credit_total_outstanding())); ?></b>neizkoriščeno stanje članov</div>
         <?php endif; ?>
-        <?php if (function_exists('zvij_reload_pending_orders')) : ?>
+        <?php if (function_exists('zvij_reload_pending_orders') && function_exists('zvij_reload_is_public') && zvij_reload_is_public()) : ?>
           <div class="kpi"><span>Reload opomniki</span><b><?php echo count(zvij_reload_pending_orders()); ?></b>čakajočih (interval nastaviš na izdelku)</div>
         <?php endif; ?>
         <?php if (function_exists('zvij_cart_stats')) : $cart_stats = zvij_cart_stats(); ?>

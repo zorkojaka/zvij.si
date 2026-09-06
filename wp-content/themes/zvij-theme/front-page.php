@@ -111,6 +111,8 @@ $reload_bg = $reload_bg !== '' ? $reload_bg : zvij_kit_flatlay_url('throwie');
 </section>
 
 <section class="zv-editorial">
+  <?php // Reload je zaenkrat umaknjen s strani (glej zvij_reload_is_public()).
+  if (! function_exists('zvij_reload_is_public') || zvij_reload_is_public()) : ?>
   <article class="zv-edit zv-edit--full zv-edit--reload">
     <?php if ($reload_bg !== '') : ?><img class="zv-edit__bg" src="<?php echo esc_url($reload_bg); ?>" alt="Reload" loading="lazy"><?php endif; ?>
     <div class="zv-edit__shade zv-edit__shade--strong"></div>
@@ -120,6 +122,7 @@ $reload_bg = $reload_bg !== '' ? $reload_bg : zvij_kit_flatlay_url('throwie');
       <a class="button button--on-image" href="<?php echo esc_url(home_url('/reload/')); ?>">Poglej reload</a>
     </div>
   </article>
+  <?php endif; ?>
 </section>
 
 <section class="zv-trust">
