@@ -44,6 +44,9 @@ if ($hero_img === '') {
   </div>
 </section>
 
+<?php // Ena sama vrstica obljub, pod herojem. Prej so bile tri (zv-service-strip,
+     // zv-benefits, zv-trust) z istimi tremi postavkami — zadnji dve sta bili
+     // znak za znakom enaki. ?>
 <section class="zv-service-strip" aria-label="Prednosti">
   <div data-ico="truck"><b>Hitra dostava</b><span>1-2 dni</span></div>
   <div data-ico="shield"><b>Diskretno pakiranje</b><span>Brez oznak</span></div>
@@ -92,11 +95,6 @@ $reload_bg = $reload_bg !== '' ? $reload_bg : zvij_kit_flatlay_url('throwie');
   </article>
 </section>
 
-<section class="zv-benefits">
-  <div data-ico="heart"><b>Domača podpora</b><span>Tukaj smo zate.</span></div>
-  <div data-ico="shield"><b>Diskretno pakiranje</b><span>Brez oznak.</span></div>
-  <div data-ico="truck"><b>Hitra dostava</b><span>1-2 dni.</span></div>
-</section>
 
 <section class="zv-member zv-panel">
   <div class="zv-member__card">zvij.si<br><span>ČLAN</span></div>
@@ -125,11 +123,6 @@ $reload_bg = $reload_bg !== '' ? $reload_bg : zvij_kit_flatlay_url('throwie');
   <?php endif; ?>
 </section>
 
-<section class="zv-trust">
-  <div data-ico="heart"><b>Domača podpora</b><span>Tukaj smo zate.</span></div>
-  <div data-ico="shield"><b>Diskretno pakiranje</b><span>Brez oznak.</span></div>
-  <div data-ico="truck"><b>Hitra dostava</b><span>1-2 dni.</span></div>
-</section>
 
 <?php
 get_footer();
