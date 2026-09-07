@@ -10,19 +10,29 @@ Requires PHP: 8.2
 Text Domain: zvij-theme
 */
 
+/*
+ * PRENOVA 2026 — imena zetonov so namenoma ista kot prej, spremenjene so samo
+ * vrednosti. Tako celotna obstojeca tabela stilov prevzame novo paleto brez
+ * prepisovanja vsakega pravila; sklopi se dodelajo v razdelku PRENOVA spodaj.
+ */
 :root {
-  --zvij-bg: #f3ebdd;
-  --zvij-bg-deep: #1f1b17;
-  --zvij-panel: #fffaf1;
-  --zvij-panel-alt: #e9dcc8;
-  --zvij-text: #191613;
-  --zvij-muted: #6a6258;
-  --zvij-accent: #315f49;
-  --zvij-accent-warm: #9a633d;
-  --zvij-line: #d8c9b5;
-  --zvij-shadow: 0 24px 80px rgba(39, 30, 20, 0.12);
-  --zvij-radius: 6px;
+  --zvij-bg: #f5f4f0;
+  --zvij-bg-deep: #111310;
+  --zvij-panel: #ffffff;
+  --zvij-panel-alt: #ecebe4;
+  --zvij-text: #14160f;
+  --zvij-muted: #6f7268;
+  --zvij-accent: #2f7d3a;
+  --zvij-accent-warm: #8fbe2e;
+  --zvij-line: #e3e1d9;
+  --zvij-shadow: 0 18px 60px rgba(17, 19, 16, 0.10);
+  --zvij-radius: 16px;
   --zvij-max: 1280px;
+
+  --zvij-lime: #c8f24c;
+  --zvij-lime-deep: #b2e02f;
+  --zvij-radius-sm: 10px;
+  --zvij-pill: 999px;
 }
 
 * {
@@ -31,9 +41,7 @@ Text Domain: zvij-theme
 
 body {
   margin: 0;
-  background:
-    radial-gradient(circle at top left, rgba(154, 99, 61, 0.14), transparent 32rem),
-    var(--zvij-bg);
+  background: var(--zvij-bg);
   color: var(--zvij-text);
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   line-height: 1.5;
@@ -263,7 +271,7 @@ a {
 }
 
 .ritual-note span {
-  color: #c8b79c;
+  color: var(--zvij-line);
   font-size: 0.75rem;
   text-transform: uppercase;
 }
@@ -277,7 +285,7 @@ a {
 
 .ritual-note p,
 .site-footer p {
-  color: #d9cfbf;
+  color: var(--zvij-line);
   margin: 0;
 }
 
@@ -329,7 +337,7 @@ a {
   background: rgba(255, 250, 241, 0.9);
   border: 1px solid var(--zvij-line);
   border-radius: var(--zvij-radius);
-  box-shadow: 0 12px 40px rgba(39, 30, 20, 0.06);
+  box-shadow: 0 12px 40px rgba(17, 19, 16, 0.06);
 }
 
 .route-card {
@@ -404,7 +412,7 @@ a {
 
 .feature-band p,
 .footer-cta p {
-  color: #d9cfbf;
+  color: var(--zvij-line);
   max-width: 620px;
 }
 
@@ -413,7 +421,7 @@ a {
 }
 
 .feature-band--warm p {
-  color: #fff2e3;
+  color: var(--zvij-panel);
 }
 
 .page-hero,
@@ -512,7 +520,7 @@ a {
 .woocommerce ul.products li.product .zv-pcard__media {
   background:
     linear-gradient(135deg, rgba(49, 95, 73, 0.08), transparent 45%),
-    linear-gradient(135deg, #efe0c8, #fffaf1);
+    linear-gradient(135deg, var(--zvij-panel-alt), var(--zvij-panel));
   display: block;
   height: 100%;
   position: relative;
@@ -537,9 +545,9 @@ a {
 
 /* Woo "Akcija!" značka kot overlay na sliki, poenotena s karuselom. */
 .woocommerce ul.products li.product .onsale {
-  background: #c8934e;
+  background: var(--zvij-accent-warm);
   border-radius: 999px;
-  color: #17120f;
+  color: var(--zvij-bg-deep);
   font-size: 0.72rem;
   font-weight: 950;
   left: auto;
@@ -659,7 +667,7 @@ a {
 }
 
 .woocommerce ul.products li.product .zv-shop-vars .zv-carousel-card__hint {
-  border-top: 1px solid rgba(199, 177, 148, 0.4);
+  border-top: 1px solid var(--zvij-line);
   color: var(--zvij-muted);
   font-size: 0.68rem;
   font-weight: 850;
@@ -676,7 +684,7 @@ a {
 
 .woocommerce ul.products li.product .zv-shop-vars .zv-carousel-card__vars button {
   background: #fff;
-  border: 1px solid rgba(199, 177, 148, 0.55);
+  border: 1px solid var(--zvij-line);
   border-radius: 10px;
   color: var(--zvij-text);
   cursor: pointer;
@@ -696,9 +704,9 @@ a {
 }
 
 .woocommerce ul.products li.product .zv-shop-vars .zv-carousel-card__vars button.on {
-  background: #fbf1de;
-  border-color: #c8934e;
-  box-shadow: inset 0 0 0 1px #c8934e;
+  background: var(--zvij-panel-alt);
+  border-color: var(--zvij-accent-warm);
+  box-shadow: inset 0 0 0 1px var(--zvij-accent-warm);
   color: var(--zvij-text);
 }
 
@@ -709,7 +717,7 @@ a {
 }
 
 .woocommerce ul.products li.product .zv-shop-vars .zv-carousel-card__var-price {
-  color: #8a7f6e;
+  color: var(--zvij-muted);
   display: block;
   font-size: 0.66rem;
   font-weight: 800;
@@ -717,7 +725,7 @@ a {
 }
 
 .woocommerce ul.products li.product .zv-shop-vars .zv-carousel-card__vars button.on .zv-carousel-card__var-price {
-  color: #9a633d;
+  color: var(--zvij-accent);
 }
 
 .woocommerce ul.products li.product .zv-shop-vars .zv-carousel__add {
@@ -828,7 +836,7 @@ a {
 }
 
 .single-product div.product .woocommerce-product-gallery .flex-control-thumbs img {
-  background: #f6ead7;
+  background: var(--zvij-panel-alt);
   border: 1px solid var(--zvij-line);
   cursor: pointer;
   padding: 0.35rem;
@@ -883,8 +891,8 @@ a {
 }
 
 .single-product .woocommerce-tabs ul.tabs li {
-  background: #f6ead7;
-  border: 1px solid #d9c7ac;
+  background: var(--zvij-panel-alt);
+  border: 1px solid var(--zvij-line);
   border-radius: 999px;
   margin: 0;
   padding: 0;
@@ -1050,8 +1058,8 @@ a {
 
 .zv-single-var {
   align-items: center;
-  background: #f6ead7;
-  border: 1px solid #d9c7ac;
+  background: var(--zvij-panel-alt);
+  border: 1px solid var(--zvij-line);
   border-radius: 999px;
   color: var(--zvij-text);
   cursor: pointer;
@@ -1219,14 +1227,14 @@ a {
 
 /* Zvij.si mockup direction */
 :root {
-  --zvij-bg: #f4eadb;
-  --zvij-bg-soft: #fbf5ea;
+  --zvij-bg: var(--zvij-panel-alt);
+  --zvij-bg-soft: var(--zvij-panel);
   --zvij-panel: rgba(255, 249, 239, 0.82);
-  --zvij-panel-solid: #fff8ec;
-  --zvij-text: #11100e;
-  --zvij-muted: #5f574d;
-  --zvij-gold: #c99a48;
-  --zvij-line: #decdb7;
+  --zvij-panel-solid: var(--zvij-panel);
+  --zvij-text: var(--zvij-bg-deep);
+  --zvij-muted: var(--zvij-muted);
+  --zvij-gold: var(--zvij-accent-warm);
+  --zvij-line: var(--zvij-line);
   --zvij-radius: 8px;
   --zvij-max: 1780px;
 }
@@ -1258,7 +1266,7 @@ a {
 
 .site-header {
   background: rgba(251, 245, 234, 0.9);
-  border-bottom: 1px solid rgba(199, 177, 148, 0.5);
+  border-bottom: 1px solid var(--zvij-line);
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   min-height: 70px;
@@ -1323,7 +1331,7 @@ a {
 
 .site-cart b {
   align-items: center;
-  background: #c69b56;
+  background: var(--zvij-accent);
   border-radius: 999px;
   color: #fff;
   display: flex;
@@ -1343,6 +1351,13 @@ a {
 
 .zv-panel,
 .zv-card,
+.zv-service-strip,
+.zv-about-stats {
+  background: var(--zvij-panel);
+  border: 1px solid var(--zvij-line);
+  border-radius: var(--zvij-radius);
+  box-shadow: 0 18px 60px rgba(17, 19, 16, 0.07);
+}
 
 .zv-hero {
   align-items: stretch;
@@ -1370,7 +1385,7 @@ a {
 }
 
 .zv-hero h1 span {
-  color: #ad8650;
+  color: var(--zvij-accent);
 }
 
 .zv-hero p,
@@ -1420,22 +1435,57 @@ a {
 }
 
 .zv-service-strip,
+.zv-about-stats {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 0.75rem;
+  padding: 1.15rem 1.6rem;
+}
 
 .zv-service-strip {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   margin-top: 1rem;
 }
 
+.zv-service-strip > div {
+  align-items: center;
+  column-gap: 0.85rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  justify-self: center;
+  text-align: left;
+}
 
-.zv-service-strip > div,
-
-.zv-service-strip > div::before,
+.zv-service-strip > div::before {
+  background-color: rgba(49, 95, 73, 0.1);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 1.4rem;
+  border-radius: 11px;
+  content: "";
+  grid-column: 1;
+  grid-row: 1 / 3;
+  height: 2.7rem;
+  width: 2.7rem;
+}
 
 .zv-service-strip b,
+.zv-about-stats b {
+  display: block;
+  font-weight: 900;
+  grid-column: 2;
+}
 
 .zv-service-strip span,
+.zv-about-stats span {
+  color: var(--zvij-muted);
+  display: block;
+  font-size: 0.92rem;
+  grid-column: 2;
+}
 
-.zv-service-strip [data-ico]::before,
+.zv-service-strip [data-ico]::before { content: ""; }
 [data-ico="truck"]::before   { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23315f49' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 4h11v11H2z'/%3E%3Cpath d='M13 8h4l4 4v3h-8z'/%3E%3Ccircle cx='6' cy='18' r='1.6'/%3E%3Ccircle cx='17' cy='18' r='1.6'/%3E%3C/svg%3E"); }
 [data-ico="shield"]::before  { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23315f49' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V5z'/%3E%3Cpath d='M9 12l2 2 4-4'/%3E%3C/svg%3E"); }
 [data-ico="heart"]::before   { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23315f49' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20s-7-4-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5-7 9-7 9z'/%3E%3C/svg%3E"); }
@@ -1560,7 +1610,7 @@ a {
 
 .zv-kit-tab--dark {
   background: linear-gradient(135deg, #201d19, #36312b);
-  color: #fff8ec;
+  color: var(--zvij-panel);
 }
 
 .zv-kit-tab--silver {
@@ -1602,9 +1652,9 @@ a {
 }
 
 .zv-member__card {
-  background: #11100e;
+  background: var(--zvij-bg-deep);
   border-radius: 8px;
-  color: #fff8ec;
+  color: var(--zvij-panel);
   font-size: 1.7rem;
   font-weight: 950;
   min-height: 120px;
@@ -1613,7 +1663,7 @@ a {
 }
 
 .zv-member__card span {
-  color: #c99a48;
+  color: var(--zvij-accent-warm);
   display: block;
   font-size: 0.9rem;
   margin-top: 2rem;
@@ -1702,7 +1752,6 @@ a {
 .site-footer__member .zvij-member-form__grid {
   grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr);
 }
-
 
 .zv-page-head {
   padding: clamp(2rem, 5vw, 4rem) 0 1rem;
@@ -1795,7 +1844,7 @@ a {
 
 .zv-kb-item {
   background: #fff;
-  border: 1px solid rgba(199, 177, 148, 0.55);
+  border: 1px solid var(--zvij-line);
   border-radius: 10px;
   display: grid;
   grid-template-rows: 1fr auto;
@@ -1817,14 +1866,14 @@ a {
 /* Izbirnik za zamenjavo kosa. Ne sme sprozati checkboxa, zato je izven
    .zv-kb-item__pick — klik po njem torej ne odklopi izdelka. */
 .zv-kb-item__swap {
-  border-top: 1px solid rgba(199, 177, 148, 0.4);
+  border-top: 1px solid var(--zvij-line);
   display: block;
   padding: 0.45rem 0.5rem 0.55rem;
 }
 
 .zv-kb-item__swap select {
-  background: #fff8ec;
-  border: 1px solid rgba(199, 177, 148, 0.7);
+  background: var(--zvij-panel);
+  border: 1px solid var(--zvij-line);
   border-radius: 7px;
   color: inherit;
   font-size: 0.74rem;
@@ -1851,7 +1900,7 @@ a {
 
 .zv-kb-item__media {
   aspect-ratio: 1 / 1;
-  background: linear-gradient(135deg, #f4eadb, #fff8ec);
+  background: linear-gradient(135deg, var(--zvij-panel-alt), var(--zvij-panel));
   display: block;
   margin-bottom: 0.5rem;
 }
@@ -1906,8 +1955,8 @@ a {
 }
 
 .zv-kb-item:has(input:checked) {
-  border-color: #c8934e;
-  box-shadow: inset 0 0 0 1px #c8934e;
+  border-color: var(--zvij-accent-warm);
+  box-shadow: inset 0 0 0 1px var(--zvij-accent-warm);
 }
 
 .zv-kb-item:has(input:checked) .zv-kb-item__check {
@@ -1936,7 +1985,7 @@ a {
 
 .zv-kit-builder__footer {
   align-items: center;
-  border-top: 1px solid rgba(199, 177, 148, 0.4);
+  border-top: 1px solid var(--zvij-line);
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
@@ -2024,13 +2073,13 @@ a {
 }
 
 .zv-about-stats {
-  background: #11100e;
-  color: #fff8ec;
+  background: var(--zvij-bg-deep);
+  color: var(--zvij-panel);
   margin-top: 1rem;
 }
 
 .zv-about-stats span {
-  color: #e3d4be;
+  color: var(--zvij-line);
 }
 
 .shop-hero {
@@ -2078,7 +2127,7 @@ a {
 }
 
 .woocommerce ul.products li.product a img {
-  background: linear-gradient(135deg, #f4eadb, #fff8ec);
+  background: linear-gradient(135deg, var(--zvij-panel-alt), var(--zvij-panel));
 }
 
 @media (max-width: 1200px) {
@@ -2140,20 +2189,16 @@ a {
   }
 
   .zv-home-grid,
-  .zv-kit-page-grid,
-  .zv-reload-grid,
-  .zv-service-strip,
-  .zv-benefits,
-  .zv-trust,
-  .zv-about-stats,
-  .woocommerce ul.products,
-  .woocommerce-page ul.products {
+.zv-kit-page-grid,
+.zv-reload-grid,
+.zv-service-strip,
+.zv-about-stats,
+.woocommerce ul.products,
+.woocommerce-page ul.products {
     grid-template-columns: 1fr;
   }
 
-  .zv-service-strip > div,
-  .zv-benefits > div,
-  .zv-trust > div {
+  .zv-service-strip > div {
     text-align: left;
   }
 
@@ -2301,7 +2346,7 @@ a {
 .kit-row {
   background: var(--zvij-panel);
   border-radius: 24px;
-  box-shadow: 0 18px 45px rgba(39, 30, 20, 0.1);
+  box-shadow: 0 18px 45px rgba(17, 19, 16, 0.1);
   margin-top: clamp(1.5rem, 4vw, 2.7rem);
   min-width: 0;
   overflow: hidden;
@@ -2329,8 +2374,8 @@ a {
   width: 100%;
 }
 
-.kit-visual--black { background: radial-gradient(circle at 25% 30%, rgba(255,255,255,0.08), transparent 22rem), linear-gradient(135deg, #171411, #302923); }
-.kit-visual--silver { background: radial-gradient(circle at 30% 35%, rgba(255,255,255,0.42), transparent 20rem), linear-gradient(135deg, #aeb3b8, #e0e0dd); color: #1f1b17; }
+.kit-visual--black { background: radial-gradient(circle at 25% 30%, rgba(255,255,255,0.08), transparent 22rem), linear-gradient(135deg, var(--zvij-bg-deep), #302923); }
+.kit-visual--silver { background: radial-gradient(circle at 30% 35%, rgba(255,255,255,0.42), transparent 20rem), linear-gradient(135deg, #aeb3b8, #e0e0dd); color: var(--zvij-bg-deep); }
 .kit-visual--gold { background: radial-gradient(circle at 24% 28%, rgba(255,255,255,0.28), transparent 22rem), linear-gradient(135deg, #805725, #e5bd67); }
 .kit-visual--throwie { background: radial-gradient(circle at 28% 30%, rgba(255,255,255,0.13), transparent 20rem), linear-gradient(135deg, #1e3f30, #497a5e); }
 
@@ -2577,7 +2622,7 @@ a {
 /* Premium video frame polish */
 .zvij-video-frame {
   border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 18px 48px rgba(39, 30, 20, 0.28);
+  box-shadow: 0 18px 48px rgba(17, 19, 16, 0.28);
 }
 
 .zvij-video-caption {
@@ -3203,7 +3248,7 @@ a {
   transition: box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
-.zv-color-dot--black { background: #1f1b17; }
+.zv-color-dot--black { background: var(--zvij-bg-deep); }
 .zv-color-dot--silver { background: #c9ccd0; }
 .zv-color-dot--gold { background: #d2a24f; }
 
@@ -3300,7 +3345,7 @@ body::before {
 
 .site-footer__legal {
   align-items: center;
-  border-top: 1px solid rgba(199, 177, 148, 0.28);
+  border-top: 1px solid var(--zvij-line);
   display: flex;
   flex-wrap: wrap;
   gap: 1.25rem;
@@ -3337,7 +3382,7 @@ body::before {
 }
 
 .site-footer__eyebrow {
-  color: #c68455 !important;
+  color: var(--zvij-accent) !important;
   font-size: 0.95rem;
   font-style: italic;
   font-weight: 750;
@@ -3353,7 +3398,7 @@ body::before {
 
 .site-footer__member p,
 .site-footer__brand address {
-  color: #3f3932;
+  color: var(--zvij-muted);
   font-style: normal;
   font-weight: 700;
   margin: 0;
@@ -3452,7 +3497,7 @@ body::before {
 }
 
 .zv-carousel__header p:not(.zv-carousel__label) {
-  color: #4b4339;
+  color: var(--zvij-muted);
   font-weight: 650;
   margin: 0.55rem 0 0;
 }
@@ -3464,7 +3509,7 @@ body::before {
 
 .zv-carousel__controls button {
   align-items: center;
-  background: #fffaf2;
+  background: var(--zvij-panel);
   border: 1px solid rgba(25, 21, 17, 0.16);
   border-radius: 999px;
   box-shadow: 0 10px 24px rgba(25, 18, 10, 0.08);
@@ -3486,7 +3531,7 @@ body::before {
 }
 
 .zv-carousel__viewport:focus-visible {
-  outline: 2px solid #c8934e;
+  outline: 2px solid var(--zvij-accent-warm);
   outline-offset: 4px;
 }
 
@@ -3498,7 +3543,7 @@ body::before {
 
 .zv-carousel-card {
   background: rgba(255, 250, 242, 0.78);
-  border: 1px solid rgba(199, 177, 148, 0.42);
+  border: 1px solid var(--zvij-line);
   border-radius: 8px;
   box-shadow: 0 16px 38px rgba(25, 18, 10, 0.06);
   display: grid;
@@ -3510,7 +3555,7 @@ body::before {
 
 .zv-carousel-card__image {
   align-items: center;
-  background: #efe2cf;
+  background: var(--zvij-panel-alt);
   display: flex;
   gap: 0.2rem;
   height: 100%;
@@ -3547,9 +3592,9 @@ body::before {
 }
 
 .zv-carousel-card__badge {
-  background: #c8934e;
+  background: var(--zvij-accent-warm);
   border-radius: 999px;
-  color: #17120f;
+  color: var(--zvij-bg-deep);
   font-size: 0.72rem;
   font-weight: 950;
   padding: 0.35rem 0.6rem;
@@ -3593,14 +3638,14 @@ body::before {
 }
 
 .zv-carousel-card__price del {
-  color: #9a8f80;
+  color: var(--zvij-muted);
   font-size: 0.82em;
   font-weight: 700;
   margin-right: 0.35rem;
 }
 
 .zv-carousel-card__hint {
-  border-top: 1px solid rgba(199, 177, 148, 0.4);
+  border-top: 1px solid var(--zvij-line);
   color: var(--zvij-muted);
   font-size: 0.68rem;
   font-weight: 850;
@@ -3618,7 +3663,7 @@ body::before {
 
 .zv-carousel-card__vars button {
   background: #fff;
-  border: 1px solid rgba(199, 177, 148, 0.55);
+  border: 1px solid var(--zvij-line);
   border-radius: 10px;
   color: var(--zvij-text);
   cursor: pointer;
@@ -3639,9 +3684,9 @@ body::before {
 
 .zv-carousel-card__vars button.on,
 .zv-carousel-card__vars button.is-selected {
-  background: #fbf1de;
-  border-color: #c8934e;
-  box-shadow: inset 0 0 0 1px #c8934e;
+  background: var(--zvij-panel-alt);
+  border-color: var(--zvij-accent-warm);
+  box-shadow: inset 0 0 0 1px var(--zvij-accent-warm);
 }
 
 .zv-carousel-card__var-label,
@@ -3655,14 +3700,14 @@ body::before {
 }
 
 .zv-carousel-card__var-price {
-  color: #8a7f6e;
+  color: var(--zvij-muted);
   font-size: 0.64rem;
   font-weight: 800;
 }
 
 .zv-carousel-card__vars button.on .zv-carousel-card__var-price,
 .zv-carousel-card__vars button.is-selected .zv-carousel-card__var-price {
-  color: #9a633d;
+  color: var(--zvij-accent);
 }
 
 .zv-carousel__add {
@@ -3706,10 +3751,10 @@ body::before {
 }
 
 .zv-carousel-empty {
-  background: #fff7ea;
-  border: 1px solid rgba(199, 177, 148, 0.45);
+  background: var(--zvij-panel);
+  border: 1px solid var(--zvij-line);
   border-radius: 8px;
-  color: #5d5247;
+  color: var(--zvij-muted);
   padding: 1rem;
 }
 
@@ -4243,7 +4288,7 @@ body::before {
   gap: 0.7rem;
 }
 .zv-faq details {
-  background: var(--zvij-panel, #fffaf1);
+  background: var(--zvij-panel, var(--zvij-panel));
   border: 1px solid var(--zvij-line);
   border-radius: 10px;
   overflow: hidden;
@@ -4325,7 +4370,7 @@ body::before {
 }
 
 .zv-formats__note {
-  border-top: 1px solid rgba(199, 177, 148, 0.45);
+  border-top: 1px solid var(--zvij-line);
   color: var(--zvij-muted);
   font-size: 0.86rem;
   margin: 1.4rem 0 0;
@@ -4353,7 +4398,7 @@ body::before {
 .zv-steps__step {
   align-items: center;
   background: #fff;
-  border: 1px solid rgba(199, 177, 148, 0.55);
+  border: 1px solid var(--zvij-line);
   border-radius: 10px;
   display: grid;
   gap: 0.1rem 0.7rem;
@@ -4363,7 +4408,7 @@ body::before {
 
 .zv-steps__n {
   align-items: center;
-  background: rgba(199, 177, 148, 0.28);
+  background: var(--zvij-line);
   border-radius: 999px;
   color: var(--zvij-muted);
   display: flex;
@@ -4388,8 +4433,8 @@ body::before {
 }
 
 .zv-steps__step.is--active {
-  border-color: #c8934e;
-  box-shadow: inset 0 0 0 1px #c8934e;
+  border-color: var(--zvij-accent-warm);
+  box-shadow: inset 0 0 0 1px var(--zvij-accent-warm);
 }
 
 .zv-steps__step.is--active .zv-steps__n {
@@ -4419,8 +4464,8 @@ body::before {
 ------------------------------------------------------------------ */
 
 .zv-qty-offer {
-  background: linear-gradient(135deg, #f4eadb, #fff8ec);
-  border: 1px solid rgba(199, 177, 148, 0.7);
+  background: linear-gradient(135deg, var(--zvij-panel-alt), var(--zvij-panel));
+  border: 1px solid var(--zvij-line);
   border-radius: 12px;
   margin: 1.1rem 0 1.4rem;
   padding: 0.95rem 1.05rem 1.05rem;
@@ -4453,7 +4498,7 @@ body::before {
 .zv-qty-tier {
   align-items: center;
   background: #fff;
-  border: 1px solid rgba(199, 177, 148, 0.55);
+  border: 1px solid var(--zvij-line);
   border-radius: 9px;
   display: grid;
   gap: 0.5rem;
@@ -4462,8 +4507,8 @@ body::before {
 }
 
 .zv-qty-tier--box {
-  border-color: #c8934e;
-  box-shadow: inset 0 0 0 1px #c8934e;
+  border-color: var(--zvij-accent-warm);
+  box-shadow: inset 0 0 0 1px var(--zvij-accent-warm);
 }
 
 .zv-qty-tier__qty {
@@ -4511,7 +4556,7 @@ body::before {
 }
 
 .zv-qty-tier__btn {
-  background: #271e14;
+  background: var(--zvij-text);
   border-radius: 7px;
   color: #fff;
   display: grid;
@@ -4544,7 +4589,7 @@ body::before {
 
 .zv-box-nudge {
   background: #fff;
-  border: 1px dashed rgba(199, 177, 148, 0.85);
+  border: 1px dashed var(--zvij-line);
   border-radius: 10px;
   margin: 0 0 1.3rem;
   padding: 0.8rem 1rem;
@@ -4570,7 +4615,7 @@ body::before {
 }
 
 .zv-box-tag {
-  background: rgba(199, 177, 148, 0.3);
+  background: var(--zvij-line);
   border-radius: 999px;
   display: inline-block;
   font-size: 0.72rem;
@@ -4578,4 +4623,172 @@ body::before {
   margin-left: 0.4rem;
   padding: 0.1rem 0.45rem;
   white-space: nowrap;
+}
+
+/* ==================================================================
+   PRENOVA 2026 — sloj komponent
+   Pisano po maketah, ki jih je izbral Jaka (7. 9. 2026): limeta na
+   skoraj crni, bele kartice, zaobljeni robovi, lepljiva glava s
+   clanskim gumbom. Ta razdelek namenoma pride ZADNJI, da prepise
+   starejsa pravila brez brskanja po 4600 vrsticah.
+   ================================================================== */
+
+/* --- Glava ------------------------------------------------------- */
+
+.site-header {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--zvij-line);
+}
+
+.site-nav a {
+  border-bottom: 2px solid transparent;
+  font-weight: 700;
+  padding-bottom: 2px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.site-nav a:hover,
+.site-nav .current-menu-item > a,
+body.home .site-nav li:first-child a {
+  border-bottom-color: var(--zvij-accent);
+  color: var(--zvij-accent);
+}
+
+.site-actions {
+  align-items: center;
+  display: flex;
+  gap: 0.55rem;
+}
+
+.site-ico {
+  align-items: center;
+  border-radius: var(--zvij-pill);
+  color: var(--zvij-text);
+  display: inline-flex;
+  height: 40px;
+  justify-content: center;
+  position: relative;
+  transition: background 0.15s ease;
+  width: 40px;
+}
+
+.site-ico:hover {
+  background: var(--zvij-panel-alt);
+}
+
+.site-ico svg {
+  fill: none;
+  height: 21px;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+  width: 21px;
+}
+
+.site-cart b {
+  background: var(--zvij-lime);
+  border-radius: var(--zvij-pill);
+  color: var(--zvij-bg-deep);
+  font-size: 0.68rem;
+  font-weight: 900;
+  line-height: 17px;
+  min-width: 17px;
+  padding: 0 4px;
+  position: absolute;
+  right: 1px;
+  text-align: center;
+  top: 1px;
+}
+
+.site-join {
+  margin-left: 0.35rem;
+}
+
+@media (max-width: 900px) {
+  .site-join { display: none; }
+}
+
+/* --- Gumbi ------------------------------------------------------- */
+
+.button,
+.woocommerce a.button,
+.woocommerce button.button,
+.woocommerce input.button,
+.woocommerce #respond input#submit {
+  background: var(--zvij-bg-deep);
+  border: 1px solid var(--zvij-bg-deep);
+  border-radius: var(--zvij-pill);
+  color: #fff;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  padding: 0.72rem 1.4rem;
+  transition: transform 0.12s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.button:hover,
+.woocommerce a.button:hover,
+.woocommerce button.button:hover,
+.woocommerce input.button:hover {
+  background: #23271f;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.button--lime,
+.woocommerce button.button.alt,
+.woocommerce a.button.alt,
+.woocommerce input.button.alt,
+.woocommerce #place_order {
+  background: var(--zvij-lime);
+  border-color: var(--zvij-lime);
+  color: var(--zvij-bg-deep);
+}
+
+.button--lime:hover,
+.woocommerce button.button.alt:hover,
+.woocommerce a.button.alt:hover,
+.woocommerce input.button.alt:hover {
+  background: var(--zvij-lime-deep);
+  border-color: var(--zvij-lime-deep);
+  color: var(--zvij-bg-deep);
+}
+
+.button--ghost {
+  background: transparent;
+  border-color: var(--zvij-line);
+  color: var(--zvij-text);
+}
+
+.button--ghost:hover {
+  background: var(--zvij-panel);
+  border-color: var(--zvij-text);
+  color: var(--zvij-text);
+}
+
+/* --- Kartice in ploskve ------------------------------------------ */
+
+.zv-panel,
+.zv-card,
+.zv-service-strip,
+.zv-about-stats,
+.zv-member {
+  border-radius: var(--zvij-radius);
+  box-shadow: none;
+}
+
+.zv-hero {
+  border-radius: calc(var(--zvij-radius) + 6px);
+}
+
+/* --- Rokopisni pripis -------------------------------------------- */
+
+.zv-script {
+  color: var(--zvij-text);
+  font-family: "Segoe Script", "Bradley Hand", "Brush Script MT", cursive;
+  font-size: clamp(0.95rem, 1.5vw, 1.25rem);
+  line-height: 1.15;
+  opacity: 0.75;
+  transform: rotate(-6deg);
 }
