@@ -33,8 +33,8 @@ if ($hero_img === '') {
     <h1>Tvoj vajb.<br>Tvoja rutina.<br>Tvoj lajf.<br><span>Tvoja pravila.</span></h1>
     <p>Zvij.si je tvoj domači kompanjon. Zrihtamo robo. Ti uživaš.</p>
     <div class="button-row">
+      <?php // En sam poziv. Prej sta bila dva enakovredna in nobeden ni bil glavni. ?>
       <a class="button" href="<?php echo esc_url(home_url('/trgovina/')); ?>">Poglej izdelke</a>
-      <a class="button button--ghost" href="<?php echo esc_url(home_url('/kiti/')); ?>">Sestavi svoj kit</a>
     </div>
   </div>
   <div class="zv-hero__visual">
