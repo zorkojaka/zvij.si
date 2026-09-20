@@ -7,7 +7,8 @@
  *
  * Ujemanje je po IMENU MAPE oz. datoteke, ne po vrstnem redu — Ziggijeve mape
  * so ostevilcene (1., 2., 5. ...), stevilke pa ne pomenijo nicesar pri nas.
- * Prva slika postane glavna, ostale gredo v galerijo.
+ * Katera slika postane glavna, doloca scripts/lib/zvij-image-order.php
+ * (pri Ziggijevih rizlah je to posamezen kos, ne prodajna skatla).
  *
  * Idempotentno: izdelek, ki ze ima pravo fotografijo, se preskoci (razen z
  * ZVIJ_FORCE=1). Placeholderji se povozijo in pobrisejo.
@@ -27,6 +28,7 @@ if (! is_dir($dir)) {
     return;
 }
 
+require_once __DIR__ . '/lib/zvij-image-order.php';
 require_once ABSPATH . 'wp-admin/includes/image.php';
 require_once ABSPATH . 'wp-admin/includes/file.php';
 require_once ABSPATH . 'wp-admin/includes/media.php';
@@ -115,7 +117,7 @@ function zvij_img_prepare(string $src, string $dest, int $max = 1600): bool {
     return $ok;
 }
 
-/** Pripne slike na izdelek: prva je glavna, ostale galerija. */
+/** Pripne slike na izdelek; glavno izbere zvij_featured_index(). */
 function zvij_img_attach(int $product_id, array $files, bool $force): string {
     $product = wc_get_product($product_id);
     if (! $product) {
@@ -150,15 +152,17 @@ function zvij_img_attach(int $product_id, array $files, bool $force): string {
         return 'nobena slika se ni uvozila';
     }
 
-    $product->set_image_id($ids[0]);
-    $product->set_gallery_image_ids(array_slice($ids, 1));
+    $featured = $ids[zvij_featured_index($product->get_slug(), count($ids))];
+    $product->set_image_id($featured);
+    $product->set_gallery_image_ids(array_values(array_diff($ids, [$featured])));
     $product->save();
 
     if ($is_placeholder) {
         wp_delete_attachment($current, true);
     }
 
-    return sprintf('glavna + %d v galeriji', count($ids) - 1);
+    return sprintf('glavna %s + %d v galeriji',
+        basename((string) get_attached_file($featured)), count($ids) - 1);
 }
 
 /* ------------------------------------------------------------------ */
