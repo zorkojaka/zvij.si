@@ -45,8 +45,12 @@ $map = [
     'grinder-zlat'         => 216,
     'grinder-srebrn'       => 217,
 
-    // Ziggi — imena map
-    'original special edition' => [438, 439, 440],
+    // Ziggi — imena map. Posamezne posebne izdaje pred skupnim vzorcem,
+    // sicer bi slike ene izdaje pristale na vseh treh.
+    'mystery'         => 438,
+    'mycelium'        => 439,
+    'rocket'          => 440,
+    'original special edition' => null,
     'original wide extra'  => 441,
     'original double'      => 444,
     'original roll basic'  => null,   // te razlicice ne prodajamo
