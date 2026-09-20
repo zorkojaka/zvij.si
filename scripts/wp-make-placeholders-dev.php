@@ -20,28 +20,66 @@ if (! file_exists($font)) {
     return;
 }
 
-/** Izdelki, ki potrebujejo placeholder (ID => vloga za podnapis). */
-$targets = [
-    217 => 'Grinder',
-    216 => 'Grinder',
-    332 => 'Rolice',
-    333 => 'Rolice',
-    226 => 'Setup dodatek',
-    // Ziggi katalog + Clipper plin (dodano 31. 8. 2026, do pravih fotografij)
-    435 => 'Rizle',
-    436 => 'Rizle',
-    437 => 'Rizle',
-    438 => 'Rizle',
-    439 => 'Rizle',
-    440 => 'Rizle',
-    441 => 'Rizle',
-    442 => 'Rolice',
-    443 => 'Rolice',
-    444 => 'Rizle',
-    445 => 'Vžigalniki',
-    // Clipper Black — prave fotografije soft touch različice še ni (1. 9. 2026)
-    211 => 'Vžigalnik',
+/**
+ * Izdelki, ki potrebujejo placeholder — ugotovimo jih SAMI, ne iz trdo
+ * vpisanega seznama.
+ *
+ * Zakaj: prejsnja razlicica je imela seznam ID-jev, zato ni opazila
+ * izdelkov, katerih priponka kaze na datoteko, ki je ni vec (izbrisana ob
+ * ciscenju ali ob zamenjavi slike). Taki izdelki so na strani prikazovali
+ * zlomljeno sliko, ne placeholderja.
+ *
+ * Zajamemo: izdelke brez glavne slike, s placeholderjem, ali s priponko,
+ * katere datoteka manjka.
+ */
+$targets = [];
+$roles = [
+    'rizle'           => 'Rizle',
+    'rolce'           => 'Rolice',
+    'vzigalniki'      => 'Vžigalnik',
+    'grinderji'       => 'Grinder',
+    'setup-dodatki'   => 'Setup dodatek',
+    'dubi-filtri'     => 'DUBI filtri',
+    'cbd-cbg-vrsicki' => 'Vršički',
+    'embalaza'        => 'Embalaža',
 ];
+
+$q = new WP_Query([
+    'post_type'      => 'product',
+    'post_status'    => 'publish',
+    'posts_per_page' => -1,
+    'fields'         => 'ids',
+]);
+
+foreach ($q->posts as $pid) {
+    $thumb = (int) get_post_thumbnail_id($pid);
+    $file  = $thumb ? get_attached_file($thumb) : '';
+    $needs = ! $thumb
+        || get_post_meta($thumb, '_zvij_placeholder', true) !== ''
+        || ! $file
+        || ! file_exists($file);
+
+    if (! $needs) {
+        continue;
+    }
+
+    // Priponka, ki kaze v prazno, mora stran — sicer ostane zlomljena slika.
+    if ($thumb && (! $file || ! file_exists($file))) {
+        wp_delete_attachment($thumb, true);
+        delete_post_thumbnail($pid);
+        echo "odstranjena priponka brez datoteke: #{$thumb} (izdelek #{$pid})\n";
+    }
+
+    $slugs = wp_get_post_terms($pid, 'product_cat', ['fields' => 'slugs']);
+    $role  = 'Zvij.si';
+    foreach ((array) $slugs as $slug) {
+        if (isset($roles[$slug])) {
+            $role = $roles[$slug];
+            break;
+        }
+    }
+    $targets[$pid] = $role;
+}
 
 require_once ABSPATH . 'wp-admin/includes/image.php';
 
@@ -118,6 +156,19 @@ foreach ($targets as $product_id => $role) {
     $bb = imagettfbbox(20, 0, $font, $note);
     imagettftext($img, 20, 0, (int) ((1200 - ($bb[2] - $bb[0])) / 2), 1095, $muted, $font, $note);
 
+    /*
+     * Staro priponko odstranimo PRED zapisom nove datoteke.
+     *
+     * Nova gre na isto pot kot stara (isti slug izdelka). Ce bi staro
+     * brisali po zapisu, bi wp_delete_attachment($id, true) pobrisal prav
+     * tisto datoteko, ki smo jo pravkar ustvarili — nova priponka bi ostala
+     * brez datoteke in izdelek bi kazal zlomljeno sliko. Prav to se je
+     * tiho dogajalo ob vsakem ponovnem zagonu.
+     */
+    if ($existing_thumb) {
+        wp_delete_attachment($existing_thumb, true);
+    }
+
     $file = $dir . '/' . $product->get_slug() . '-placeholder.jpg';
     imagejpeg($img, $file, 85);
     imagedestroy($img);
@@ -135,9 +186,6 @@ foreach ($targets as $product_id => $role) {
     wp_update_attachment_metadata($attachment_id, wp_generate_attachment_metadata($attachment_id, $file));
     update_post_meta($attachment_id, '_zvij_placeholder', '1');
 
-    if ($existing_thumb) {
-        wp_delete_attachment($existing_thumb, true);
-    }
     set_post_thumbnail($product_id, $attachment_id);
     update_post_meta($product_id, '_zvij_image_kind', 'temporary_mockup');
     update_post_meta($product_id, '_zvij_final_photo_pending', 'yes');
