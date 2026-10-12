@@ -15,7 +15,7 @@ if (! defined('ABSPATH')) {
     // obrazec v nogi drugi enak obrazec v istem drsu. Drugje ostane.
     if (! is_front_page()) :
     ?>
-    <div class="site-footer__member">
+    <div class="site-footer__member" id="postani-clan">
       <p class="site-footer__eyebrow"><?php esc_html_e('Član Zvij.si', 'zvij-theme'); ?></p>
       <h2><?php esc_html_e('Postani član', 'zvij-theme'); ?></h2>
       <p><?php esc_html_e('Novi izdelki, članske ponudbe in občasne Zvijače za zvijače.', 'zvij-theme'); ?></p>
