@@ -58,10 +58,13 @@ function zvij_credit_install(): void {
             amount decimal(10,2) NOT NULL,
             type varchar(30) NOT NULL DEFAULT 'adjust',
             note varchar(190) NOT NULL DEFAULT '',
+            event_key varchar(100) NULL,
+            related_email varchar(190) NOT NULL DEFAULT '',
             created_at datetime NOT NULL,
             PRIMARY KEY  (id),
             KEY member_email (member_email),
-            KEY order_id (order_id)
+            KEY order_id (order_id),
+            UNIQUE KEY event_key (event_key)
         ) {$charset};"
     );
 
@@ -111,21 +114,26 @@ function zvij_credit_balance(string $email): int {
     return (int) round((float) $wpdb->get_var($wpdb->prepare("SELECT COALESCE(SUM(amount), 0) FROM {$table} WHERE member_email = %s", $email)));
 }
 
-function zvij_credit_add(string $email, int $kristali, string $type, ?int $order_id = null, string $note = ''): bool {
+function zvij_credit_add(string $email, int $kristali, string $type, ?int $order_id = null, string $note = '', ?string $event_key = null, string $related_email = ''): bool {
     global $wpdb;
     $email = sanitize_email($email);
     if ($email === '' || $kristali === 0) {
         return false;
     }
 
-    return (bool) $wpdb->insert(zvij_credit_table(), [
+    $entry = [
         'member_email' => $email,
         'order_id' => $order_id,
         'amount' => $kristali,
         'type' => sanitize_key($type),
         'note' => sanitize_text_field($note),
         'created_at' => current_time('mysql'),
-    ]);
+    ];
+    if ($event_key !== null) {
+        $entry['event_key'] = $event_key;
+        $entry['related_email'] = sanitize_email($related_email);
+    }
+    return (bool) $wpdb->insert(zvij_credit_table(), $entry);
 }
 
 function zvij_credit_recent(string $email, int $limit = 5): array {

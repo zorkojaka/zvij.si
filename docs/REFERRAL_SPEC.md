@@ -1,5 +1,9 @@
 # Zvij Koda Referral Spec
 
+Nova povabila na razvojni strani uporabljajo [Povabila in kristali](INVITATIONS_AND_KRISTALI.md):
+QR-kodo, javno povezavo in 10 % prijateljevih kristalov. Spodnji zapis je
+zgodovinski opis fiksne nagrade, ki ostaja v okolju brez novih povabil.
+
 Status: **implementirano 11. 7. 2026 (zvij-core 0.7.0)** — `includes/zvij-referral.php`. Odločene vrednosti: prijatelj **10 % na izdelke prvega naročila** (opcija `zvij_referral_friend_percent`), lastnik **30 kristalov** ob plačilu prijateljevega naročila (opcija `zvij_referral_owner_kristali`). Koda `ZK-XXXXXX` (stolpec `zvij_code` v members tabeli, v Moj račun + welcome emailu). Zaščite: samo-priporočanje zavrnjeno, samo prvo plačano naročilo kupca, nagrada šele ob plačilu, storno ob preklicu. Ista koda gostu omogoča unovčenje lastnih kristalov (pol-skrivnost namesto prijave).
 
 ## Purpose

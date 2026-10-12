@@ -89,12 +89,13 @@ function zvij_dashboard_page(): void {
     // Members.
     global $wpdb;
     $members_table = zvij_membership_table();
-    $members_total = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$members_table} WHERE status = 'subscribed'");
-    $members_customers = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$members_table} WHERE status = 'subscribed' AND customer_status = 'customer'");
+    $members_total = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$members_table} WHERE status IN ('subscribed', 'account')");
+    $members_customers = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$members_table} WHERE status IN ('subscribed', 'account') AND customer_status = 'customer'");
     $members_recent = $wpdb->get_results("SELECT email, name, source, created_at FROM {$members_table} ORDER BY created_at DESC LIMIT 6", ARRAY_A);
     ?>
     <div class="wrap zvij-dash">
       <h1>Zvij.si — operativni pregled</h1>
+      <?php if (function_exists('zvij_invitation_admin')) : ?><p><a class="button" href="<?php echo esc_url(admin_url('admin.php?page=zvij-invitations')); ?>">Povabila in kristali — prijatelji, bonusi in viri dobroimetja</a></p><?php endif; ?>
       <style>
         .zvij-dash .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin: 16px 0 24px; max-width: 1100px; }
         .zvij-dash .kpi { background: #fff; border: 1px solid #dcdcde; border-radius: 8px; padding: 14px 16px; }

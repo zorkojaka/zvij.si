@@ -63,6 +63,13 @@ get_header();
   </section>
 
   <section class="zv-members__extras" aria-labelledby="clan-plus">
+    <?php if (function_exists('zvij_invitation_url')) : ?>
+    <h2>Povabi prijatelja. Naj se nabira obema.</h2>
+    <p>V svojem računu najdeš osebno povezavo in QR-kodo, ki ju lahko deliš s prijatelji. Ko si prijatelj prek povabila ustvari račun, se povežeta. Ob njegovih plačanih nakupih ti dodamo še <strong>10 % kristalov, ki jih dobi on</strong>.</p>
+    <p>On nabere 100 kristalov. Ti dobiš dodatnih 10. Njemu ostanejo vsi — tvoj kupček pa tudi malo zraste.</p>
+    <a href="<?php echo esc_url(wc_get_page_permalink('myaccount')); ?>">Povabila najdeš v svojem računu →</a>
+    <p><small>Bonus šteje za neposredno povabljene prijatelje z novim računom in za kristale iz njihovih nakupov. Zaokrožimo ga navzdol na cel kristal, ob stornu nakupa pa ga odštejemo.</small></p>
+    <?php endif; ?>
     <h2 id="clan-plus">Pa še kakšna zvijača v nabiralniku.</h2>
     <p>Kdaj ti pošljemo člansko ponudbo, kaj novega ali idejo za naslednji nakup. Če ti ne sede več, se odjaviš z enim klikom.</p>
   </section>

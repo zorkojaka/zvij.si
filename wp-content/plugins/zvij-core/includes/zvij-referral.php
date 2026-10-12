@@ -10,10 +10,9 @@
  *   popust na izdelke prvega naročila, lastnik kode pa ob plačilu naročila
  *   kristale. Samo-priporočanje in ponovni nakupi ne štejejo.
  *
- * Privzetki (spremenljivi prek opcij): popust prijatelja 10 %
- * (`zvij_referral_friend_percent`), nagrada lastnika 300 kristalov
- * (`zvij_referral_owner_kristali`, privzeto 300 = 3 €). Storno nagrade ob
- * preklicu naročila.
+ * Popust s kodo prijatelja ostane 10 % za prvo naročilo.
+ * Nove nagrade in javne povezave ureja zvij-invitations.php: 10 % dejansko
+ * pripisanih kristalov neposredno povabljenega prijatelja, brez fiksne nagrade.
  * Brez izplačil — vse ostane dobroimetje za naslednji reload.
  */
 
@@ -234,36 +233,28 @@ add_action('woocommerce_checkout_order_processed', function (int $order_id): voi
     WC()->session->set('zvij_code_referral_owner', '');
 }, 15);
 
-/** Nagrada lastniku kode, ko prijateljevo naročilo doseže plačan status. */
-add_action('woocommerce_order_status_changed', function ($order_id, $from, $to, $order): void {
-    if (! $order instanceof WC_Order || ! function_exists('zvij_invoice_statuses')) {
-        return;
-    }
-    if (! in_array($to, zvij_invoice_statuses(), true)) {
-        return;
-    }
-    if ($order->get_meta('_zvij_referral_credited') !== '') {
-        return;
-    }
-
-    $owner_email = sanitize_email((string) $order->get_meta('_zvij_referral_owner'));
-    if ($owner_email === '' || $owner_email === sanitize_email($order->get_billing_email())) {
-        return;
-    }
-    if (! zvij_membership_find_by_email($owner_email)) {
-        return;
-    }
-
-    $kristali = zvij_referral_owner_kristali();
-    if ($kristali <= 0) {
-        return;
-    }
-
-    zvij_credit_add($owner_email, $kristali, 'referral', (int) $order->get_id(), 'Zvij koda: prijateljevo naročilo #' . $order->get_id());
-    $order->update_meta_data('_zvij_referral_credited', (string) $kristali);
-    $order->save();
-    $order->add_order_note(sprintf('Zvij koda: lastniku %s pripisano %s.', $owner_email, zvij_kristali_izpis($kristali)));
-}, 35, 4);
+/** Preserve the deployed fixed award until invitations are explicitly enabled. */
+if (! defined('ZVIJ_INVITATIONS_ENABLED') || ! ZVIJ_INVITATIONS_ENABLED) {
+    add_action('woocommerce_order_status_changed', function ($order_id, $from, $to, $order): void {
+        if (! $order instanceof WC_Order || ! function_exists('zvij_invoice_statuses')
+            || ! in_array($to, zvij_invoice_statuses(), true) || $order->get_meta('_zvij_referral_credited') !== '') {
+            return;
+        }
+        $owner_email = sanitize_email((string) $order->get_meta('_zvij_referral_owner'));
+        if ($owner_email === '' || $owner_email === sanitize_email($order->get_billing_email()) || ! zvij_membership_find_by_email($owner_email)) {
+            return;
+        }
+        $kristali = zvij_referral_owner_kristali();
+        if ($kristali <= 0) {
+            return;
+        }
+        if (zvij_credit_add($owner_email, $kristali, 'referral', (int) $order->get_id(), 'Zvij koda: prijateljevo naročilo #' . $order->get_id())) {
+            $order->update_meta_data('_zvij_referral_credited', (string) $kristali);
+            $order->save();
+            $order->add_order_note(sprintf('Zvij koda: lastniku %s pripisano %s.', $owner_email, zvij_kristali_izpis($kristali)));
+        }
+    }, 35, 4);
+}
 
 /** Storno nagrade ob preklicu prijateljevega naročila. */
 add_action('woocommerce_order_status_changed', function ($order_id, $from, $to, $order): void {
@@ -272,6 +263,9 @@ add_action('woocommerce_order_status_changed', function ($order_id, $from, $to, 
     }
     if (! in_array($to, ['cancelled', 'refunded', 'failed'], true)) {
         return;
+    }
+    if ($order->get_meta('_zvij_invitation_bonus') !== '') {
+        return; // New bonuses use their own deduplicated reversal ledger.
     }
 
     $credited = (int) $order->get_meta('_zvij_referral_credited');
@@ -306,11 +300,11 @@ add_action('woocommerce_account_dashboard', function (): void {
       <h3><?php esc_html_e('Tvoja Zvij koda', 'zvij-core'); ?></h3>
       <p>
         <strong style="font-size:1.2em;letter-spacing:0.06em;"><?php echo esc_html($code); ?></strong><br>
-        <?php echo esc_html(sprintf(
-            __('Povabi prijatelja: ob vpisu kode na blagajni prijatelj dobi %1$s %% popusta na prvo naročilo, ti pa %2$s, ko je njegovo naročilo plačano.', 'zvij-core'),
-            rtrim(rtrim(number_format(zvij_referral_friend_percent(), 1, ',', ''), '0'), ','),
-            zvij_kristali_izpis(zvij_referral_owner_kristali())
-        )); ?>
+        <?php if (defined('ZVIJ_INVITATIONS_ENABLED') && ZVIJ_INVITATIONS_ENABLED) : ?>
+        <?php esc_html_e('To je tvoja osebna koda za uporabo kristalov pri nakupu brez prijave. Za povabila uporabi povezavo ali QR-kodo spodaj.', 'zvij-core'); ?>
+        <?php else : ?>
+        <?php echo esc_html(sprintf('Povabi prijatelja: ob vpisu kode na blagajni prijatelj dobi %s %% popusta na prvo naročilo, ti pa %s, ko je njegovo naročilo plačano.', zvij_referral_friend_percent(), zvij_kristali_izpis(zvij_referral_owner_kristali()))); ?>
+        <?php endif; ?>
       </p>
     </section>
     <?php

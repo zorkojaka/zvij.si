@@ -3,7 +3,7 @@
  * Plugin Name: Zvij Core
  * Plugin URI: https://dev.inteligent.si
  * Description: Core dev features for the Zvij.si WordPress/WooCommerce app.
- * Version: 0.14.0
+ * Version: 0.15.0
  * Author: Zvij.si
  * Requires at least: 6.5
  * Requires PHP: 8.2
@@ -14,7 +14,8 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-define('ZVIJ_CORE_VERSION', '0.9.1');
+define('ZVIJ_INVITATIONS_ENABLED', wp_get_environment_type() === 'development' || get_option('zvij_invitations_enabled') === 'yes');
+define('ZVIJ_CORE_VERSION', ZVIJ_INVITATIONS_ENABLED ? '0.15.0' : '0.9.1');
 define('ZVIJ_MEMBER_PRIVACY_VERSION', '2026-06-30');
 
 require_once __DIR__ . '/includes/zvij-copy.php';
@@ -26,6 +27,10 @@ require_once __DIR__ . '/includes/zvij-payment-qr.php';
 require_once __DIR__ . '/includes/zvij-cookie-consent.php';
 require_once __DIR__ . '/includes/zvij-credit.php';
 require_once __DIR__ . '/includes/zvij-referral.php';
+if (ZVIJ_INVITATIONS_ENABLED) {
+    require_once __DIR__ . '/includes/zvij-invitations.php';
+    require_once __DIR__ . '/includes/zvij-invitation-admin.php';
+}
 require_once __DIR__ . '/includes/zvij-repeat-order.php';
 require_once __DIR__ . '/includes/zvij-reload-reminder.php';
 require_once __DIR__ . '/includes/zvij-abandoned-cart.php';
@@ -58,7 +63,7 @@ function zvij_membership_install(): void {
             status varchar(40) NOT NULL DEFAULT 'subscribed',
             source varchar(40) NOT NULL DEFAULT 'manual',
             customer_status varchar(40) NOT NULL DEFAULT 'lead',
-            consent_at datetime NOT NULL,
+            consent_at datetime NULL,
             consent_ip_hash varchar(64) NOT NULL DEFAULT '',
             privacy_version varchar(40) NOT NULL DEFAULT '',
             first_order_coupon varchar(64) NOT NULL DEFAULT '',
@@ -429,7 +434,14 @@ function zvij_membership_send_welcome_email(string $email, string $coupon): bool
         $zvij_code = zvij_referral_ensure_code($email);
         if ($zvij_code !== '') {
             $message .= "Tvoja Zvij koda: {$zvij_code}\n";
-            $message .= "Z nakupi zbiraš kristale (100 kristalov = 1 € popusta pri naslednjem naročilu). Ko tvojo Zvij kodo na blagajni vpiše prijatelj, dobi popust na prvo naročilo, ti pa kristale. Če kupuješ kot gost, s svojo kodo na blagajni unovčiš svoje kristale.\n\n";
+            $message .= ZVIJ_INVITATIONS_ENABLED
+                ? "Z nakupi zbiraš kristale (100 kristalov = 1 € popusta pri naslednjem naročilu). Če kupuješ kot gost, s svojo osebno kodo na blagajni unovčiš svoje kristale.\n\n"
+                : "Z nakupi zbiraš kristale (100 kristalov = 1 € popusta pri naslednjem naročilu). Ko tvojo Zvij kodo na blagajni vpiše prijatelj, dobi popust na prvo naročilo, ti pa kristale. Če kupuješ kot gost, s svojo kodo na blagajni unovčiš svoje kristale.\n\n";
+            $invite_token = function_exists('zvij_invitation_token') ? zvij_invitation_token($email) : '';
+            if ($invite_token !== '') {
+                $message .= 'Tvoja povezava za prijatelje: ' . zvij_invitation_url($invite_token) . "\n";
+                $message .= "Ko si prijatelj prek nje ustvari račun, ob njegovih plačanih nakupih dobiš dodatnih 10 % njegovih kristalov. Prijatelju ostanejo vsi. QR-kodo in gumbe za deljenje najdeš v Mojem računu.\n\n";
+            }
         }
     }
 
@@ -477,6 +489,15 @@ function zvij_membership_process_signup(array $input, bool $send_email = true): 
 
     if (! $stored['ok']) {
         return ['ok' => false, 'public_message' => 'Prijava trenutno ni uspela. Poskusi ponovno ali nam piši.'];
+    }
+
+    if (ZVIJ_INVITATIONS_ENABLED) {
+        global $wpdb;
+        $wpdb->update(zvij_membership_table(), [
+            'consent_at' => current_time('mysql'),
+            'consent_ip_hash' => zvij_membership_client_ip_hash(),
+            'privacy_version' => ZVIJ_MEMBER_PRIVACY_VERSION,
+        ], ['email' => $email]);
     }
 
     if ($send_email) {
