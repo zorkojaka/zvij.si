@@ -3541,7 +3541,8 @@ body::before {
   will-change: transform;
 }
 
-.zv-carousel-card {
+.zv-carousel-card,
+.woocommerce ul.products > li.product {
   background: rgba(255, 250, 242, 0.78);
   border: 1px solid var(--zvij-line);
   border-radius: 8px;
@@ -4791,4 +4792,46 @@ body.home .site-nav li:first-child a {
   line-height: 1.15;
   opacity: 0.75;
   transform: rotate(-6deg);
+}
+
+/* Keep the cart icon when WooCommerce replaces the button label. */
+.zv-carousel__add,
+.add_to_cart_button,
+.single_add_to_cart_button,
+[data-variable-add] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.zv-carousel__add::before,
+.add_to_cart_button::before,
+.single_add_to_cart_button::before,
+[data-variable-add]::before {
+  content: "";
+  display: inline-block;
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  background-color: currentColor;
+  -webkit-mask: url("assets/images/icons/shopping-cart.svg") center / contain no-repeat;
+  mask: url("assets/images/icons/shopping-cart.svg") center / contain no-repeat;
+}
+
+.zv-carousel-card {
+  container: zv-product-card / inline-size;
+}
+
+@container zv-product-card (max-width: 220px) {
+  .zv-carousel__add,
+  .woocommerce ul.products li.product .zv-shop-vars .zv-carousel__add,
+  .woocommerce ul.products li.product .zv-pcard__buy .add_to_cart_button {
+    font-size: 12px;
+    padding-inline: 8px;
+    gap: 6px;
+    white-space: nowrap;
+    min-width: 0;
+    max-width: 100%;
+  }
 }
