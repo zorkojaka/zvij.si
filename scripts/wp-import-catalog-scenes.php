@@ -8,7 +8,7 @@ if (wp_get_environment_type() !== 'development') {
     throw new RuntimeException('Development catalog only');
 }
 require_once ABSPATH . 'wp-admin/includes/image.php';
-$sources = [435 => 496, 437 => 504, 438 => 517, 441 => 508, 442 => 516, 443 => 500, 444 => 512,
+$sources = [435 => 496, 436 => 530, 437 => 504, 438 => 517, 441 => 508, 442 => 516, 443 => 500, 444 => 512,
     218 => 385, 211 => 486, 213 => 340, 243 => 388, 244 => 392, 245 => 393,
     72 => 377, 74 => 375, 76 => 380, 71 => 382, 69 => 383];
 $directory = get_template_directory() . '/assets/images/catalog-v2/';
@@ -52,7 +52,9 @@ foreach ($sources as $id => $original) {
     if (! $product->get_meta('_zvij_before_catalog_scene_v2')) {
         $product->update_meta_data('_zvij_before_catalog_scene_v2', $original);
     }
-    $gallery = array_unique(array_merge([$original], $product->get_gallery_image_ids()));
+    // A placeholder original is replaced outright, not kept in the gallery.
+    $keep = str_contains((string) get_attached_file($original), 'zvij-placeholderji') ? [] : [$original];
+    $gallery = array_unique(array_merge($keep, array_diff($product->get_gallery_image_ids(), $keep ? [] : [$original])));
     $product->set_gallery_image_ids(array_values(array_diff($gallery, [$new_id])));
     $product->set_image_id($new_id);
     $product->update_meta_data('_zvij_catalog_scene_v2', $new_id);

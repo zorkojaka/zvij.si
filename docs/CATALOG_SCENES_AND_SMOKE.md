@@ -5,7 +5,7 @@
 - 18 existing product photographs were reframed with AI-extended photographic backgrounds and breathing room around the actual products.
 - Three additional CBD/CBG multipack photographs replace the old overlapping-photo clones when selecting 5 g, in both the shop and homepage carousel.
 - Square media frames display the complete square photograph edge to edge without inset padding. Text and purchase controls remain outside the image frame.
-- Six products still use their existing clearly labeled image placeholders: Ziggi Hemp, Mycelium Mystique, Rocket's Odyssey, Clipper refill gas, gold grinder and small silver grinder. Actual product appearances were not invented for missing photographs.
+- Five products still use their existing clearly labeled image placeholders: Mycelium Mystique, Rocket's Odyssey, Clipper refill gas, gold grinder and small silver grinder. Actual product appearances were not invented for missing photographs.
 - Reviewed JPEG assets are in `wp-content/themes/zvij-theme/assets/images/catalog-v2/`.
 - Run `php /var/www/html/scripts/wp-import-catalog-scenes.php` inside the development WordPress container. It is development-only, validates the full asset set before writes and is idempotent. Source attachment IDs are checked before changing products.
 - Original featured attachment IDs are retained in `_zvij_before_catalog_scene_v2` and the product gallery. New attachments use `_zvij_catalog_scene_v2`; multipack attachments use `_zvij_pack_5_image_id`. No images are deleted and prices/stock are not modified.
