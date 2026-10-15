@@ -22,7 +22,10 @@ foreach ((array) get_option('zvij_kits', []) as $kit_def) {
         'tone' => $tone_map[$key],
     ];
 }
-$hero_img = zvij_home_block_img('hero');
+$hero_img = zvij_home_block_img('hero-cbd');
+if ($hero_img === '') {
+    $hero_img = zvij_home_block_img('hero');
+}
 if ($hero_img === '') {
     $hero_img = zvij_kit_flatlay_url('black');
 }
@@ -37,9 +40,9 @@ if ($hero_img === '') {
       <a class="button" href="<?php echo esc_url(home_url('/trgovina/')); ?>">Poglej izdelke</a>
     </div>
   </div>
-  <div class="zv-hero__visual">
+  <div class="zv-hero__visual zv-hero__visual--cbd">
     <?php if ($hero_img !== '') : ?>
-      <img src="<?php echo esc_url($hero_img); ?>" alt="Zvij.si kit" loading="eager">
+      <img src="<?php echo esc_url($hero_img); ?>" alt="Smokey CBD, Frutty CBD in Chilly CBG vršički Zvij.si" loading="eager" fetchpriority="high">
     <?php endif; ?>
   </div>
 </section>

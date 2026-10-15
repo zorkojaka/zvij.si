@@ -1408,6 +1408,20 @@ a {
   position: relative;
 }
 
+.zv-hero__visual--cbd {
+  background: #141310;
+}
+
+.zv-hero__visual.zv-hero__visual--cbd img {
+  object-fit: contain;
+}
+
+@media (max-width: 1200px) {
+  .zv-hero__visual--cbd {
+    aspect-ratio: 3 / 2;
+  }
+}
+
 .zv-hero__visual img {
   height: 100%;
   inset: 0;
