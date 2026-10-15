@@ -286,7 +286,7 @@ function zvij_credit_order_earnable(WC_Order $order): int {
         $total += zvij_credit_product_kristali($product) * max(1, (int) $item->get_quantity());
     }
 
-    return $total;
+    return $total + zvij_kit_bonus_order($order);
 }
 
 /**
@@ -313,7 +313,13 @@ function zvij_credit_earn_on_paid($order_id, $from, $to, $order): void {
         return;
     }
 
-    zvij_credit_add($email, $kristali, 'earn', (int) $order->get_id(), 'Pripis ob naročilu #' . $order->get_id());
+    $kit_bonus = zvij_kit_bonus_order($order);
+    $note = 'Pripis ob naročilu #' . $order->get_id();
+    if ($kit_bonus > 0) {
+        $note .= sprintf(' (vključuje %s dodatnih kristalov za kit)', $kit_bonus);
+    }
+    zvij_credit_add($email, $kristali, 'earn', (int) $order->get_id(), $note);
+    $order->update_meta_data('_zvij_kit_bonus_kristali', $kit_bonus);
     $order->update_meta_data('_zvij_credit_earned', (string) $kristali);
     $order->save();
     $order->add_order_note(sprintf('Kristali: članu pripisano %s.', zvij_kristali_izpis($kristali)));

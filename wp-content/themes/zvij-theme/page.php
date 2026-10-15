@@ -41,7 +41,7 @@ while (have_posts()) :
           <?php endforeach; ?>
         </section>
         <?php zvij_kit_builder_render($all_kits); ?>
-        <section class="zv-benefits">
+        <section class="zv-benefits zv-service-strip" aria-label="Prednosti kitov">
           <div data-ico="package"><b>Vse na enem mestu</b><span>Brez iskanja po trgovinah.</span></div>
           <div data-ico="spark"><b>Usklajeno</b><span>Tvoj stil. Tvoja izbira.</span></div>
           <div data-ico="bolt"><b>Pripravljeno za akcijo</b><span>Odpri in uživaj.</span></div>

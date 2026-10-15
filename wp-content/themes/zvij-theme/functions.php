@@ -22,7 +22,7 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.55');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.56');
 
     if (is_page('clan-zvij-si')) {
         wp_enqueue_style('zvij-members-page', get_template_directory_uri() . '/assets/members.css', ['zvij-theme-style'], '1.0.0');
@@ -632,6 +632,7 @@ function zvij_kit_builder_render(array $kits): void {
     ?>
     <section class="zv-card zv-kit-builder" id="kit-builder">
       <h2><?php esc_html_e('Kaj je v kitu?', 'zvij-theme'); ?></h2>
+      <p class="zv-kit-builder__bonus"><?php esc_html_e('Skupaj se nabere več. Ob nakupu vsaj 3 različnih izdelkov iz kita člani dobite 5 % več kristalov kot pri posameznih nakupih. Bonus se obračuna samodejno v košarici, celi kristali se zaokrožijo navzdol.', 'zvij-theme'); ?></p>
       <p class="zv-kit-builder__hint"><?php esc_html_e('Prednastavljeni kiti so priporočilo. Izberi barvo zgoraj, vsak kos lahko zamenjaš za drugega ali ga odkljukaš stran — in dobiš svoj setup.', 'zvij-theme'); ?></p>
 
       <?php foreach ($panels as $i => $kit) :
