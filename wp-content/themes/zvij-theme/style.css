@@ -841,7 +841,23 @@ a {
   display: grid;
   gap: 0.55rem;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  margin-top: 0.8rem;
+  margin-top: 1rem;
+}
+
+/* Without FlexSlider, WooCommerce renders thumbnails directly after the main image. */
+.single-product div.product .woocommerce-product-gallery > .woocommerce-product-gallery__wrapper {
+  display: grid;
+  gap: clamp(0.75rem, 1.2vw, 1rem);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.single-product div.product .woocommerce-product-gallery.images > .woocommerce-product-gallery__wrapper > .woocommerce-product-gallery__image {
+  min-width: 0;
+  width: 100%;
+}
+
+.single-product div.product .woocommerce-product-gallery > .woocommerce-product-gallery__wrapper > .woocommerce-product-gallery__image:first-child {
+  grid-column: 1 / -1;
 }
 
 .single-product div.product .woocommerce-product-gallery .flex-control-thumbs li {
