@@ -96,7 +96,7 @@ while (have_posts()) :
           <?php $hero = zvij_kit_flatlay_url('black'); ?>
           <?php if ($hero !== '') : ?><img src="<?php echo esc_url($hero); ?>" alt="Zvij.si ekipa in setup" loading="lazy"><?php endif; ?>
         </section>
-        <section class="zv-benefits">
+        <section class="zv-benefits zv-service-strip" aria-label="Naše vrednote">
           <div data-ico="pin"><b>Domače</b><span>Smo iz Slovenije.</span></div>
           <div data-ico="check"><b>Pošteno</b><span>Fer cene. Brez presenečenj.</span></div>
           <div data-ico="shield"><b>Diskretno</b><span>Tvoja zasebnost je naša stvar.</span></div>
