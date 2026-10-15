@@ -16,6 +16,23 @@
   var sourceX = 0;
   var sourceY = 0;
   var dirty = true;
+  var wind = 0;
+  var windFrom = 0;
+  var windTo = Math.random() * 0.1;
+  var windStart = 0;
+  var windDuration = 4000 + Math.random() * 6000;
+
+  function updateWind() {
+    var progress = Math.min(1, (time - windStart) / windDuration);
+    var smooth = progress * progress * (3 - 2 * progress);
+    wind = windFrom + (windTo - windFrom) * smooth;
+    if (progress === 1) {
+      windFrom = windTo;
+      windTo = Math.random() * 0.1;
+      windStart = time;
+      windDuration = 4000 + Math.random() * 6000;
+    }
+  }
 
   function measure() {
     width = window.innerWidth;
@@ -37,7 +54,9 @@
     var spread = Math.min(150, Math.sqrt(Math.max(0, distance)) * 3);
     var phase = distance * 0.004 - time * 0.00022;
     var ease = Math.min(1, distance / 180);
-    return sourceX + ease * spread * (
+    // Wind affects older smoke more, while the source remains on the logo.
+    var breeze = Math.min(Math.max(0, distance) * 0.55, width) * wind * ease;
+    return sourceX + breeze + ease * spread * (
       Math.sin(phase + strand * 0.37) * 0.65 +
       Math.sin(phase * 0.53 + strand * 0.7 + 1.4) * 0.35
     );
@@ -49,6 +68,7 @@
     if (document.hidden) { return; }
     if (now - previous < (width < 600 ? 66 : 50)) { frame = requestAnimationFrame(draw); return; }
     time += previous ? Math.min(80, now - previous) : 0;
+    updateWind();
     previous = now;
     if (dirty) { measure(); }
     context.clearRect(0, 0, width, height);

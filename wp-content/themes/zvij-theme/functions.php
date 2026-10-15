@@ -47,7 +47,7 @@ add_action('wp_enqueue_scripts', function (): void {
     }
 
     wp_enqueue_script('zvij-site', get_template_directory_uri() . '/assets/site.js', [], '1.0.0', true);
-    wp_enqueue_script('zvij-smoke', get_template_directory_uri() . '/assets/smoke.js', [], '1.0.1', true);
+    wp_enqueue_script('zvij-smoke', get_template_directory_uri() . '/assets/smoke.js', [], '1.0.2', true);
     wp_enqueue_script('zvij-analytics', get_template_directory_uri() . '/assets/analytics.js', ['jquery'], '0.1.0', true);
     wp_enqueue_style('zvij-color-scheme', get_template_directory_uri() . '/assets/color-scheme.css', ['zvij-theme-style'], '1.0.1');
     // Run in the head so the saved theme is applied before the body is painted.
