@@ -22,7 +22,7 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.54');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.55');
 
     if (is_page('clan-zvij-si')) {
         wp_enqueue_style('zvij-members-page', get_template_directory_uri() . '/assets/members.css', ['zvij-theme-style'], '1.0.0');
@@ -914,7 +914,7 @@ function zvij_render_homepage_product_carousel(): void {
             ?>
             <article class="zv-carousel-card" data-carousel-card data-product-id="<?php echo esc_attr((string) $product->get_id()); ?>" data-carousel-position="<?php echo esc_attr((string) $position); ?>" data-carousel-source="homepage">
               <a class="zv-carousel-card__image" href="<?php echo esc_url(get_permalink($product->get_id())); ?>" aria-label="<?php echo esc_attr($product->get_name()); ?>">
-                <?php echo $product->get_image('woocommerce_thumbnail', ['loading' => $i === 0 ? 'eager' : 'lazy']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                <?php echo $product->get_image('medium_large', ['loading' => $i === 0 ? 'eager' : 'lazy']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                 <?php if ($product->is_on_sale()) : ?><span class="zv-carousel-card__badge"><?php esc_html_e('Akcija', 'zvij-theme'); ?></span><?php endif; ?>
               </a>
               <div class="zv-carousel-card__body">

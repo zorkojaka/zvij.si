@@ -33,7 +33,7 @@ $zvij_dobroimetje_note = function_exists('zvij_credit_public_badge')
     <?php if ($zvij_first_purchase_badge !== '') : ?>
       <span class="product-card__badge"><?php echo esc_html($zvij_first_purchase_badge); ?></span>
     <?php endif; ?>
-    <?php echo woocommerce_get_product_thumbnail(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+    <?php echo $product->get_image('medium_large'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
   </a>
   <div class="zv-pcard__body">
     <div class="zv-pcard__info">
