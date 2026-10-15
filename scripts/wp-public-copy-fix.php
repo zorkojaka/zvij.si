@@ -83,7 +83,7 @@ $pages = [
 <h3>Zakaj članstvo</h3>
 <p>Član Zvij.si ne lovi akcij. Ob nakupu zbira kristale, ki jih porabi pri naslednjem naročilu, dobi svojo Zvij kodo za prijatelje in opomnik takrat, ko mu stvari dejansko poidejo — ne prej.</p>
 <h3>Kdo stoji za tem</h3>
-<p>ZVIJ.si, spletna prodaja, d.o.o., Rjava cesta 26A, 1260 Ljubljana-Polje. Podjetje ni zavezanec za DDV (1. odstavek 94. člena ZDDV-1).</p>
+<p>Zvij.si d.o.o., Rjava cesta 26A, 1260 Ljubljana-Polje. Podjetje ni zavezanec za DDV (1. odstavek 94. člena ZDDV-1).</p>
 <p>Prodaja izključno polnoletnim osebam (18+).</p>',
     ],
     'kontakt' => [
@@ -91,7 +91,7 @@ $pages = [
         'content' => '<p>Piši nam glede naročila, izdelkov ali članstva — odgovorimo praviloma isti ali naslednji delovni dan.</p>
 <p><strong>E-pošta:</strong> <a href="mailto:info@zvij.si">info@zvij.si</a></p>
 <p>Če gre za obstoječe naročilo, dopiši številko naročila — tako ti lahko odgovorimo takoj, brez dodatnega spraševanja.</p>
-<p><strong>ZVIJ.si, spletna prodaja, d.o.o.</strong><br>Rjava cesta 26A, 1260 Ljubljana-Polje<br>Matična številka: 9378294000 · Davčna številka: 68449763</p>',
+<p><strong>Zvij.si d.o.o.</strong><br>Rjava cesta 26A, 1260 Ljubljana-Polje<br>Matična številka: 9378294000 · Davčna številka: 68449763</p>',
     ],
 ];
 

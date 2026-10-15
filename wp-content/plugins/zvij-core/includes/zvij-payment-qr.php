@@ -54,7 +54,7 @@ function zvij_upnqr_build(WC_Order $order) {
 
     $qr = new \DataLinx\PhpUpnQrGenerator\UPNQR();
     $qr->setRecipientIban((string) get_option('zvij_invoice_trr', ''))
-        ->setRecipientName(mb_substr((string) get_option('zvij_invoice_seller_name', 'ZVIJ.si d.o.o.'), 0, 33))
+        ->setRecipientName(mb_substr((string) get_option('zvij_invoice_seller_name', 'Zvij.si d.o.o.'), 0, 33))
         ->setRecipientStreetAddress(mb_substr(trim((string) get_option('woocommerce_store_address', '')), 0, 33))
         ->setRecipientCity(mb_substr($city, 0, 33))
         ->setRecipientReference(zvij_upnqr_reference($order))
@@ -153,7 +153,7 @@ function zvij_upnqr_url(WC_Order $order): string {
 /** Podatki za nakazilo kot polja (za izpis pod QR). */
 function zvij_upnqr_details(WC_Order $order): array {
     return [
-        'Prejemnik' => (string) get_option('zvij_invoice_seller_name', 'ZVIJ.si d.o.o.'),
+        'Prejemnik' => (string) get_option('zvij_invoice_seller_name', 'Zvij.si d.o.o.'),
         'IBAN'      => (string) get_option('zvij_invoice_trr', ''),
         'Sklic'     => zvij_upnqr_reference($order),
         'Znesek'    => html_entity_decode(wp_strip_all_tags(wc_price($order->get_total())), ENT_QUOTES, 'UTF-8'),

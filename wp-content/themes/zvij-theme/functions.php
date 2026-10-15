@@ -199,6 +199,38 @@ add_action('woocommerce_single_product_summary', function (): void {
     echo '</div>';
 }, 4);
 
+/**
+ * Tri kratki kartice pod izdelkom, glede na kategorijo. Besedilo je javno:
+ * brez internih zapiskov, pri vrsickih samo caj (glej LEGAL_CBD_COPY_RULES.md).
+ *
+ * @return array<int,array{0:string,1:string,2:string}>
+ */
+function zvij_theme_product_context(WC_Product $product): array {
+    $cats = wp_get_post_terms($product->get_parent_id() ?: $product->get_id(), 'product_cat', ['fields' => 'slugs']);
+    $cats = is_array($cats) ? $cats : [];
+    $member = [__('Član Zvij.si', 'zvij-theme'), __('Nakup, ki se vrne.', 'zvij-theme'), __('Člani ob vsakem plačanem naročilu zberejo kristale in z njimi naslednjič plačajo manj.', 'zvij-theme')];
+
+    if (in_array('cbd-cbg-vrsicki', $cats, true)) {
+        return [
+            [__('Kaj je to', 'zvij-theme'), __('Posušeni konopljini vršički za čaj.', 'zvij-theme'), __('CBD/CBG vršički, namenjeni pripravi čaja. Niso namenjeni kajenju in niso zdravilo.', 'zvij-theme')],
+            [__('Priprava', 'zvij-theme'), __('Prelij, pokrij, počakaj.', 'zvij-theme'), __('Žličko vršičkov prelij z vročo vodo in pusti stati 10 do 15 minut. Za polnejši okus dodaj kanček mleka ali masla.', 'zvij-theme')],
+            [__('Za koga', 'zvij-theme'), __('Samo za polnoletne.', 'zvij-theme'), __('Ni primerno za mladoletne, nosečnice in doječe matere. Hrani zaprto, na suhem in izven dosega otrok.', 'zvij-theme')],
+        ];
+    }
+    if (in_array('dubi-filtri', $cats, true)) {
+        return [
+            [__('Kaj je to', 'zvij-theme'), __('Filter z aktivnim ogljem.', 'zvij-theme'), __('DUBI filter z aktivnim ogljem vstaviš namesto običajnega tulca. Pakiranje je zaprto, filtri ostanejo suhi.', 'zvij-theme')],
+            [__('Zaloga', 'zvij-theme'), __('Vzemi toliko, da ne zmanjka.', 'zvij-theme'), __('Manjše pakiranje za preizkus, večje za tiste, ki filtre že uporabljajo vsak dan.', 'zvij-theme')],
+            $member,
+        ];
+    }
+    return [
+        [__('Izbrano', 'zvij-theme'), __('Stvari, ki jih sami uporabljamo.', 'zvij-theme'), __('V trgovino damo samo pribor, ki smo ga preizkusili in mu zaupamo.', 'zvij-theme')],
+        [__('Dostava', 'zvij-theme'), __('Diskretno pakirano.', 'zvij-theme'), __('Naročila odpremimo v 1 do 2 delovnih dneh po prejemu plačila, v paketu brez oznak vsebine.', 'zvij-theme')],
+        $member,
+    ];
+}
+
 add_action('woocommerce_after_single_product_summary', function (): void {
     global $product;
 
@@ -215,7 +247,7 @@ add_action('woocommerce_after_single_product_summary', function (): void {
     $dobroimetje_note = function_exists('zvij_credit_public_badge')
         ? zvij_credit_public_badge($product)
         : '';
-    $is_dubi = str_contains(strtolower($product->get_name()), 'dubi');
+    $context = zvij_theme_product_context($product);
     ?>
     <?php if ($dobroimetje_note !== '') : ?>
       <aside class="zvij-credit-note">
@@ -228,34 +260,26 @@ add_action('woocommerce_after_single_product_summary', function (): void {
       </aside>
     <?php endif; ?>
     <section class="zvij-product-context">
+      <?php foreach ($context as [$kicker, $title, $text]) : ?>
       <div>
-        <p class="card-kicker"><?php esc_html_e('Zakaj ta izdelek', 'zvij-theme'); ?></p>
-        <h2><?php echo $is_dubi ? esc_html__('Urejen filter za vsakdanji setup.', 'zvij-theme') : esc_html__('Izbrani vršički, jasna mera.', 'zvij-theme'); ?></h2>
-        <p><?php echo $is_dubi ? esc_html__('DUBI izdelki pokrijejo osnovo: dovolj zaloge, jasen namen in enostaven reload ritem.', 'zvij-theme') : esc_html__('SMOKEY, CHILLY in FRUTTY so postavljeni kot premium vršički z jasno količino, brez THC učinka in možnostjo čajne uporabe.', 'zvij-theme'); ?></p>
+        <p class="card-kicker"><?php echo esc_html($kicker); ?></p>
+        <h2><?php echo esc_html($title); ?></h2>
+        <p><?php echo esc_html($text); ?></p>
       </div>
-      <div>
-        <p class="card-kicker"><?php esc_html_e('Za koga je', 'zvij-theme'); ?></p>
-        <h2><?php esc_html_e('Za ljudi, ki želijo manj improvizacije.', 'zvij-theme'); ?></h2>
-        <p><?php esc_html_e('Stran mora kupcu hitro povedati, kaj izdelek je, kako se vključi v ritual in kdaj ga je smiselno ponovno naročiti.', 'zvij-theme'); ?></p>
-      </div>
-      <div>
-        <p class="card-kicker"><?php esc_html_e('Kako se vključi v setup', 'zvij-theme'); ?></p>
-        <h2><?php esc_html_e('Setup, reload, ponovi.', 'zvij-theme'); ?></h2>
-        <p><?php esc_html_e('To je osnova za prihodnji sistem članstva, Zvij kode, dobroimetja in ponovitve zadnjega naročila.', 'zvij-theme'); ?></p>
-      </div>
+      <?php endforeach; ?>
     </section>
     <?php if ($youtube_url !== '') : ?>
       <section class="zvij-product-video-panel">
         <div>
           <p class="card-kicker"><?php esc_html_e('Video predstavitev filtrov', 'zvij-theme'); ?></p>
           <h2><?php esc_html_e('DUBI v praksi', 'zvij-theme'); ?></h2>
-          <p><?php esc_html_e('Video je prenesen kot referenca iz stare strani in ostaja del dev prototipa, dokler Jaka ne potrdi končne video vsebine.', 'zvij-theme'); ?></p>
+          <p><?php esc_html_e('Kratek prikaz, kako DUBI filter sede v tulec in kaj dobiš v pakiranju.', 'zvij-theme'); ?></p>
         </div>
         <div class="zvij-video-media">
           <div class="zvij-video-frame zvij-video-frame--premium">
             <iframe title="<?php esc_attr_e('DUBI filtri video predstavitev', 'zvij-theme'); ?>" src="https://www.youtube.com/embed/5oNlpY17v9w" loading="lazy" allowfullscreen></iframe>
           </div>
-          <p class="zvij-video-caption"><?php esc_html_e('DUBI 42 in DUBI 420 — packshot in setup kontekst. Brez zdravstvenih trditev.', 'zvij-theme'); ?></p>
+          <p class="zvij-video-caption"><?php esc_html_e('DUBI 42 in DUBI 420.', 'zvij-theme'); ?></p>
         </div>
       </section>
     <?php endif; ?>
@@ -613,7 +637,6 @@ function zvij_render_kit_showcase(): void {
         </article>
       <?php endforeach; ?>
 
-      <p class="kit-showcase__note"><?php esc_html_e('Komponente kitov so v dev fazi označene kot »kmalu«, dokler niso potrjeni dobavitelj, cene in fotografije. Naročanje kita je placeholder, dokler checkout ni pripravljen.', 'zvij-theme'); ?></p>
     </section>
     <?php
 }
