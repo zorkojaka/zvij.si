@@ -7,6 +7,8 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
+require_once __DIR__ . '/inc/public-copy.php';
+
 add_action('after_setup_theme', function (): void {
     add_theme_support('title-tag');
     add_theme_support('post-thumbnails');
@@ -19,7 +21,7 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.51');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.52');
 
     if (is_page('clan-zvij-si')) {
         wp_enqueue_style('zvij-members-page', get_template_directory_uri() . '/assets/members.css', ['zvij-theme-style'], '1.0.0');
@@ -43,6 +45,7 @@ add_action('wp_enqueue_scripts', function (): void {
         wp_enqueue_script('zvij-home', get_template_directory_uri() . '/assets/home.js', ['jquery'], '0.9.35', true);
     }
 
+    wp_enqueue_script('zvij-site', get_template_directory_uri() . '/assets/site.js', [], '1.0.0', true);
     wp_enqueue_script('zvij-analytics', get_template_directory_uri() . '/assets/analytics.js', ['jquery'], '0.1.0', true);
     wp_enqueue_style('zvij-color-scheme', get_template_directory_uri() . '/assets/color-scheme.css', ['zvij-theme-style'], '1.0.1');
     // Run in the head so the saved theme is applied before the body is painted.

@@ -4313,7 +4313,7 @@ body::before {
   top: 50%;
   transform: translateY(-50%);
 }
-.zv-faq details[open] summary::after { content: "\2013"; }
+.zv-faq details[open] summary::after { content: "-"; }
 .zv-faq summary:hover { color: var(--zvij-accent-warm); }
 .zv-faq__a { padding: 0 1.2rem 1.1rem; }
 .zv-faq__a p { color: var(--zvij-muted); line-height: 1.6; margin: 0; }
@@ -4851,4 +4851,20 @@ body.home .site-nav li:first-child a {
   background-color: currentColor;
   -webkit-mask: url("assets/images/icons/gem.svg") center / contain no-repeat;
   mask: url("assets/images/icons/gem.svg") center / contain no-repeat;
+}
+
+html { scroll-padding-top: var(--zvij-sticky-offset, 100px); }
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+body.admin-bar .site-header { top: 32px; }
+@media (max-width: 782px) {
+  body.admin-bar .site-header { top: 46px; }
+}
+@media (max-width: 600px) {
+  body.admin-bar .site-header { top: 0; }
 }
