@@ -4835,3 +4835,20 @@ body.home .site-nav li:first-child a {
     max-width: 100%;
   }
 }
+
+.zv-credit-reward {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.zv-credit-reward__icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  background-color: currentColor;
+  -webkit-mask: url("assets/images/icons/gem.svg") center / contain no-repeat;
+  mask: url("assets/images/icons/gem.svg") center / contain no-repeat;
+}

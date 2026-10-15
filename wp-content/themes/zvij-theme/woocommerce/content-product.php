@@ -23,8 +23,8 @@ $zvij_terms = get_the_terms($product->get_id(), 'product_cat');
 $zvij_cat_label = (empty($zvij_terms) || is_wp_error($zvij_terms)) ? '' : $zvij_terms[0]->name;
 
 $zvij_first_purchase_badge = (string) get_post_meta($product->get_id(), '_zvij_first_purchase_badge', true);
-$zvij_dobroimetje_note = function_exists('zvij_credit_public_note')
-    ? zvij_credit_public_note($product)
+$zvij_dobroimetje_note = function_exists('zvij_credit_public_badge')
+    ? zvij_credit_public_badge($product)
     : '';
 ?>
 <li <?php wc_product_class('zv-pcard', $product); ?>>
@@ -42,7 +42,7 @@ $zvij_dobroimetje_note = function_exists('zvij_credit_public_note')
       <?php endif; ?>
       <h2 class="woocommerce-loop-product__title"><a href="<?php echo esc_url($zvij_permalink); ?>"><?php the_title(); ?></a></h2>
       <?php if ($zvij_dobroimetje_note !== '') : ?>
-        <p class="product-card__credit"><?php echo esc_html($zvij_dobroimetje_note); ?></p>
+        <p class="product-card__credit"><?php echo wp_kses_post($zvij_dobroimetje_note); ?></p>
       <?php endif; ?>
     </div>
     <div class="zv-pcard__buy">

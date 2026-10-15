@@ -252,10 +252,24 @@ function zvij_credit_public_note(WC_Product $product): string {
     }
 
     return sprintf(
-        /* translators: %s: kolicina kristalov z besedo */
-        __('Član prejme %1$s za %2$s.', 'zvij-core'),
-        zvij_kristali_izpis($kristali),
-        zvij_credit_next_label()
+        '+ %1$d %2$s %3$s',
+        $kristali,
+        zvij_kristali_beseda($kristali),
+        __('Za člane', 'zvij-core')
+    );
+}
+
+/** Compact product reward, with a decorative crystal and readable text alternative. */
+function zvij_credit_public_badge(WC_Product $product): string {
+    $kristali = zvij_credit_product_kristali($product);
+    if ($kristali <= 0) {
+        return '';
+    }
+    return sprintf(
+        '<span class="zv-credit-reward"><span>+ %1$d</span><span class="zv-credit-reward__icon" aria-hidden="true"></span><span class="screen-reader-text">%2$s</span><span>%3$s</span></span>',
+        $kristali,
+        esc_html(zvij_kristali_beseda($kristali)),
+        esc_html__('Za člane', 'zvij-core')
     );
 }
 

@@ -19,7 +19,7 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.50');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.51');
 
     if (is_page('clan-zvij-si')) {
         wp_enqueue_style('zvij-members-page', get_template_directory_uri() . '/assets/members.css', ['zvij-theme-style'], '1.0.0');
@@ -204,14 +204,14 @@ add_action('woocommerce_after_single_product_summary', function (): void {
     $packaging_note = (string) get_post_meta($product->get_id(), '_zvij_packaging_note', true);
     // Napis izpelje zvij-core iz zive vrednosti kristalov. Shranjenega
     // stavka ni vec — isti podatek na dveh mestih se je ze enkrat razsel.
-    $dobroimetje_note = function_exists('zvij_credit_public_note')
-        ? zvij_credit_public_note($product)
+    $dobroimetje_note = function_exists('zvij_credit_public_badge')
+        ? zvij_credit_public_badge($product)
         : '';
     $is_dubi = str_contains(strtolower($product->get_name()), 'dubi');
     ?>
     <?php if ($dobroimetje_note !== '') : ?>
       <aside class="zvij-credit-note">
-        <?php echo esc_html($dobroimetje_note); ?>
+        <?php echo wp_kses_post($dobroimetje_note); ?>
       </aside>
     <?php endif; ?>
     <?php if ($packaging_note !== '') : ?>
