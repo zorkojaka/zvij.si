@@ -1,0 +1,154 @@
+:root { color-scheme: light; }
+
+.zv-theme-toggle {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+}
+.zv-theme-toggle[hidden] { display: none; }
+.zv-theme-toggle > span {
+  width: 21px;
+  height: 21px;
+  background: currentColor;
+  -webkit-mask: url("images/icons/moon.svg") center / contain no-repeat;
+  mask: url("images/icons/moon.svg") center / contain no-repeat;
+}
+.zv-theme-toggle:focus-visible { outline: 2px solid var(--zvij-accent); outline-offset: 3px; }
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --zvij-bg: #141614;
+  --zvij-bg-deep: #10120f;
+  --zvij-panel: #20241f;
+  --zvij-panel-alt: #2b3029;
+  --zvij-text: #f1f3ec;
+  --zvij-muted: #b3baad;
+  --zvij-accent: #b8e86d;
+  --zvij-accent-warm: #ddc28c;
+  --zvij-line: #424a3d;
+  --zvij-shadow: 0 18px 45px rgb(0 0 0 / 20%);
+}
+:root[data-theme="dark"] body { background: var(--zvij-bg); }
+:root[data-theme="dark"] .zv-theme-toggle > span {
+  -webkit-mask-image: url("images/icons/sun.svg");
+  mask-image: url("images/icons/sun.svg");
+}
+:root[data-theme="dark"] .site-header { background: rgb(20 22 20 / 95%); }
+:root[data-theme="dark"] :is(.site-brand__logo, .site-footer__brand > img) {
+  filter: invert(1) hue-rotate(180deg);
+}
+:root[data-theme="dark"] .site-footer { background: #1b1e1a; }
+:root[data-theme="dark"] :is(.site-footer__social a, .zv-carousel__controls button) {
+  background: var(--zvij-panel-alt);
+  border: 1px solid var(--zvij-line);
+  color: var(--zvij-text);
+}
+
+/* Opaque surfaces replace the light theme's paper-colored layers. */
+:root[data-theme="dark"] :is(.content-card, .route-card, .empty-shop, .zv-carousel-card, .zvij-product-context > div, .zvij-product-video-panel, .zvij-packaging-note, .zvij-source-note, .zv-steps__step, .zv-qty-offer, .zv-qty-tier, .zv-box-nudge) {
+  background: var(--zvij-panel);
+  border-color: var(--zvij-line);
+}
+:root[data-theme="dark"] :is(.woocommerce, .woocommerce-page) ul.products li.product,
+:root[data-theme="dark"] .single-product div.product .summary,
+:root[data-theme="dark"] .single-product .woocommerce-tabs {
+  background: var(--zvij-panel);
+}
+:root[data-theme="dark"] .zv-hero__visual { background: var(--zvij-panel-alt); }
+:root[data-theme="dark"] .zv-member__card { color: #f1f3ec; }
+:root[data-theme="dark"] .zv-service-strip [data-ico]::before { filter: brightness(2) saturate(.65); }
+:root[data-theme="dark"] .zvij-credit-note { background: #293724; }
+:root[data-theme="dark"] :is(.zv-carousel__label, .zv-carousel-card__cat) { color: var(--zvij-accent); }
+:root[data-theme="dark"] .zv-edit__copy h2 { color: #f1f3ec; }
+:root[data-theme="dark"] .zv-carousel-card__vars button:not(.on),
+:root[data-theme="dark"] .woocommerce ul.products li.product .zv-shop-vars .zv-carousel-card__vars button:not(.on) {
+  background: var(--zvij-panel-alt);
+  color: var(--zvij-text);
+}
+:root[data-theme="dark"] .zv-kb-item { background: var(--zvij-panel-alt); }
+:root[data-theme="dark"] .zv-kit-tab--dark { color: #f1f3ec; }
+:root[data-theme="dark"] :is(.zv-kit-tab--silver, .zv-kit-tab--gold) { color: #171b13; }
+:root[data-theme="dark"] .zv-kb-item__check,
+:root[data-theme="dark"] .zv-steps__step.is--active .zv-steps__n { color: #171b13; }
+:root[data-theme="dark"] .woocommerce .woocommerce-breadcrumb,
+:root[data-theme="dark"] .woocommerce .woocommerce-breadcrumb a { color: var(--zvij-muted); }
+:root[data-theme="dark"] .woocommerce .required { color: #ffb0a1; }
+:root[data-theme="dark"] .woocommerce a.remove { color: #ffb0a1 !important; }
+:root[data-theme="dark"] .woocommerce a.remove:hover { color: #fff !important; background: #703d36; }
+:root[data-theme="dark"] .woocommerce nav.woocommerce-pagination ul li :is(a, span) { color: var(--zvij-text); background: var(--zvij-panel); }
+:root[data-theme="dark"] .woocommerce nav.woocommerce-pagination ul li :is(a:hover, span.current) { color: #171b13; background: var(--zvij-lime); }
+:root[data-theme="dark"] .single-product .woocommerce-tabs ul.tabs li { background: var(--zvij-panel-alt); border-color: var(--zvij-line); }
+:root[data-theme="dark"] .single-product .woocommerce-tabs ul.tabs li.active { background: var(--zvij-panel); }
+:root[data-theme="dark"] .single-product .woocommerce-tabs ul.tabs li a { color: var(--zvij-text); }
+:root[data-theme="dark"] .single-product div.product .woocommerce-tabs ul.tabs li.active a { color: var(--zvij-text); }
+
+/* Keep purchase actions distinct from both surfaces and selected options. */
+:root[data-theme="dark"] :is(.button, .zv-carousel__add, .single_add_to_cart_button, .kit-order__cta, .zv-qty-tier__btn),
+:root[data-theme="dark"] .woocommerce :is(a.button, button.button, input.button),
+:root[data-theme="dark"] .woocommerce ul.products li.product .zv-shop-vars .zv-carousel__add,
+:root[data-theme="dark"] .single-product form.cart .single_add_to_cart_button {
+  background: var(--zvij-lime);
+  border-color: var(--zvij-lime);
+  color: #14180f;
+}
+:root[data-theme="dark"] :is(.button, .zv-carousel__add, .single_add_to_cart_button, .kit-order__cta, .zv-qty-tier__btn):hover,
+:root[data-theme="dark"] .woocommerce :is(a.button, button.button, input.button):hover,
+:root[data-theme="dark"] .woocommerce ul.products li.product .zv-shop-vars .zv-carousel__add:hover {
+  background: var(--zvij-lime-deep);
+  border-color: var(--zvij-lime-deep);
+  color: #14180f;
+}
+:root[data-theme="dark"] .site-actions .site-join { color: #14180f; }
+:root[data-theme="dark"] .button--ghost,
+:root[data-theme="dark"] .button--member {
+  background: transparent;
+  border-color: var(--zvij-line);
+  color: var(--zvij-text);
+}
+:root[data-theme="dark"] :is(.button--ghost, .button--member):hover {
+  background: var(--zvij-panel-alt);
+  color: var(--zvij-text);
+}
+
+/* Form rules also cover WooCommerce fragments and the footer signup form. */
+:root[data-theme="dark"] :is(input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not([type="hidden"]):not([type="range"]), select, textarea) {
+  background-color: var(--zvij-panel-alt) !important;
+  border-color: var(--zvij-line) !important;
+  color: var(--zvij-text) !important;
+  caret-color: var(--zvij-lime);
+}
+:root[data-theme="dark"] :is(input, textarea)::placeholder { color: #a3ad9d; opacity: 1; }
+:root[data-theme="dark"] :is(input[type="checkbox"], input[type="radio"]) { accent-color: var(--zvij-lime); }
+:root[data-theme="dark"] :is(.select2-dropdown, .select2-container--default .select2-selection--single) {
+  background: var(--zvij-panel-alt);
+  border-color: var(--zvij-line);
+  color: var(--zvij-text);
+}
+:root[data-theme="dark"] .select2-container--default .select2-selection--single .select2-selection__rendered { color: var(--zvij-text); }
+:root[data-theme="dark"] .select2-container--default .select2-results__option[aria-selected="true"] { background: var(--zvij-panel); }
+:root[data-theme="dark"] .select2-container--default .select2-results__option--highlighted[aria-selected] { background: #b8e86d; color: #14180f; }
+:root[data-theme="dark"] .woocommerce #payment div.payment_box { background: var(--zvij-panel-alt); color: var(--zvij-text); }
+:root[data-theme="dark"] .woocommerce #payment div.payment_box::before { border-bottom-color: var(--zvij-panel-alt); }
+:root[data-theme="dark"] .woocommerce :is(.woocommerce-message, .woocommerce-info, .woocommerce-error) { background: var(--zvij-panel); color: var(--zvij-text); }
+:root[data-theme="dark"] .woocommerce :is(form.login, form.register, form.checkout_coupon) { border-color: var(--zvij-line); }
+
+/* A printed receipt and QR codes stay light, so they remain recognizable. */
+:root[data-theme="dark"] .zv-members__visual { background: var(--zvij-panel-alt); }
+:root[data-theme="dark"] .zv-members__receipt { background: #2b3527; }
+:root[data-theme="dark"] .zv-members__bill { background: #fff; color: #172011; }
+:root[data-theme="dark"] :is(.zv-members__steps li > p:last-child, .zv-members__questions details p, .zv-invite small) { color: var(--zvij-muted); }
+:root[data-theme="dark"] .zv-invite__social a:hover { background: var(--zvij-panel-alt); }
+:root[data-theme="dark"] .zv-invite__qr img { background: #fff; }
+
+:root[data-theme="dark"] .zv-cookie { background: #20241f; border-color: var(--zvij-line); }
+:root[data-theme="dark"] .zv-cookie__text { color: var(--zvij-muted); }
+:root[data-theme="dark"] .zv-cookie__text a { color: var(--zvij-accent-warm); }
+:root[data-theme="dark"] .zv-cookie__actions button { background: var(--zvij-panel-alt); border-color: var(--zvij-line); color: var(--zvij-text); }
+:root[data-theme="dark"] .zv-cookie__actions .zv-cookie__accept { background: var(--zvij-lime); border-color: var(--zvij-lime); color: #14180f; }
+
+@media (min-width: 901px) and (max-width: 1100px) {
+  .site-actions .site-join { display: none; }
+}

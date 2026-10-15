@@ -32,6 +32,7 @@ if (! defined('ABSPATH')) {
     </ul>
   </nav>
   <div class="site-actions" aria-label="<?php esc_attr_e('Hitre akcije', 'zvij-theme'); ?>">
+    <button class="site-ico zv-theme-toggle" type="button" aria-label="<?php esc_attr_e('Vklopi temno temo', 'zvij-theme'); ?>" title="<?php esc_attr_e('Vklopi temno temo', 'zvij-theme'); ?>" aria-pressed="false" hidden><span aria-hidden="true"></span></button>
     <a class="site-ico" href="<?php echo esc_url(home_url('/?s=')); ?>" aria-label="<?php esc_attr_e('Iskanje', 'zvij-theme'); ?>">
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
     </a>
