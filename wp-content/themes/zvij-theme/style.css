@@ -4868,3 +4868,19 @@ body.admin-bar .site-header { top: 32px; }
 @media (max-width: 600px) {
   body.admin-bar .site-header { top: 0; }
 }
+
+.zv-commerce .woocommerce-cart-form .product-remove {
+  text-align: right;
+  width: 48px;
+}
+
+.zv-commerce .woocommerce-cart-form .product-remove a {
+  margin-left: auto;
+}
+
+@media (max-width: 900px) {
+  .zv-commerce .woocommerce-cart-form td.product-remove {
+    justify-content: flex-end;
+    width: auto;
+  }
+}
