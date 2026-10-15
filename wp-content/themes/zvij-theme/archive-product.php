@@ -15,28 +15,15 @@ get_header();
 </section>
 
 <?php
-$kit_filters = [
-    'black-kit' => 'Black Kit',
-    'silver-kit' => 'Silver Kit',
-    'gold-kit' => 'Gold Kit',
-    // Throwie je skrit, dokler ni vrečk na zalogi (glej zvij_kits['hidden']).
-];
-
-// Reload je zaenkrat umaknjen s strani (glej zvij_reload_is_public()).
-if (! function_exists('zvij_reload_is_public') || zvij_reload_is_public()) {
-    $kit_filters['reload'] = 'Reload';
-}
+$shop_url = get_permalink(wc_get_page_id('shop'));
+$current_group = zvij_current_shop_group();
 ?>
-<nav class="kit-filter" aria-label="<?php esc_attr_e('Filtri kitov', 'zvij-theme'); ?>">
-  <a class="kit-filter__chip<?php echo (is_shop() && ! is_tax('product_tag')) ? ' is--active' : ''; ?>" href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>"><?php esc_html_e('Vse', 'zvij-theme'); ?></a>
-  <?php foreach ($kit_filters as $tag_slug => $tag_label) :
-      $term = get_term_by('slug', $tag_slug, 'product_tag');
-      if (! $term) {
-          continue;
-      }
-      $active = is_tax('product_tag', $tag_slug);
+<nav class="kit-filter" aria-label="<?php esc_attr_e('Vrste izdelkov', 'zvij-theme'); ?>">
+  <a class="kit-filter__chip<?php echo (is_shop() && $current_group === '') ? ' is--active' : ''; ?>" <?php echo (is_shop() && $current_group === '') ? 'aria-current="page"' : ''; ?> href="<?php echo esc_url($shop_url); ?>"><?php esc_html_e('Vse', 'zvij-theme'); ?></a>
+  <?php foreach (zvij_shop_groups() as $key => $group) :
+      $active = $current_group === $key || is_product_category($group['categories']);
   ?>
-    <a class="kit-filter__chip<?php echo $active ? ' is--active' : ''; ?>" href="<?php echo esc_url(get_term_link($term)); ?>"><?php echo esc_html($tag_label); ?></a>
+    <a class="kit-filter__chip<?php echo $active ? ' is--active' : ''; ?>" <?php echo $active ? 'aria-current="page"' : ''; ?> href="<?php echo esc_url(add_query_arg('zvij_group', $key, $shop_url)); ?>"><?php echo esc_html($group['label']); ?></a>
   <?php endforeach; ?>
 </nav>
 

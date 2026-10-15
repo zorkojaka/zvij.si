@@ -8,6 +8,7 @@ if (! defined('ABSPATH')) {
 }
 
 require_once __DIR__ . '/inc/public-copy.php';
+require_once __DIR__ . '/inc/shop-groups.php';
 
 add_action('after_setup_theme', function (): void {
     add_theme_support('title-tag');
