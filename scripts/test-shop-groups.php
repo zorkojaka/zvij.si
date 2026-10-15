@@ -47,3 +47,33 @@ $query = new ShopGroupQuery();
 $shop = false;
 $actions['woocommerce_product_query']($query);
 check($query->data === [], 'Other product archives untouched');
+
+$wpdb = new class {
+    public string $posts = 'wp_posts';
+    public string $term_relationships = 'wp_term_relationships';
+    public string $term_taxonomy = 'wp_term_taxonomy';
+    public string $terms = 'wp_terms';
+    public function prepare($format, ...$args): string {
+        return vsprintf(str_replace('%s', "'%s'", $format), $args);
+    }
+};
+$shop = true;
+$query = new ShopGroupQuery();
+$query->data['orderby'] = 'menu_order title';
+$original = ['orderby' => 'wp_posts.menu_order ASC, wp_posts.post_title ASC'];
+$ordered = $filters['posts_clauses']($original, $query);
+check(strpos($ordered['orderby'], "'cbd-cbg-vrsicki'") < strpos($ordered['orderby'], "'dubi-filtri'"), 'CBD before DUBI');
+check(strpos($ordered['orderby'], "'dubi-filtri'") < strpos($ordered['orderby'], "'rizle'"), 'DUBI before Ziggi');
+check(str_contains($ordered['orderby'], "'rizle', 'rolce'"), 'Paper rolls stay with Ziggi papers');
+check(str_contains($ordered['orderby'], 'ELSE 3 END ASC, ' . $original['orderby']), 'Accessories follow papers; existing secondary order preserved');
+check(str_ends_with($ordered['orderby'], 'wp_posts.ID ASC'), 'Stable tie breaker supports pagination');
+foreach (['price', 'date', 'title', 'popularity', 'rating'] as $sort) {
+    $query->data['orderby'] = $sort;
+    check($filters['posts_clauses']($original, $query) === $original, "Explicit $sort sorting unchanged");
+}
+$query->data['orderby'] = 'menu_order title';
+$query->main = false;
+check($filters['posts_clauses']($original, $query) === $original, 'Secondary queries keep their ordering');
+$query->main = true;
+$shop = false;
+check($filters['posts_clauses']($original, $query) === $original, 'Other archives keep their ordering');
