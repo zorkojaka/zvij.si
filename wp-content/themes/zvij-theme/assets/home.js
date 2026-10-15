@@ -188,12 +188,37 @@
 
       function updateImagePack(choice) {
         var image = card.querySelector('.zv-carousel-card__image');
+        var shopCard = card.closest('.zv-pcard');
+        if (!image && shopCard) {
+          image = shopCard.querySelector('.zv-pcard__media');
+        }
         if (!image) {
           return;
         }
         image.querySelectorAll('.zv-carousel-card__image-clone').forEach(function (clone) {
           clone.remove();
         });
+        var photo = image.querySelector('img');
+        var fiveSrc = image.getAttribute('data-pack-five-src');
+        if (photo && fiveSrc) {
+          if (!photo.dataset.singleSrc) {
+            photo.dataset.singleSrc = photo.getAttribute('src') || '';
+            photo.dataset.singleSrcset = photo.getAttribute('srcset') || '';
+            photo.dataset.singleSizes = photo.getAttribute('sizes') || '';
+          }
+          var five = choiceIsFiveGram(choice);
+          photo.setAttribute('src', five ? fiveSrc : photo.dataset.singleSrc);
+          if (five) {
+            photo.removeAttribute('srcset');
+            photo.removeAttribute('sizes');
+          } else {
+            if (photo.dataset.singleSrcset) { photo.setAttribute('srcset', photo.dataset.singleSrcset); }
+            if (photo.dataset.singleSizes) { photo.setAttribute('sizes', photo.dataset.singleSizes); }
+          }
+          image.classList.remove('is-pack-5');
+          return;
+        }
+        if (shopCard) { return; }
         image.classList.toggle('is-pack-5', choiceIsFiveGram(choice));
         if (!image.classList.contains('is-pack-5')) {
           return;

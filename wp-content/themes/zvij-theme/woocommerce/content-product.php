@@ -28,7 +28,7 @@ $zvij_dobroimetje_note = function_exists('zvij_credit_public_badge')
     : '';
 ?>
 <li <?php wc_product_class('zv-pcard', $product); ?>>
-  <a class="zv-pcard__media" href="<?php echo esc_url($zvij_permalink); ?>" aria-hidden="true" tabindex="-1">
+  <a class="zv-pcard__media" data-pack-five-src="<?php echo esc_url(zvij_product_pack_five_url($product)); ?>" href="<?php echo esc_url($zvij_permalink); ?>" aria-hidden="true" tabindex="-1">
     <?php woocommerce_show_product_loop_sale_flash(); ?>
     <?php if ($zvij_first_purchase_badge !== '') : ?>
       <span class="product-card__badge"><?php echo esc_html($zvij_first_purchase_badge); ?></span>

@@ -22,7 +22,7 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.56');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.58');
 
     if (is_page('clan-zvij-si')) {
         wp_enqueue_style('zvij-members-page', get_template_directory_uri() . '/assets/members.css', ['zvij-theme-style'], '1.0.0');
@@ -43,10 +43,11 @@ add_action('wp_enqueue_scripts', function (): void {
         if (function_exists('WC')) {
             wp_enqueue_script('wc-add-to-cart');
         }
-        wp_enqueue_script('zvij-home', get_template_directory_uri() . '/assets/home.js', ['jquery'], '0.9.35', true);
+        wp_enqueue_script('zvij-home', get_template_directory_uri() . '/assets/home.js', ['jquery'], '0.9.36', true);
     }
 
     wp_enqueue_script('zvij-site', get_template_directory_uri() . '/assets/site.js', [], '1.0.0', true);
+    wp_enqueue_script('zvij-smoke', get_template_directory_uri() . '/assets/smoke.js', [], '1.0.1', true);
     wp_enqueue_script('zvij-analytics', get_template_directory_uri() . '/assets/analytics.js', ['jquery'], '0.1.0', true);
     wp_enqueue_style('zvij-color-scheme', get_template_directory_uri() . '/assets/color-scheme.css', ['zvij-theme-style'], '1.0.1');
     // Run in the head so the saved theme is applied before the body is painted.
@@ -812,6 +813,11 @@ function zvij_homepage_carousel_label(WC_Product $product): string {
     return $product->is_type('variable') ? __('Izberi količino', 'zvij-theme') : __('Izdelek', 'zvij-theme');
 }
 
+function zvij_product_pack_five_url(WC_Product $product): string {
+    $id = (int) $product->get_meta('_zvij_pack_5_image_id');
+    return $id ? (string) wp_get_attachment_image_url($id, 'medium_large') : '';
+}
+
 function zvij_homepage_carousel_variations(WC_Product $product): array {
     if (! $product->is_type('variable')) {
         return [];
@@ -914,7 +920,7 @@ function zvij_render_homepage_product_carousel(): void {
             }
             ?>
             <article class="zv-carousel-card" data-carousel-card data-product-id="<?php echo esc_attr((string) $product->get_id()); ?>" data-carousel-position="<?php echo esc_attr((string) $position); ?>" data-carousel-source="homepage">
-              <a class="zv-carousel-card__image" href="<?php echo esc_url(get_permalink($product->get_id())); ?>" aria-label="<?php echo esc_attr($product->get_name()); ?>">
+              <a class="zv-carousel-card__image" data-pack-five-src="<?php echo esc_url(zvij_product_pack_five_url($product)); ?>" href="<?php echo esc_url(get_permalink($product->get_id())); ?>" aria-label="<?php echo esc_attr($product->get_name()); ?>">
                 <?php echo $product->get_image('medium_large', ['loading' => $i === 0 ? 'eager' : 'lazy']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                 <?php if ($product->is_on_sale()) : ?><span class="zv-carousel-card__badge"><?php esc_html_e('Akcija', 'zvij-theme'); ?></span><?php endif; ?>
               </a>
