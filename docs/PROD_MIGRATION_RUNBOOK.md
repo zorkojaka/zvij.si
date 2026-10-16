@@ -1,7 +1,7 @@
 # Produkcijska migracija: dev.inteligent.si → zvij.si
 
 Datum priprave: 10. 7. 2026 · Zadnja posodobitev: 31. 8. 2026
-Status: **Faza 1 izvedena — prod stack teče in je preverjen; čaka na Revolut ključ, pravni pregled in DNS preklop**
+Status: **Prod sinhroniziran in utrjen 16. 10. 2026 — za izvedbo glej LAUNCH_CUTOVER.md**
 
 Ta dokument je izvedbeni načrt za preklop trgovine z dev okolja na produkcijski
 `zvij.si`. Do izvedbe se live `zvij.si` **ne dotika** — vse spodaj je priprava
