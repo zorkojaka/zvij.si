@@ -60,6 +60,8 @@ prod_wp eval-file scripts/wp-configure-permalinks.php
 prod_wp eval-file scripts/wp-mail-mode.php live
 # Testna naročila, kuponi in člani iz razvoja ne smejo v produkcijo.
 prod_wp eval-file scripts/wp-prelaunch-cleanup.php
+# Dev povabila vklopi okolje (development); prod potrebuje izrecno opcijo (Jaka, 16. 10. 2026).
+prod_wp option update zvij_invitations_enabled yes
 # Dev ima blog_public=0, da ga iskalniki ne indeksirajo. Prod mora biti 1.
 prod_wp option update blog_public 1
 
