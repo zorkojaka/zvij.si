@@ -193,6 +193,20 @@ function zvij_credit_reward_percent(?WC_Product $product = null): float {
  * da vrednost sledi ceni.
  */
 function zvij_credit_product_kristali(WC_Product $product): int {
+    // Model stopenj (zvij-tiers.php): delež marže po stopnji gledalca, kadar
+    // ima izdelek nabavno ceno. Sicer staro pravilo spodaj.
+    if (function_exists('zvij_tiers_enabled') && zvij_tiers_enabled()) {
+        $tiered = zvij_tiers_unit_kristali($product);
+        if ($tiered !== null) {
+            return $tiered;
+        }
+    }
+
+    return zvij_credit_legacy_kristali($product);
+}
+
+/** Staro pravilo: izjema na izdelku ali delež cene. */
+function zvij_credit_legacy_kristali(WC_Product $product): int {
     foreach ([$product->get_id(), $product->get_parent_id()] as $id) {
         if (! $id) {
             continue;
@@ -274,6 +288,10 @@ function zvij_credit_public_badge(WC_Product $product): string {
 }
 
 function zvij_credit_order_earnable(WC_Order $order): int {
+    if (function_exists('zvij_tiers_enabled') && zvij_tiers_enabled()) {
+        return zvij_tiers_order_kristali($order) + zvij_kit_bonus_order($order);
+    }
+
     $total = 0;
     foreach ($order->get_items() as $item) {
         if (! $item instanceof WC_Order_Item_Product) {

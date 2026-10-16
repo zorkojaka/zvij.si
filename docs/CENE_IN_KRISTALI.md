@@ -40,6 +40,40 @@ Formula popusta obstaja na enem mestu — `zvij_qty_unit_price()`. Vse ostalo
 
 ## Kristali
 
+## Stopnje članstva in kristali iz marže (16. 10. 2026)
+
+Ko je vklopljeno `zvij_tiers_enabled` (Zvij.si → Stopnje članstva), kristali niso
+več delež končne cene, ampak **delež marže**: plačana cena postavke (po vseh
+popustih) minus nabavna cena × količina, pomnoženo z deležem stopnje člana.
+Marža pod nič da 0 kristalov. Koda: `includes/zvij-tiers.php`.
+
+| Stopnja | Delež marže | Kako |
+|---|---|---|
+| 1 | 5 % | ob včlanitvi |
+| 2 | 15 % | poraba ≥ 100 € v zadnjih 12 mesecih |
+| 3 | 25 % | ≥ 250 € |
+| 4 | 35 % | ≥ 500 € |
+| 5 (VIP) | 50 % | ≥ 1000 € ali ročno |
+
+Poraba = plačana naročila brez dostave; naročilo, ki se pravkar plačuje, se ne
+šteje (stopnja pred njim). Ročna stopnja ima prednost in ima lahko lasten delež
+(npr. 35–50 % za VIP). Isti seznam članov omogoča **brezplačno poštnino**:
+velja za prijavljenega člana, pokrije »Navadno poštnino«, nadgradnje ostanejo
+plačljive.
+
+**Nabavna cena** je meta `_zvij_cost` (bruto na kos — nismo zavezanci za DDV),
+polje »Nabavna cena« pri ceni izdelka ali variacije. Izdelek brez nje ostane na
+starem pravilu (spodaj); seznam takih je na strani nastavitev. Začetne vrednosti
+iz `Zvij_cenik_in_marze.xlsx`: `scripts/wp-import-costs.php`.
+
+Strankam se marža nikoli ne prikaže: na izdelku vidijo kristale za svojo stopnjo
+(gost vidi stopnjo 1), v Mojem računu pa stopnjo in koliko jim manjka do naslednje.
+Kit bonus in Zvij koda delujeta kot prej.
+
+Test: `docker exec -u 33 zvij-dev-wordpress php /var/www/html/scripts/test-tiers.php`.
+
+### Staro pravilo (velja, ko so stopnje izklopljene ali izdelek nima nabavne cene)
+
 **En kristal je en cent — 100 kristalov = 1 €.** Tečaj je zapisan enkrat, v
 konstanti `ZVIJ_KRISTALI_PER_EUR`.
 
