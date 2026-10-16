@@ -22,6 +22,9 @@ foreach (['srebrn-grinder-40-mm', 'zlat-grinder-52-mm', 'grinder-kartica-xxx'] a
     }
     if ($slug === 'grinder-kartica-xxx' && $product->get_price() === '') {
         grinder_check($product->get_status() === 'draft' && ! $product->is_purchasable(), 'Unpriced card stays draft and cannot be purchased');
+    } elseif ($slug === 'grinder-kartica-xxx') {
+        grinder_check((float) $product->get_price() === 7.50, 'Card uses approved EUR 7.50 price');
+        grinder_check($product->get_status() === 'publish' && $product->is_purchasable() && $product->is_in_stock(), 'Priced card published and available');
     }
 }
 $cards = get_posts(['post_type' => 'product', 'post_status' => ['draft', 'publish', 'private', 'pending'], 'name' => 'grinder-kartica-xxx', 'fields' => 'ids']);

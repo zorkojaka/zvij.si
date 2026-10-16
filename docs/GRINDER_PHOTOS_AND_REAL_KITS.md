@@ -6,7 +6,7 @@ AI-assisted product photographs were created from Jaka's supplied silver grinder
 
 - Existing silver grinder #217: closed, open with lid, both inner halves.
 - Existing gold grinder #216: closed, four separate parts, open cutting chamber with lid.
-- New metal grinder card #618: card with sleeve, card alone, card overlapping sleeve. It remains a draft with no price and is not purchasable until the selling price is supplied. No stock quantity was invented.
+- New metal grinder card #618: card with sleeve, card alone, card overlapping sleeve. Published on development at Jaka's approved selling price of EUR 7.50. No stock quantity was invented.
 - Existing grinder prices, stock and statuses were preserved. Old attachment IDs are retained in `_zvij_before_grinder_media_v1`; the three new attachment IDs are in `_zvij_grinder_media_v1`.
 
 ## Default Kits
@@ -26,6 +26,8 @@ The old kit configuration is backed up in `zvij_kits_before_real_photos_v1`. Rea
 ## Operations and Tests
 
 `php /var/www/html/scripts/wp-import-grinders-real-kits.php` inside the development WordPress container imports the reviewed assets, creates the card only if absent, and updates default kit references. It refuses production, preflights all photographs and available components, preserves legacy media and is repeatable without duplicate product/media records.
+
+`scripts/wp-publish-grinder-card.php` applies the approved EUR 7.50 price and publishes the reviewed card on development only. It requires the three imported images and refuses to override quantity-managed stock.
 
 `scripts/test-grinders-real-kits.php` checks actual product/gallery assignments, square image dimensions, draft safety, available kit components, optional references and backup state. `scripts/test-grinder-kits.cjs` uses Playwright at 1440 px and 390 px to verify galleries, real kit photo/default agreement, selectable components and a real kit add-to-cart in an isolated anonymous session. The test cart is emptied; no order is placed. Age confirmation is synthetic UI fixture input only.
 
