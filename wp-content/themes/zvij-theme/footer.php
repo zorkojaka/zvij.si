@@ -21,6 +21,31 @@ if (! defined('ABSPATH')) {
       <p><?php esc_html_e('Novi izdelki, članske ponudbe in občasne Zvijače za zvijače.', 'zvij-theme'); ?></p>
       <?php echo function_exists('zvij_membership_form') ? zvij_membership_form(['source' => 'footer']) : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
     </div>
+    <?php else : ?>
+    <div class="site-footer__info">
+      <nav class="site-footer__links" aria-label="<?php esc_attr_e('Povezave v nogi', 'zvij-theme'); ?>">
+        <div>
+          <p class="site-footer__eyebrow"><?php esc_html_e('Trgovina', 'zvij-theme'); ?></p>
+          <a href="<?php echo esc_url(home_url('/trgovina/')); ?>"><?php esc_html_e('Vsi izdelki', 'zvij-theme'); ?></a>
+          <a href="<?php echo esc_url(home_url('/cbd-vrsicki/')); ?>"><?php esc_html_e('Vršički za čaj', 'zvij-theme'); ?></a>
+          <a href="<?php echo esc_url(home_url('/clan-zvij-si/')); ?>"><?php esc_html_e('Član Zvij.si', 'zvij-theme'); ?></a>
+          <a href="<?php echo esc_url(home_url('/blog/')); ?>"><?php esc_html_e('Blog', 'zvij-theme'); ?></a>
+        </div>
+        <div>
+          <p class="site-footer__eyebrow"><?php esc_html_e('Pomoč', 'zvij-theme'); ?></p>
+          <a href="<?php echo esc_url(home_url('/faq/')); ?>"><?php esc_html_e('Pogosta vprašanja', 'zvij-theme'); ?></a>
+          <a href="<?php echo esc_url(home_url('/kontakt/')); ?>"><?php esc_html_e('Kontakt', 'zvij-theme'); ?></a>
+          <a href="<?php echo esc_url(home_url('/pogoji-poslovanja/')); ?>"><?php esc_html_e('Pogoji poslovanja', 'zvij-theme'); ?></a>
+          <a href="<?php echo esc_url(home_url('/refund_returns/')); ?>"><?php esc_html_e('Vračila in reklamacije', 'zvij-theme'); ?></a>
+        </div>
+      </nav>
+      <address class="site-footer__company">
+        <strong>Zvij.si d.o.o.</strong><br>
+        Rjava cesta 26A, 1260 Ljubljana-Polje<br>
+        <?php esc_html_e('Matična št.', 'zvij-theme'); ?> 9378294000 · <?php esc_html_e('Davčna št.', 'zvij-theme'); ?> 68449763<br>
+        <a href="mailto:info@zvij.si">info@zvij.si</a>
+      </address>
+    </div>
     <?php endif; ?>
 
     <div class="site-footer__brand">
@@ -37,6 +62,9 @@ if (! defined('ABSPATH')) {
   </div>
   <div class="site-footer__legal">
     <a href="<?php echo esc_url(home_url('/blog/')); ?>"><?php esc_html_e('Blog', 'zvij-theme'); ?></a>
+    <a href="<?php echo esc_url(home_url('/kontakt/')); ?>"><?php esc_html_e('Kontakt', 'zvij-theme'); ?></a>
+    <a href="<?php echo esc_url(home_url('/pogoji-poslovanja/')); ?>"><?php esc_html_e('Pogoji poslovanja', 'zvij-theme'); ?></a>
+    <a href="<?php echo esc_url(home_url('/refund_returns/')); ?>"><?php esc_html_e('Vračila', 'zvij-theme'); ?></a>
     <?php if ($privacy = get_privacy_policy_url()) : ?>
       <a href="<?php echo esc_url($privacy); ?>"><?php esc_html_e('Politika zasebnosti', 'zvij-theme'); ?></a>
     <?php endif; ?>

@@ -27,6 +27,7 @@ require_once __DIR__ . '/includes/zvij-payment-qr.php';
 require_once __DIR__ . '/includes/zvij-cookie-consent.php';
 require_once __DIR__ . '/includes/zvij-age.php';
 require_once __DIR__ . '/includes/zvij-security.php';
+require_once __DIR__ . '/includes/zvij-quotes.php';
 require_once __DIR__ . '/includes/zvij-credit.php';
 require_once __DIR__ . '/includes/zvij-kit-bonus.php';
 require_once __DIR__ . '/includes/zvij-referral.php';
