@@ -22,7 +22,7 @@ while (have_posts()) :
             if (! isset($tone_map[$key])) {
                 continue;
             }
-            $kits[] = ['key' => $key, 'name' => ($kd['name'] ?? ucfirst($key) . ' Kit') . ' Zvij.si', 'tone' => $tone_map[$key]];
+            $kits[] = ['key' => $key, 'name' => ($kd['name'] ?? ucfirst($key) . ' Kit') . ' Zvij.si', 'tone' => $tone_map[$key], 'note' => $kd['style_note'] ?? 'Sestavi spodaj.'];
         }
         ?>
         <section class="zv-page-head">
@@ -35,7 +35,7 @@ while (have_posts()) :
             <article class="zv-kit-pick zv-kit-tab--<?php echo esc_attr($kit['tone']); ?><?php echo $i === 0 ? ' is--active' : ''; ?>" data-kit-select="<?php echo esc_attr($kit['key']); ?>">
               <?php if ($img !== '') : ?><img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr($kit['name']); ?>" loading="lazy"><?php endif; ?>
               <h2><?php echo esc_html($kit['name']); ?></h2>
-              <p class="zv-kit-pick__note">Sestavi spodaj.</p>
+              <p class="zv-kit-pick__note"><?php echo esc_html($kit['note']); ?></p>
               <a class="button" href="#kit-builder" data-kit-select-btn="<?php echo esc_attr($kit['key']); ?>">Izberi <?php echo esc_html(ucfirst($kit['key'])); ?></a>
             </article>
           <?php endforeach; ?>

@@ -1814,7 +1814,7 @@ a {
    naziv/cena/CTA na barvni podlagi spodaj. */
 .zv-kit-pick {
   gap: 0;
-  grid-template-rows: clamp(220px, 20vw, 280px) auto auto 1fr;
+  grid-template-rows: auto auto auto 1fr;
   min-height: 430px;
   overflow: hidden;
   padding: 0 0 1.4rem;
@@ -1822,7 +1822,9 @@ a {
 }
 
 .zv-kit-pick img {
-  height: 100%;
+  aspect-ratio: 1;
+  display: block;
+  height: auto;
   justify-self: stretch;
   object-fit: cover;
   width: 100%;

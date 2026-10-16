@@ -22,7 +22,7 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.59');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.60');
 
     if (is_page('clan-zvij-si')) {
         wp_enqueue_style('zvij-members-page', get_template_directory_uri() . '/assets/members.css', ['zvij-theme-style'], '1.0.0');
@@ -544,12 +544,6 @@ function zvij_render_kit_showcase(): void {
         return;
     }
 
-    $kit_images = [
-        'black' => 'black-kit-flatlay.png',
-        'silver' => 'silver-kit-flatlay.png',
-        'gold' => 'gold-kit-flatlay.png',
-        'throwie' => 'throwie-kit-flatlay.png',
-    ];
     ?>
     <section class="section-block kit-showcase" id="kiti" aria-labelledby="kit-showcase-title">
       <div class="section-heading">
@@ -574,11 +568,7 @@ function zvij_render_kit_showcase(): void {
           $headline = (string) ($kit['headline'] ?? $kit['tagline'] ?? '');
           $subline = (string) ($kit['subline'] ?? $kit['position'] ?? '');
           $default_count = count($core_items);
-          $image_file = $kit_images[$kit_key] ?? '';
-          $image_path = $image_file !== '' ? get_template_directory() . '/assets/images/kits/' . $image_file : '';
-          $image_url = ($image_path !== '' && file_exists($image_path))
-              ? get_template_directory_uri() . '/assets/images/kits/' . $image_file
-              : '';
+          $image_url = zvij_kit_flatlay_url($kit_key);
       ?>
         <article class="kit-row kit-row--<?php echo esc_attr($kit_key); ?>" data-kit="<?php echo esc_attr($kit['slug'] ?? ''); ?>">
           <div class="kit-visual kit-visual--<?php echo esc_attr($kit_key); ?><?php echo $image_url !== '' ? ' kit-visual--has-image' : ''; ?>" role="img" aria-label="<?php echo esc_attr(sprintf(__('%s — sestavljena slika kita', 'zvij-theme'), (string) ($kit['name'] ?? ''))); ?>">
@@ -743,13 +733,17 @@ function zvij_home_product_img_url(?WC_Product $product): string {
 }
 
 /**
- * URL of a temporary kit flat-lay image, only if the file actually exists.
+ * Prefer reviewed real-product kit scenes, retaining the legacy fallback.
  * key: black|silver|gold|throwie
  */
 function zvij_kit_flatlay_url(string $key): string {
-    $file = $key . '-kit-flatlay.png';
-    $path = get_template_directory() . '/assets/images/kits/' . $file;
-    return file_exists($path) ? get_template_directory_uri() . '/assets/images/kits/' . $file : '';
+    foreach ([$key . '-kit-real-v1.jpg', $key . '-kit-flatlay.png'] as $file) {
+        $path = get_template_directory() . '/assets/images/kits/' . $file;
+        if (file_exists($path)) {
+            return get_template_directory_uri() . '/assets/images/kits/' . $file;
+        }
+    }
+    return '';
 }
 
 /**
