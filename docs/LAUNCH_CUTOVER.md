@@ -1,5 +1,7 @@
 # Preklop zvij.si na novo trgovino
 
+**IZVEDENO 16. 10. 2026 ob ~08:00:** A zapis zamenjan, SSL (certbot webroot, samodejno podaljšanje + reload nginx), MailerLite webhook na zvij.si, šifrirana kopija baze in uploadov v Object Storage (zvij-backups/). Ostane: Jakov pravi testni nakup.
+
 Pripravljeno 16. 10. 2026. Prod stack (`zvij-prod`, 127.0.0.1:8099) je
 sinhroniziran z dev, očiščen testnih podatkov in utrjen. Stara stran pri
 Neoservu do DNS preklopa ostane nedotaknjena.
