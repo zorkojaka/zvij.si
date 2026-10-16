@@ -58,6 +58,12 @@ function zvij_copy_map(): array {
         'Enter your coupon code'            => 'Vpiši kodo kupona',
         'Notes about your order, e.g. special notes for delivery.'
                                             => 'Opombe o naročilu, npr. navodila za dostavo.',
+        // Novo v WooCommerce 11 (začasno geslo ob registraciji), slovenski prevod ga še nima.
+        'Your account is using a temporary password. We emailed you a link to change your password.'
+                                            => 'Tvoj račun ima začasno geslo. Po e-pošti smo ti poslali povezavo, s katero si nastaviš svoje.',
+        '%1$sResend%2$s'                    => '%1$sPošlji znova%2$s',
+        'We have emailed you a new link to change your password.'
+                                            => 'Po e-pošti smo ti poslali novo povezavo za nastavitev gesla.',
     ]);
 }
 
