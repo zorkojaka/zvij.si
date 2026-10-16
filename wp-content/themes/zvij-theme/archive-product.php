@@ -53,7 +53,7 @@ if (is_tax('product_cat', ['rizle', 'rolce']) || zvij_current_shop_group() === '
         $group = zvij_shop_groups()[$key] ?? ['label' => __('Ostalo', 'zvij-theme'), 'short' => __('Ostalo', 'zvij-theme')];
         $icon = get_the_post_thumbnail_url($ids[0], 'thumbnail');
     ?>
-      <a class="zv-shop-jump__item" href="#skupina-<?php echo esc_attr($key); ?>" data-jump="<?php echo esc_attr($key); ?>">
+      <a class="zv-shop-jump__item" href="#skupina-<?php echo esc_attr($key); ?>" data-jump="<?php echo esc_attr($key); ?>" title="<?php echo esc_attr($group['label']); ?>">
         <?php if ($icon) : ?><img src="<?php echo esc_url($icon); ?>" alt="" width="44" height="44" loading="lazy"><?php endif; ?>
         <span><?php echo esc_html($group['short']); ?></span>
       </a>

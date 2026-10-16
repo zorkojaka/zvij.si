@@ -22,7 +22,7 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.72');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.73');
     wp_enqueue_style('zvij-blog-layout', get_template_directory_uri() . '/assets/blog.css', ['zvij-theme-style'], '1.0.0');
 
     if (is_page('clan-zvij-si')) {
@@ -50,7 +50,7 @@ add_action('wp_enqueue_scripts', function (): void {
     wp_enqueue_script('zvij-site', get_template_directory_uri() . '/assets/site.js', [], '1.0.0', true);
     wp_enqueue_script('zvij-swatches', get_template_directory_uri() . '/assets/swatches.js', ['jquery'], '1.0.0', true);
     if (function_exists('is_shop') && is_shop()) {
-        wp_enqueue_script('zvij-shop-jump', get_template_directory_uri() . '/assets/shop-jump.js', [], '1.1.0', true);
+        wp_enqueue_script('zvij-shop-jump', get_template_directory_uri() . '/assets/shop-jump.js', [], '1.2.0', true);
     }
     wp_enqueue_script('zvij-smoke', get_template_directory_uri() . '/assets/smoke.js', [], '1.0.2', true);
     wp_enqueue_script('zvij-analytics', get_template_directory_uri() . '/assets/analytics.js', ['jquery'], '0.1.0', true);

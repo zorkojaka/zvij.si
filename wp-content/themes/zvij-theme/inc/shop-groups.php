@@ -9,7 +9,7 @@ function zvij_shop_groups(): array {
     return [
         'cbd' => ['label' => 'CBD vršički', 'short' => 'CBD', 'categories' => ['cbd-cbg-vrsicki']],
         'dubi' => ['label' => 'DUBI filtri', 'short' => 'DUBI', 'categories' => ['dubi-filtri']],
-        'ziggi' => ['label' => 'Ziggi rizle', 'short' => 'Rizle', 'categories' => ['rizle', 'rolce']],
+        'ziggi' => ['label' => 'Ziggi rizle', 'short' => 'Ziggi', 'categories' => ['rizle', 'rolce']],
         'pripomocki' => ['label' => 'Pripomočki', 'short' => 'Pripomočki', 'categories' => ['setup-dodatki', 'grinderji', 'vzigalniki']],
     ];
 }

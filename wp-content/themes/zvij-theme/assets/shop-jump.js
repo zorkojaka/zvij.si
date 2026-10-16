@@ -1,6 +1,5 @@
 /* Krogci skupin v trgovini (navpicen stolpec desno): oznaci trenutno skupino,
-   ze prelistane skupine in pobarva crto do trenutne. Ob spremembi za kratek cas
-   pokaze ime skupine. */
+   ze prelistane skupine in pobarva crto do trenutne. Napisov cez stran ni. */
 (function () {
   var nav = document.querySelector('[data-shop-jump]');
   if (!nav) { return; }
@@ -14,7 +13,7 @@
 
   var items = Array.prototype.slice.call(nav.querySelectorAll('[data-jump]'));
   var sections = Array.prototype.slice.call(document.querySelectorAll('[data-shop-group]'));
-  var current = null, timer = null;
+  var current = null;
 
   function mark(key) {
     if (key === current) { return; }
@@ -25,13 +24,8 @@
       a.classList.toggle('is-active', on);
       if (on) { a.setAttribute('aria-current', 'true'); } else { a.removeAttribute('aria-current'); }
     });
-    items.forEach(function (a, i) { a.classList.toggle('is-past', i < index); a.classList.remove('is-announce'); });
+    items.forEach(function (a, i) { a.classList.toggle('is-past', i < index); });
     nav.style.setProperty('--zv-jump-progress', items.length > 1 ? String(Math.max(0, index) / (items.length - 1)) : '0');
-    if (current !== null && items[index]) {
-      items[index].classList.add('is-announce');
-      clearTimeout(timer);
-      timer = setTimeout(function () { items[index].classList.remove('is-announce'); }, 1800);
-    }
     current = key;
   }
 

@@ -5125,21 +5125,21 @@ body.admin-bar .site-header { top: 32px; }
 
 /* Trgovina: vsi izdelki na eni strani po skupinah. Skupine so navpicen stolpec
    krogcev, plavajoc desno: zgoraj, kar je visje na strani, spodaj, kar pride;
-   trenutni je vecji z obrocem, crta je pobarvana do njega (Jaka, 17. 10. 2026). */
+   trenutni je vecji z obrocem, crta je pobarvana do njega. Brez napisov cez
+   stran — ime je v title/aria in na racunalniku ob prehodu z misko. */
 .zv-shop-jump {
-  --zv-dot: 44px;
+  --zv-dot: 58px;
   align-items: center;
   display: flex;
   flex-direction: column;
-  gap: 1.1rem;
+  gap: 0.9rem;
   position: fixed;
-  right: clamp(0.5rem, 1.6vw, 1.5rem);
+  right: clamp(0.4rem, 1.4vw, 1.4rem);
   top: calc(50% + var(--zv-jump-top, 0px) / 2);
   transform: translateY(-50%);
   z-index: 40;
 }
 
-/* Tanka crta za krogci; --zv-jump-progress (0–1) jo pobarva do trenutnega. */
 .zv-shop-jump::before,
 .zv-shop-jump::after {
   background: var(--zvij-line);
@@ -5149,7 +5149,7 @@ body.admin-bar .site-header { top: 32px; }
   position: absolute;
   top: calc(var(--zv-dot) / 2);
   transform: translateX(-50%);
-  width: 3px;
+  width: 2px;
   z-index: -1;
 }
 
@@ -5164,79 +5164,62 @@ body.admin-bar .site-header { top: 32px; }
 }
 
 .zv-shop-jump__item {
-  display: block;
-  height: var(--zv-dot);
-  position: relative;
-  text-decoration: none;
-  width: var(--zv-dot);
-}
-
-.zv-shop-jump__item img {
-  aspect-ratio: 1;
-  background: var(--zvij-panel-alt);
-  border: 2px solid var(--zvij-line);
+  background: #fff;
+  border: 1px solid var(--zvij-line);
   border-radius: 50%;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
   display: block;
+  height: var(--zv-dot);
+  overflow: hidden;
+  position: relative;
+  text-decoration: none;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  width: var(--zv-dot);
+}
+
+/* Fotografije izdelkov imajo veliko praznega ozadja — povecava, da izdelek zapolni krogec. */
+.zv-shop-jump__item img {
+  display: block;
   height: 100%;
   object-fit: cover;
-  opacity: 0.8;
-  transition: transform 0.2s ease, opacity 0.2s ease, border-color 0.2s ease;
+  transform: scale(1.45);
   width: 100%;
 }
 
-.zv-shop-jump__item.is-past img {
+.zv-shop-jump__item.is-past {
   border-color: var(--zvij-accent);
 }
 
-.zv-shop-jump__item:hover img,
-.zv-shop-jump__item:focus-visible img {
-  opacity: 1;
-  transform: scale(1.08);
+.zv-shop-jump__item:hover,
+.zv-shop-jump__item:focus-visible {
+  transform: scale(1.06);
 }
 
-.zv-shop-jump__item.is-active img {
+.zv-shop-jump__item.is-active {
   border-color: var(--zvij-accent);
-  box-shadow: 0 0 0 3px var(--zvij-bg), 0 0 0 6px var(--zvij-accent), 0 8px 22px rgba(0, 0, 0, 0.35);
-  opacity: 1;
-  transform: scale(1.22);
+  box-shadow: 0 0 0 2px var(--zvij-accent), 0 8px 22px rgba(0, 0, 0, 0.35);
+  transform: scale(1.15);
 }
 
-/* Napis levo od krogca: na hover/fokus in nekaj sekund po spremembi skupine. */
+/* Ime skupine: samo bralnikom zaslona, na racunalniku pa ob prehodu z misko. */
 .zv-shop-jump__item span {
-  background: var(--zvij-text);
-  border-radius: 999px;
-  color: var(--zvij-bg);
-  font-size: 0.8rem;
-  font-weight: 800;
-  opacity: 0;
-  padding: 0.3rem 0.7rem;
-  pointer-events: none;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  overflow: hidden;
   position: absolute;
-  right: calc(100% + 0.7rem);
-  top: 50%;
-  transform: translate(6px, -50%);
-  transition: opacity 0.2s ease, transform 0.2s ease;
   white-space: nowrap;
-}
-
-.zv-shop-jump__item:hover span,
-.zv-shop-jump__item:focus-visible span,
-.zv-shop-jump__item.is-announce span {
-  opacity: 1;
-  transform: translate(0, -50%);
+  width: 1px;
 }
 
 .zv-shop-jump__item:focus-visible {
-  border-radius: 50%;
   outline: 2px solid var(--zvij-accent);
-  outline-offset: 4px;
+  outline-offset: 3px;
 }
 
 @media (max-width: 600px) {
   .zv-shop-jump {
-    --zv-dot: 34px;
-    gap: 0.9rem;
+    --zv-dot: 46px;
+    gap: 0.75rem;
     right: 0.35rem;
   }
 }
