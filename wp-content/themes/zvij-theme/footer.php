@@ -49,7 +49,7 @@ if (! defined('ABSPATH')) {
     <?php endif; ?>
 
     <div class="site-footer__brand">
-      <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/brand/logo-zvij.svg'); ?>" alt="<?php esc_attr_e('zvij.si', 'zvij-theme'); ?>" loading="lazy">
+      <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/brand/logo-zvij-outline.svg'); ?>" width="96" height="87" alt="<?php esc_attr_e('zvij.si', 'zvij-theme'); ?>" loading="lazy">
       <address>
         <strong>Zvij.si</strong><br>
         <?php esc_html_e('Tvoj vajb. Tvoja rutina. Tvoj lajf. Tvoja pravila.', 'zvij-theme'); ?>
