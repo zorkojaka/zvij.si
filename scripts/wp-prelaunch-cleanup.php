@@ -94,3 +94,16 @@ foreach ($coupons as $coupon) {
 /** Števec računov nazaj na 1 — testna naročila ga niso smela porabiti. */
 update_option('zvij_invoice_next_seq', 1);
 echo "zvij_invoice_next_seq ponastavljen na 1\n";
+
+/** 4. Testni člani iz razvoja (prijave z obrazcev med testiranjem). */
+global $wpdb;
+$members = $wpdb->prefix . 'zvij_members';
+$test_members = $wpdb->get_results(
+    "SELECT id, email FROM {$members}
+     WHERE email LIKE '%@example.com' OR email LIKE 'codex-test%' OR email LIKE 'test-%' OR email LIKE '%+test%'"
+);
+foreach ($test_members as $member) {
+    $wpdb->delete($members, [ 'id' => (int) $member->id ]);
+    echo "brisem testnega člana {$member->email}\n";
+}
+echo 'izbrisanih testnih članov: ' . count($test_members) . "\n";

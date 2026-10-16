@@ -28,6 +28,14 @@ cd "$APP_DIR"
 PROD=(docker compose --project-name zvij-prod --env-file "$ENV_FILE" -f docker-compose.prod.yml)
 prod_wp() { "${PROD[@]}" --profile tools run --rm wp-cli wp "$@"; }
 
+# Varovalo: sinhronizacija PREPIŠE produkcijsko bazo. Po lansiranju bi to
+# izbrisalo prava naročila in člane, zato se ustavi, če prod že ima naročila.
+# Zavestno prepisovanje: ZVIJ_SYNC_OVERWRITE_ORDERS=yes.
+REAL_ORDERS="$(prod_wp eval 'echo count(wc_get_orders(["limit"=>-1,"status"=>"any","return"=>"ids"]));' 2>/dev/null | tail -1)"
+if [ "${REAL_ORDERS:-0}" != "0" ] && [ "${ZVIJ_SYNC_OVERWRITE_ORDERS:-}" != "yes" ]; then
+  die "prod že ima naročila ($REAL_ORDERS) — sinhronizacija bi jih izbrisala. Ustavljeno."
+fi
+
 log "1/7 izvoz dev baze"
 docker compose exec -T mariadb sh -c "mariadb-dump -u root -p\"\$MARIADB_ROOT_PASSWORD\" --single-transaction --default-character-set=utf8mb4 $DEV_DB" > "$TMP/dump.sql"
 log "    $(du -h "$TMP/dump.sql" | cut -f1)"
@@ -50,6 +58,8 @@ log "5/7 produkcijske nastavitve po uvozu"
 prod_wp eval-file scripts/wp-configure-permalinks.php
 # Dev pošilja v Mailpit, ta nastavitev pride z bazo; prod Mailpita nima.
 prod_wp eval-file scripts/wp-mail-mode.php live
+# Testna naročila, kuponi in člani iz razvoja ne smejo v produkcijo.
+prod_wp eval-file scripts/wp-prelaunch-cleanup.php
 # Dev ima blog_public=0, da ga iskalniki ne indeksirajo. Prod mora biti 1.
 prod_wp option update blog_public 1
 
