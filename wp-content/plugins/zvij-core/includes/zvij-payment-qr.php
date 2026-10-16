@@ -185,9 +185,9 @@ function zvij_upnqr_render_page($order_id): void {
 add_action('woocommerce_thankyou', 'zvij_upnqr_render_page', 15);
 add_action('woocommerce_view_order', 'zvij_upnqr_render_page', 15);
 
-/** Prikaz QR / podatkov za nakazilo v emailu kupcu (predračun). */
+/** Prikaz QR / podatkov za nakazilo v emailu kupcu (predračun) in v obvestilu trgovcu o novem naročilu. */
 function zvij_upnqr_render_email($order, bool $sent_to_admin, bool $plain_text, $email = null): void {
-    if ($sent_to_admin || ! $order instanceof WC_Order || ! zvij_upnqr_applies($order)) {
+    if (! zvij_email_shows_customer_docs($sent_to_admin, $email) || ! $order instanceof WC_Order || ! zvij_upnqr_applies($order)) {
         return;
     }
     $details = zvij_upnqr_details($order);
@@ -215,3 +215,12 @@ function zvij_upnqr_render_email($order, bool $sent_to_admin, bool $plain_text, 
     echo '</td></tr></table></div>';
 }
 add_action('woocommerce_email_before_order_table', 'zvij_upnqr_render_email', 25, 4);
+
+/**
+ * WooCommerce v obvestilo o novem naročilu vstavi oglas za svojo mobilno aplikacijo
+ * (»Obdelajte vaša naročila na poti. Prenesite aplikacijo«). Naročila vodimo v Zvij.si,
+ * zato predlogo zamenjamo s prazno.
+ */
+add_filter('wc_get_template', static function ($located, $template_name) {
+    return $template_name === 'emails/email-mobile-messaging.php' ? __DIR__ . '/email-empty.php' : $located;
+}, 10, 2);

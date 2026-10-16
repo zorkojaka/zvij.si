@@ -165,13 +165,22 @@ function zvij_invoice_assign_number(WC_Order $order): string {
 }
 
 /**
- * V email kupcu doda računsko glavo. Ne izpiše se v admin emaile (nova naročila)
- * niti pri statusih, ki niso račun (cancelled/failed/pending/refunded).
+ * Ali email prikaže dokument za kupca (predračun/račun, UPN QR): vsi emaili kupcu in
+ * obvestilo trgovcu o novem naročilu, da trgovec vidi točno to, kar je dobil kupec.
+ * Drugi admin emaili (preklicano, neuspelo) ga ne prikažejo.
+ */
+function zvij_email_shows_customer_docs(bool $sent_to_admin, $email = null): bool {
+    return ! $sent_to_admin || $email instanceof WC_Email_New_Order;
+}
+
+/**
+ * V email doda računsko glavo (predračun/račun). Ne izpiše se pri statusih,
+ * ki niso račun (cancelled/failed/pending/refunded).
  *
  * @param WC_Order $order
  */
 function zvij_invoice_render_email($order, bool $sent_to_admin, bool $plain_text, $email = null): void {
-    if ($sent_to_admin || ! $order instanceof WC_Order) {
+    if (! zvij_email_shows_customer_docs($sent_to_admin, $email) || ! $order instanceof WC_Order) {
         return;
     }
     $status = $order->get_status();
