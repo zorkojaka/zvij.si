@@ -22,7 +22,7 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.62');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.64');
     wp_enqueue_style('zvij-blog-layout', get_template_directory_uri() . '/assets/blog.css', ['zvij-theme-style'], '1.0.0');
 
     if (is_page('clan-zvij-si')) {
@@ -48,6 +48,10 @@ add_action('wp_enqueue_scripts', function (): void {
     }
 
     wp_enqueue_script('zvij-site', get_template_directory_uri() . '/assets/site.js', [], '1.0.0', true);
+    wp_enqueue_script('zvij-swatches', get_template_directory_uri() . '/assets/swatches.js', ['jquery'], '1.0.0', true);
+    if (function_exists('is_shop') && is_shop()) {
+        wp_enqueue_script('zvij-shop-jump', get_template_directory_uri() . '/assets/shop-jump.js', [], '1.0.2', true);
+    }
     wp_enqueue_script('zvij-smoke', get_template_directory_uri() . '/assets/smoke.js', [], '1.0.2', true);
     wp_enqueue_script('zvij-analytics', get_template_directory_uri() . '/assets/analytics.js', ['jquery'], '0.1.0', true);
     wp_enqueue_style('zvij-color-scheme', get_template_directory_uri() . '/assets/color-scheme.css', ['zvij-theme-style'], '1.0.1');
@@ -1052,4 +1056,70 @@ function zvij_theme_blog_card(): void {
  */
 add_filter('language_attributes', static function (string $output): string {
     return is_admin() ? $output : $output . ' data-theme="dark"';
+});
+
+/**
+ * Sličice različic (bel/nebeljen/zelen papir, barve JollySafe), da je že brez
+ * klika vidno, da izdelek obstaja v več izvedbah. Samo kadar imata vsaj dve
+ * različici svojo fotografijo; vršički (1 g/5 g) imajo že gumbe za količino.
+ *
+ * @return array<int,array{id:int,label:string,thumb:string,attrs:array}>
+ */
+function zvij_variation_swatches(WC_Product $product): array {
+    if (! $product->is_type('variable')) {
+        return [];
+    }
+    $out = [];
+    $images = [];
+    foreach ($product->get_children() as $child_id) {
+        $variation = wc_get_product($child_id);
+        if (! $variation instanceof WC_Product_Variation || ! $variation->is_purchasable() || $variation->get_status() !== 'publish') {
+            continue;
+        }
+        $image_id = (int) ($variation->get_image_id('edit') ?: $product->get_image_id());
+        $attrs = $variation->get_variation_attributes();
+        $out[] = [
+            'id' => $variation->get_id(),
+            'label' => (string) (reset($attrs) ?: $variation->get_name()),
+            'thumb' => (string) wp_get_attachment_image_url($image_id, 'thumbnail'),
+            'attrs' => $attrs,
+        ];
+        $images[$image_id] = true;
+    }
+    return count($out) > 1 && count($images) > 1 ? $out : [];
+}
+
+/** »3 različice« z ednino, dvojino in množino. */
+function zvij_variation_count_label(int $count): string {
+    $mod = $count % 100;
+    $word = $mod === 1 ? 'različica' : ($mod === 2 ? 'različici' : (($mod === 3 || $mod === 4) ? 'različice' : 'različic'));
+    return $count . ' ' . $word;
+}
+
+function zvij_variation_swatches_markup(WC_Product $product, string $context): string {
+    $swatches = zvij_variation_swatches($product);
+    if ($swatches === []) {
+        return '';
+    }
+    $html = '<div class="zv-swatches zv-swatches--' . esc_attr($context) . '" role="group" aria-label="' . esc_attr(sprintf(__('%s — izberi različico', 'zvij-theme'), $product->get_name())) . '" data-swatches>';
+    foreach ($swatches as $i => $swatch) {
+        $html .= sprintf(
+            '<button type="button" class="zv-swatches__item" data-swatch="%1$d" data-attrs="%2$s" aria-pressed="%3$s" title="%4$s"><img src="%5$s" alt="%4$s" width="40" height="40" loading="lazy"></button>',
+            $swatch['id'],
+            esc_attr(wp_json_encode($swatch['attrs'])),
+            $i === 0 ? 'true' : 'false',
+            esc_attr($swatch['label']),
+            esc_url($swatch['thumb'])
+        );
+    }
+    $html .= '<span class="zv-swatches__count">' . esc_html(zvij_variation_count_label(count($swatches))) . '</span></div>';
+    return $html;
+}
+
+/** Na strani izdelka: sličice nad izbiro različice. */
+add_action('woocommerce_before_variations_form', static function (): void {
+    global $product;
+    if ($product instanceof WC_Product) {
+        echo zvij_variation_swatches_markup($product, 'single'); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped above
+    }
 });

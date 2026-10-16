@@ -5,12 +5,37 @@ if (! defined('ABSPATH')) {
 }
 
 function zvij_shop_groups(): array {
+    // Vrstni red je tudi vrstni red razdelkov na strani trgovine (Jaka, 17. 10. 2026).
     return [
-        'ziggi' => ['label' => 'Ziggi rizle', 'categories' => ['rizle', 'rolce']],
-        'cbd' => ['label' => 'CBD', 'categories' => ['cbd-cbg-vrsicki']],
-        'pripomocki' => ['label' => 'Pripomočki', 'categories' => ['setup-dodatki', 'grinderji', 'vzigalniki', 'dubi-filtri']],
+        'cbd' => ['label' => 'CBD vršički', 'short' => 'CBD', 'categories' => ['cbd-cbg-vrsicki']],
+        'dubi' => ['label' => 'DUBI filtri', 'short' => 'DUBI', 'categories' => ['dubi-filtri']],
+        'ziggi' => ['label' => 'Ziggi rizle', 'short' => 'Rizle', 'categories' => ['rizle', 'rolce']],
+        'pripomocki' => ['label' => 'Pripomočki', 'short' => 'Pripomočki', 'categories' => ['setup-dodatki', 'grinderji', 'vzigalniki']],
     ];
 }
+
+/** Skupina izdelka po kategoriji (prva, ki se ujema), sicer ''. */
+function zvij_shop_group_of(int $product_id): string {
+    $slugs = wp_get_post_terms($product_id, 'product_cat', ['fields' => 'slugs']);
+    if (is_wp_error($slugs)) {
+        return '';
+    }
+    foreach (zvij_shop_groups() as $key => $group) {
+        if (array_intersect($group['categories'], $slugs)) {
+            return $key;
+        }
+    }
+    return '';
+}
+
+/** Ali trgovina prikaže vse izdelke na eni strani, razdeljene po skupinah. */
+function zvij_shop_grouped_view(): bool {
+    return is_shop() && ! is_search() && zvij_current_shop_group() === ''
+        && in_array((string) ($_GET['orderby'] ?? ''), ['', 'menu_order'], true); // phpcs:ignore WordPress.Security.NonceVerification
+}
+
+/** Vsi izdelki na eni strani (trgovina ima manj kot 100 izdelkov). */
+add_filter('loop_shop_per_page', static fn ($count) => is_shop() || is_product_taxonomy() ? 100 : $count, 20);
 
 add_filter('query_vars', function (array $vars): array {
     $vars[] = 'zvij_group';
@@ -52,7 +77,7 @@ add_filter('posts_clauses', function (array $clauses, $query): array {
     }
     global $wpdb;
     $rank = 'CASE';
-    foreach ([['cbd-cbg-vrsicki'], ['dubi-filtri'], ['rizle', 'rolce']] as $priority => $slugs) {
+    foreach (array_values(array_column(zvij_shop_groups(), 'categories')) as $priority => $slugs) {
         $placeholders = implode(', ', array_fill(0, count($slugs), '%s'));
         $rank .= $wpdb->prepare(
             " WHEN EXISTS (SELECT 1 FROM {$wpdb->term_relationships} AS zv_rel
@@ -63,7 +88,7 @@ add_filter('posts_clauses', function (array $clauses, $query): array {
             ...array_merge($slugs, [$priority])
         );
     }
-    $rank .= ' ELSE 3 END ASC';
+    $rank .= ' ELSE ' . count(zvij_shop_groups()) . ' END ASC';
     $secondary = trim((string) ($clauses['orderby'] ?? ''));
     $clauses['orderby'] = $rank . ($secondary !== '' ? ', ' . $secondary : '') . ", {$wpdb->posts}.ID ASC";
     return $clauses;

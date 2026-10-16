@@ -35,6 +35,7 @@ $zvij_dobroimetje_note = function_exists('zvij_credit_public_badge')
     <?php endif; ?>
     <?php echo $product->get_image('medium_large'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
   </a>
+  <?php echo zvij_variation_swatches_markup($product, 'card'); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in helper ?>
   <div class="zv-pcard__body">
     <div class="zv-pcard__info">
       <?php if ($zvij_cat_label !== '') : ?>

@@ -21,7 +21,7 @@ class ShopGroupQuery {
     public function get($key) { return $this->data[$key] ?? null; }
     public function set($key, $value): void { $this->data[$key] = $value; }
 }
-check(array_keys(zvij_shop_groups()) === ['ziggi', 'cbd', 'pripomocki'], 'Three requested navigation groups');
+check(array_keys(zvij_shop_groups()) === ['cbd', 'dubi', 'ziggi', 'pripomocki'], 'Four shop sections in display order');
 check(in_array('zvij_group', $filters['query_vars']([]), true), 'Group query variable registered');
 foreach (zvij_shop_groups() as $key => $group) {
     $group_value = $key;
@@ -65,7 +65,8 @@ $ordered = $filters['posts_clauses']($original, $query);
 check(strpos($ordered['orderby'], "'cbd-cbg-vrsicki'") < strpos($ordered['orderby'], "'dubi-filtri'"), 'CBD before DUBI');
 check(strpos($ordered['orderby'], "'dubi-filtri'") < strpos($ordered['orderby'], "'rizle'"), 'DUBI before Ziggi');
 check(str_contains($ordered['orderby'], "'rizle', 'rolce'"), 'Paper rolls stay with Ziggi papers');
-check(str_contains($ordered['orderby'], 'ELSE 3 END ASC, ' . $original['orderby']), 'Accessories follow papers; existing secondary order preserved');
+check(strpos($ordered['orderby'], "'rizle'") < strpos($ordered['orderby'], "'setup-dodatki'"), 'Accessories follow papers');
+check(str_contains($ordered['orderby'], 'ELSE 4 END ASC, ' . $original['orderby']), 'Uncategorised last; existing secondary order preserved');
 check(str_ends_with($ordered['orderby'], 'wp_posts.ID ASC'), 'Stable tie breaker supports pagination');
 foreach (['price', 'date', 'title', 'popularity', 'rating'] as $sort) {
     $query->data['orderby'] = $sort;
