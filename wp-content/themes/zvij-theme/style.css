@@ -5119,3 +5119,14 @@ body.admin-bar .site-header { top: 32px; }
 .site-footer__company strong {
   color: var(--zvij-text);
 }
+
+/* WooCommerce woocommerce-smallscreen.css (≤768 px) nastavi karticam
+   width: 48 % z bolj specificnim izbirnikom ([class*="columns-"]), zato je bila
+   na telefonu vsaka kartica v enem stolpcu le pol zaslona siroka.
+   Kartice postavlja nasa mreza, ne WooCommercov float. */
+.woocommerce ul.products[class*="columns-"] li.product,
+.woocommerce-page ul.products[class*="columns-"] li.product {
+  float: none;
+  margin: 0;
+  width: auto;
+}
