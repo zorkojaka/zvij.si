@@ -11,6 +11,13 @@ function kit_check(bool $condition, string $label): void {
     if (! $condition) { throw new RuntimeException($label); }
     echo "PASS $label\n";
 }
+/** Izdelek ali variacija po slugu (po združitvi v variacije 16. 10. 2026 imajo variacije stare sluge). */
+function zvij_test_product(string $slug): WC_Product {
+    $post = get_page_by_path($slug, OBJECT, 'product') ?: (get_posts(['name' => $slug, 'post_type' => 'product_variation', 'post_status' => ['publish', 'private'], 'numberposts' => 1])[0] ?? null);
+    $product = $post ? wc_get_product($post->ID) : null;
+    if (! $product) { throw new RuntimeException("Ni izdelka $slug"); }
+    return $product;
+}
 $groups = [[1, 2, 3], [2, 3, 4]];
 $line = static fn ($id, $reward = 100, $quantity = 1) => compact('id', 'reward', 'quantity');
 kit_check(zvij_kit_bonus_calculate([$line(1), $line(2)], $groups) === 0, 'Two products do not qualify');
@@ -32,8 +39,8 @@ try {
     $order = wc_create_order(['customer_id' => $user_id]);
     $order->set_billing_email($email);
     $base = 0;
-    foreach ([211, 218, 71] as $id) {
-        $product = wc_get_product($id);
+    foreach (['clipper-black', 'zvij-mini-grinder-5-cm', 'dubi-42-aktivnih-ogljikovih-filtrov'] as $slug) {
+        $product = zvij_test_product($slug);
         $base += zvij_credit_product_kristali($product);
         $order->add_product($product, 1);
     }

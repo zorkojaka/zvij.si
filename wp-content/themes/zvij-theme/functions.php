@@ -43,7 +43,7 @@ add_action('wp_enqueue_scripts', function (): void {
         if (function_exists('WC')) {
             wp_enqueue_script('wc-add-to-cart');
         }
-        wp_enqueue_script('zvij-home', get_template_directory_uri() . '/assets/home.js', ['jquery'], '0.9.36', true);
+        wp_enqueue_script('zvij-home', get_template_directory_uri() . '/assets/home.js', ['jquery'], '0.9.38', true);
     }
 
     wp_enqueue_script('zvij-site', get_template_directory_uri() . '/assets/site.js', [], '1.0.0', true);
@@ -150,8 +150,9 @@ function zvij_product_loop_buy_block(WC_Product $product): void
             ?>
             <div class="zv-shop-vars zv-carousel-card" data-product-id="<?php echo esc_attr((string) $product->get_id()); ?>" data-carousel-source="shop">
               <p class="zv-shop-vars__price" data-price-out><?php echo wp_kses_post(wc_price((float) $default_variation['raw_price'])); ?></p>
-              <div class="zv-carousel-card__hint"><?php esc_html_e('Izberi količino', 'zvij-theme'); ?></div>
-              <div class="zv-carousel-card__vars" role="group" aria-label="<?php esc_attr_e('Količina', 'zvij-theme'); ?>">
+              <?php [$zvij_choice_hint, $zvij_choice_group] = zvij_variation_choice_label($product); ?>
+              <div class="zv-carousel-card__hint"><?php echo esc_html($zvij_choice_hint); ?></div>
+              <div class="zv-carousel-card__vars" role="group" aria-label="<?php echo esc_attr($zvij_choice_group); ?>">
                 <?php foreach ($variations as $variation_i => $variation) : ?>
                   <button type="button"
                     data-variation-choice
@@ -160,6 +161,7 @@ function zvij_product_loop_buy_block(WC_Product $product): void
                     data-variation-id="<?php echo esc_attr((string) $variation['id']); ?>"
                     data-product-id="<?php echo esc_attr((string) $product->get_id()); ?>"
                     data-price="<?php echo esc_attr(wp_strip_all_tags(wc_price((float) $variation['raw_price']))); ?>"
+                    data-image-src="<?php echo esc_url($variation['image'] ?? ''); ?>"
                     data-attrs="<?php echo esc_attr(wp_json_encode($variation['attrs'])); ?>">
                     <span class="zv-carousel-card__var-label"><?php echo esc_html($variation['label']); ?></span>
                     <span class="zv-carousel-card__var-price"><?php echo wp_kses_post(wc_price((float) $variation['raw_price'])); ?></span>
@@ -467,9 +469,19 @@ function zvij_kit_slot_alternatives(array $item): array {
         ]);
         foreach ($ids as $id) {
             $post = get_post($id);
-            if ($post) {
-                $slugs[] = $post->post_name;
+            if (! $post) {
+                continue;
             }
+            // Variabilen izdelek (npr. Ziggi Classic Slim) v kit ne gre kot
+            // celota — izbira so njegove variacije (bel, nebeljen, konopljin).
+            $product = wc_get_product($id);
+            if ($product && $product->is_type('variable')) {
+                foreach ($product->get_children() as $child_id) {
+                    $slugs[] = (string) get_post_field('post_name', $child_id);
+                }
+                continue;
+            }
+            $slugs[] = $post->post_name;
         }
     }
 
@@ -830,6 +842,23 @@ function zvij_homepage_carousel_label(WC_Product $product): string {
     return $product->is_type('variable') ? __('Izberi količino', 'zvij-theme') : __('Izdelek', 'zvij-theme');
 }
 
+/**
+ * Napis nad izbiro variacij glede na lastnost: »Izberi papir«, »Izberi barvo« …
+ * Vršički (količina) ostanejo »Izberi količino«.
+ *
+ * @return array{0:string,1:string} [napis, aria oznaka skupine]
+ */
+function zvij_variation_choice_label(WC_Product $product): array {
+    $attributes = $product->get_attributes();
+    $first = $attributes ? reset($attributes) : null;
+    $name = $first instanceof WC_Product_Attribute ? wc_attribute_label($first->get_name(), $product) : '';
+    $accusative = ['Papir' => 'papir', 'Pakiranje' => 'pakiranje', 'Dizajn' => 'dizajn', 'Barva' => 'barvo'];
+    if (isset($accusative[$name])) {
+        return [sprintf(__('Izberi %s', 'zvij-theme'), $accusative[$name]), $name];
+    }
+    return [__('Izberi količino', 'zvij-theme'), __('Količina', 'zvij-theme')];
+}
+
 function zvij_product_pack_five_url(WC_Product $product): string {
     $id = (int) $product->get_meta('_zvij_pack_5_image_id');
     return $id ? (string) wp_get_attachment_image_url($id, 'medium_large') : '';
@@ -863,8 +892,16 @@ function zvij_homepage_carousel_variations(WC_Product $product): array {
             $grams = (float) str_replace(',', '.', $matches[1]);
         }
 
+        // Lastna slika variacije (bel/nebeljen papir, barva tulca); ista kot
+        // nadrejena pomeni »brez lastne« — tam ostane 1 g/5 g logika.
+        $image_id = (int) $variation->get_image_id('edit');
+        $image = $image_id && $image_id !== (int) $product->get_image_id()
+            ? (string) wp_get_attachment_image_url($image_id, 'medium_large')
+            : '';
+
         $items[] = [
             'id' => $variation->get_id(),
+            'image' => $image,
             'label' => $label !== '' ? $label : $variation->get_name(),
             'raw_price' => (float) $variation->get_price(),
             'grams' => $grams,
@@ -954,8 +991,9 @@ function zvij_render_homepage_product_carousel(): void {
                   ?>
                 </p>
                 <?php if ($product->is_type('variable')) : ?>
-                  <div class="zv-carousel-card__hint"><?php esc_html_e('Izberi količino', 'zvij-theme'); ?></div>
-                  <div class="zv-carousel-card__vars" role="group" aria-label="<?php esc_attr_e('Količina', 'zvij-theme'); ?>">
+                  <?php [$zvij_choice_hint, $zvij_choice_group] = zvij_variation_choice_label($product); ?>
+              <div class="zv-carousel-card__hint"><?php echo esc_html($zvij_choice_hint); ?></div>
+                  <div class="zv-carousel-card__vars" role="group" aria-label="<?php echo esc_attr($zvij_choice_group); ?>">
                     <?php foreach ($variations as $variation_i => $variation) : ?>
                       <button type="button"
                         data-variation-choice
@@ -964,7 +1002,8 @@ function zvij_render_homepage_product_carousel(): void {
                         data-variation-id="<?php echo esc_attr((string) $variation['id']); ?>"
                         data-product-id="<?php echo esc_attr((string) $product->get_id()); ?>"
                         data-price="<?php echo esc_attr(wp_strip_all_tags(wc_price((float) $variation['raw_price']))); ?>"
-                        data-attrs="<?php echo esc_attr(wp_json_encode($variation['attrs'])); ?>">
+                        data-image-src="<?php echo esc_url($variation['image'] ?? ''); ?>"
+                    data-attrs="<?php echo esc_attr(wp_json_encode($variation['attrs'])); ?>">
                         <span class="zv-carousel-card__var-label"><?php echo esc_html($variation['label']); ?></span>
                         <span class="zv-carousel-card__var-price"><?php echo wp_kses_post(wc_price((float) $variation['raw_price'])); ?></span>
                       </button>

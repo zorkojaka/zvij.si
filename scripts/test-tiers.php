@@ -12,11 +12,19 @@ function tier_check(bool $condition, string $label): void {
     echo "PASS $label\n";
 }
 
+/** Izdelek ali variacija po slugu (po združitvi v variacije 16. 10. 2026 imajo variacije stare sluge). */
+function zvij_test_product(string $slug): WC_Product {
+    $post = get_page_by_path($slug, OBJECT, 'product') ?: (get_posts(['name' => $slug, 'post_type' => 'product_variation', 'post_status' => ['publish', 'private'], 'numberposts' => 1])[0] ?? null);
+    $product = $post ? wc_get_product($post->ID) : null;
+    if (! $product) { throw new RuntimeException("Ni izdelka $slug"); }
+    return $product;
+}
+
 global $wpdb;
 $wpdb->query('START TRANSACTION');
 $enabled_before = get_option('zvij_tiers_enabled');
 try {
-    $ziggi = wc_get_product(435);     // 2,30 €, nabava 0,96 €
+    $ziggi = zvij_test_product('ziggi-original-classic-slim');     // variacija: 2,30 €, nabava 0,96 €
     $plin = wc_get_product(445);      // nabavna cena se v testu začasno odstrani
     $cbd = wc_get_product(74);        // variabilen: 1 g po 8,00 €, nabava 1,50 €
     $legacy_ziggi = zvij_credit_legacy_kristali($ziggi);

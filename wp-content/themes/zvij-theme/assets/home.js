@@ -200,14 +200,18 @@
         });
         var photo = image.querySelector('img');
         var fiveSrc = image.getAttribute('data-pack-five-src');
-        if (photo && fiveSrc) {
+        // Variacija z lastno sliko (papir, barva) ima prednost pred 1 g/5 g logiko.
+        var ownSrc = choice ? choice.getAttribute('data-image-src') : '';
+        // singleSrc pomeni, da je bila slika že zamenjana — vrnitev na izvirnik.
+        if (photo && (ownSrc || fiveSrc || photo.dataset.singleSrc)) {
           if (!photo.dataset.singleSrc) {
             photo.dataset.singleSrc = photo.getAttribute('src') || '';
             photo.dataset.singleSrcset = photo.getAttribute('srcset') || '';
             photo.dataset.singleSizes = photo.getAttribute('sizes') || '';
           }
-          var five = choiceIsFiveGram(choice);
-          photo.setAttribute('src', five ? fiveSrc : photo.dataset.singleSrc);
+          var target = ownSrc || (fiveSrc && choiceIsFiveGram(choice) ? fiveSrc : '');
+          var five = target !== '';
+          photo.setAttribute('src', five ? target : photo.dataset.singleSrc);
           if (five) {
             photo.removeAttribute('srcset');
             photo.removeAttribute('sizes');

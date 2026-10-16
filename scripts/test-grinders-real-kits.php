@@ -35,16 +35,17 @@ foreach ((array) get_option('zvij_kits', []) as $kit) {
     if (! isset($expected[$key])) { continue; }
     $actual = [];
     foreach ($kit['items'] as $item) {
-        $post = get_page_by_path($item['slug'], OBJECT, 'product');
-        $product = $post ? wc_get_product($post->ID) : false;
+        $view = zvij_kit_item_view($item['slug']);
+        $product = $view['id'] ? wc_get_product($view['id']) : false;
         grinder_check($product && $product->get_status() === 'publish' && $product->is_purchasable() && $product->is_in_stock(), "$key component {$item['role']} published and available");
-        $actual[] = $product->get_id();
+        // Po združitvi v variacije (16. 10. 2026) je izdelek variacija; primerjaj z izvornim ID.
+        $actual[] = (int) ($product->get_meta('_zvij_merged_from') ?: $product->get_id());
     }
     grinder_check($actual === $expected[$key], "$key defaults match photographed real products");
     $url = zvij_kit_flatlay_url($key);
     grinder_check(str_contains($url, "$key-kit-real-v1.jpg"), "$key uses reviewed real-product kit photograph");
     foreach ($kit['addons'] as $slug) {
-        grinder_check((bool) get_page_by_path($slug, OBJECT, 'product'), "$key optional product $slug resolves");
+        grinder_check(zvij_kit_item_view($slug)['id'] > 0, "$key optional product $slug resolves");
     }
 }
 grinder_check(wc_get_product(227)->get_status() === 'draft', 'Unavailable silver Clipper not silently published');

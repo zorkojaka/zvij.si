@@ -81,7 +81,13 @@ function zvij_box_qty($product): int {
         return 0;
     }
 
-    return (int) apply_filters('zvij_box_qty', (int) $product->get_meta('_zvij_box_qty'), $product);
+    // Variacija brez lastne vrednosti podeduje velikost škatle od nadrejenega izdelka.
+    $box = (int) $product->get_meta('_zvij_box_qty');
+    if ($box === 0 && $product->get_parent_id()) {
+        $box = (int) get_post_meta($product->get_parent_id(), '_zvij_box_qty', true);
+    }
+
+    return (int) apply_filters('zvij_box_qty', $box, $product);
 }
 
 /**
