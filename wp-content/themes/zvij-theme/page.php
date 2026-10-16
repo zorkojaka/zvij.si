@@ -117,6 +117,22 @@ while (have_posts()) :
             <p class="zv-about-story__note">Zvij.si je namenjen polnoletnim osebam (18+).</p>
           </div>
         </section>
+        <?php $articles = new WP_Query(['post_type' => 'post', 'post_status' => 'publish', 'posts_per_page' => 3, 'ignore_sticky_posts' => true]); ?>
+        <?php if ($articles->have_posts()) : ?>
+          <section class="zv-about-blog" aria-labelledby="zv-about-blog-title">
+            <div class="zv-about-blog__head">
+              <p class="eyebrow">Blog</p>
+              <h2 id="zv-about-blog-title">Kaj je kaj v konoplji</h2>
+              <a class="button button--ghost" href="<?php echo esc_url(home_url('/blog/')); ?>">Vsi članki</a>
+            </div>
+            <div class="zv-blog-grid">
+              <?php while ($articles->have_posts()) : $articles->the_post(); ?>
+                <?php zvij_theme_blog_card(); ?>
+              <?php endwhile; ?>
+            </div>
+          </section>
+          <?php wp_reset_postdata(); ?>
+        <?php endif; ?>
         <?php
         continue;
     endif;

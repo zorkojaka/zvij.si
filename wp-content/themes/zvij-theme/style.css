@@ -5050,3 +5050,26 @@ body.admin-bar .site-header { top: 32px; }
   text-align: left;
   vertical-align: top;
 }
+
+/* Blog sekcija na strani O nas. */
+.zv-about-blog {
+  padding-top: clamp(1.5rem, 4vw, 3rem);
+}
+
+.zv-about-blog__head {
+  align-items: end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.zv-about-blog__head .eyebrow {
+  flex-basis: 100%;
+  margin: 0;
+}
+
+.zv-about-blog__head h2 {
+  margin: 0;
+}

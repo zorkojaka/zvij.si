@@ -981,3 +981,22 @@ function zvij_render_homepage_product_carousel(): void {
     </section>
     <?php
 }
+
+/** Kartica članka — /blog/ in sekcija na strani O nas. Kliči znotraj zanke. */
+function zvij_theme_blog_card(): void {
+    ?>
+    <article <?php post_class('zv-blog-card'); ?>>
+      <a class="zv-blog-card__link" href="<?php the_permalink(); ?>">
+        <?php if (has_post_thumbnail()) : ?>
+          <span class="zv-blog-card__media"><?php the_post_thumbnail('medium_large', ['loading' => 'lazy']); ?></span>
+        <?php endif; ?>
+        <span class="zv-blog-card__body">
+          <time datetime="<?php echo esc_attr(get_the_date('c')); ?>"><?php echo esc_html(get_the_date('j. n. Y')); ?></time>
+          <h2><?php the_title(); ?></h2>
+          <p><?php echo esc_html(wp_strip_all_tags(get_the_excerpt())); ?></p>
+          <span class="zv-blog-card__more"><?php esc_html_e('Preberi', 'zvij-theme'); ?> →</span>
+        </span>
+      </a>
+    </article>
+    <?php
+}

@@ -1,0 +1,33 @@
+{
+  "436": {
+    "slug": "ziggi-hemp-classic-slim",
+    "previous_featured": 611,
+    "images": [
+      {"file": "hemp-open.webp", "role": "gallery", "source": "https://ziggioriginal-prod.s3.amazonaws.com/uploads/2023/08/HEMP-1-600x600-copy.webp", "treatment": "Unchanged manufacturer photograph, open pack"}
+    ]
+  },
+  "439": {
+    "slug": "ziggi-mycelium-mystique-special-edition",
+    "previous_featured": 529,
+    "images": [
+      {"file": "mycelium-main.jpg", "role": "featured", "source": "https://ziggioriginal-prod.s3.amazonaws.com/uploads/2024/09/DSC_0081-copy-1.webp", "treatment": "AI-assisted charcoal background adaptation of four manufacturer designs"},
+      {"file": "mycelium-open.webp", "role": "gallery", "source": "https://ziggioriginal-prod.s3.amazonaws.com/uploads/2024/09/DSC_0153-copy-scaled.webp", "treatment": "Unchanged manufacturer photograph, open packs"}
+    ]
+  },
+  "440": {
+    "slug": "ziggi-rockets-odyssey-special-edition",
+    "previous_featured": 528,
+    "images": [
+      {"file": "rocket-main.jpg", "role": "featured", "source": "https://ziggioriginal-prod.s3.amazonaws.com/uploads/2024/09/DSC_0079-copy-1.webp", "treatment": "AI-assisted charcoal background adaptation of four manufacturer designs"},
+      {"file": "rocket-open.webp", "role": "gallery", "source": "https://ziggioriginal-prod.s3.amazonaws.com/uploads/2024/09/DSC_0156-copy-scaled.webp", "treatment": "Unchanged manufacturer photograph, open packs"}
+    ]
+  },
+  "445": {
+    "slug": "clipper-plin-za-polnjenje-16-ml",
+    "previous_featured": 527,
+    "images": [
+      {"file": "clipper-16ml-main.jpg", "role": "featured", "source": "https://www.shellshock420.com/cdn/shop/files/clipper-butane-16ml-refill.jpg", "treatment": "AI-assisted charcoal background adaptation of 16 ml product photograph"},
+      {"file": "clipper-16ml-original.jpg", "role": "gallery", "source": "https://www.shellshock420.com/cdn/shop/files/clipper-butane-16ml-refill.jpg", "treatment": "Unchanged 16 ml photograph; same front view on original white background, not a second camera angle"}
+    ]
+  }
+}
