@@ -23,6 +23,7 @@ add_action('after_setup_theme', function (): void {
 
 add_action('wp_enqueue_scripts', function (): void {
     wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.61');
+    wp_enqueue_style('zvij-blog-layout', get_template_directory_uri() . '/assets/blog.css', ['zvij-theme-style'], '1.0.0');
 
     if (is_page('clan-zvij-si')) {
         wp_enqueue_style('zvij-members-page', get_template_directory_uri() . '/assets/members.css', ['zvij-theme-style'], '1.0.0');
@@ -1026,9 +1027,13 @@ function zvij_theme_blog_card(): void {
     ?>
     <article <?php post_class('zv-blog-card'); ?>>
       <a class="zv-blog-card__link" href="<?php the_permalink(); ?>">
-        <?php if (has_post_thumbnail()) : ?>
-          <span class="zv-blog-card__media"><?php the_post_thumbnail('medium_large', ['loading' => 'lazy']); ?></span>
-        <?php endif; ?>
+        <span class="zv-blog-card__media">
+          <?php if (has_post_thumbnail()) : ?>
+            <?php the_post_thumbnail('medium_large', ['loading' => 'lazy']); ?>
+          <?php else : ?>
+            <span class="zv-blog-card__placeholder" aria-hidden="true">Zvij.si</span>
+          <?php endif; ?>
+        </span>
         <span class="zv-blog-card__body">
           <time datetime="<?php echo esc_attr(get_the_date('c')); ?>"><?php echo esc_html(get_the_date('j. n. Y')); ?></time>
           <h2><?php the_title(); ?></h2>

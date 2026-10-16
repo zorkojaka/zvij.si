@@ -1,0 +1,91 @@
+/* Shared article cards also appear on the About page. */
+.blog .site-main {
+  max-width: 1400px;
+  padding-top: 2.5rem;
+  padding-bottom: 3rem;
+}
+.blog .zv-page-head { margin: 0 0 2rem; }
+.blog .zv-page-head h1 { margin: 0 0 0.75rem; font-size: 3rem; line-height: 1.1; }
+.blog .zv-page-head p { margin: 0; max-width: 42rem; }
+.zv-blog-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  padding-bottom: 0;
+}
+.zv-blog-card { min-width: 0; border-radius: 8px; }
+.zv-blog-card__link { grid-template-rows: auto 1fr; }
+.zv-blog-card__media {
+  display: block;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--zvij-panel-alt, var(--zvij-panel));
+}
+.zv-blog-card__media img { width: 100%; height: 100%; object-fit: cover; }
+.zv-blog-card__placeholder {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: var(--zvij-muted);
+  font-size: 2rem;
+  font-weight: 800;
+}
+.zv-blog-card__body {
+  grid-template-rows: auto auto 1fr auto;
+  gap: 0.75rem;
+  padding: 1.5rem;
+}
+.zv-blog-card__body h2 { font-size: 1.4rem; line-height: 1.25; overflow-wrap: anywhere; }
+.zv-blog-card__body p { line-height: 1.65; }
+.zv-blog-card__more { margin-top: 0.5rem; }
+.zv-blog-card__link:focus-visible { outline: 2px solid var(--zvij-accent); outline-offset: -3px; }
+.blog .pagination { margin-top: 2rem; }
+.blog .nav-links { display: flex; flex-wrap: wrap; gap: 1rem; }
+
+/* One centered reading column, without the generic page's oversized hero/card. */
+.zv-article {
+  width: 100%;
+  max-width: 58rem;
+  margin: 2.5rem auto 3rem;
+  min-width: 0;
+}
+.zv-article .page-hero { max-width: 46rem; margin: 0 auto 2rem; }
+.zv-article .eyebrow { margin: 0 0 1rem; }
+.zv-article .page-hero h1 { margin: 0; font-size: 3rem; line-height: 1.12; overflow-wrap: anywhere; }
+.zv-article__media { margin: 0 0 2.5rem; }
+.zv-article__media img { max-height: 34rem; border-radius: 8px; }
+.zv-article .entry-content,
+.zv-article__note,
+.zv-article .page-actions { width: 100%; max-width: 46rem; margin-left: auto; margin-right: auto; }
+.zv-article .entry-content { color: var(--zvij-text); font-size: 1.0625rem; line-height: 1.8; overflow-wrap: anywhere; }
+.zv-article .entry-content > * { margin: 0 0 1.25rem; }
+.zv-article .entry-content :is(h2, h3, h4) { margin-top: 2.25rem; margin-bottom: 0.875rem; line-height: 1.3; }
+.zv-article .entry-content h2 { font-size: 1.65rem; }
+.zv-article .entry-content h3 { font-size: 1.3rem; }
+.zv-article .entry-content :is(ul, ol) { padding-left: 1.5rem; }
+.zv-article .entry-content li + li { margin-top: 0.5rem; }
+.zv-article .entry-content :is(img, video, iframe) { max-width: 100%; }
+.zv-article .entry-content img { height: auto; border-radius: 8px; }
+.zv-article .entry-content figure { max-width: 100%; margin-left: 0; margin-right: 0; }
+.zv-article .entry-content table { display: block; overflow-x: auto; }
+.zv-article .entry-content :is(th, td) { overflow-wrap: normal; word-break: normal; }
+.zv-article .entry-content :is(th, td):first-child { min-width: 3rem; }
+.zv-article .entry-content :is(th, td):last-child { min-width: 5rem; }
+.zv-article__note { margin-top: 2.5rem; margin-bottom: 0; padding-top: 1.25rem; border-top: 1px solid var(--zvij-line); line-height: 1.6; }
+.zv-article .page-actions { margin-top: 1.5rem; }
+@media (max-width: 1000px) {
+  .zv-blog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  .blog .site-main { padding-top: 1.5rem; padding-bottom: 2rem; }
+  .blog .zv-page-head { margin-bottom: 1.5rem; }
+  .blog .zv-page-head h1 { font-size: 2.25rem; }
+  .zv-blog-grid { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
+  .zv-blog-card__body { padding: 1.25rem; }
+  .zv-article { margin-top: 1.5rem; margin-bottom: 2rem; }
+  .zv-article .page-hero { margin-bottom: 1.5rem; }
+  .zv-article .page-hero h1 { font-size: 2.25rem; }
+  .zv-article__media { margin-bottom: 1.75rem; }
+  .zv-article .entry-content { font-size: 1rem; line-height: 1.75; }
+  .zv-article .entry-content h2 { font-size: 1.5rem; }
+  .zv-article .page-actions .button { flex: 1 1 100%; text-align: center; }
+}

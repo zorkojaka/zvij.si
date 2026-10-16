@@ -22,5 +22,6 @@ get_header();
     <p><?php esc_html_e('Članki prihajajo kmalu.', 'zvij-theme'); ?></p>
   <?php endif; ?>
 </section>
+<?php the_posts_pagination(['mid_size' => 1, 'prev_text' => __('Prejšnja', 'zvij-theme'), 'next_text' => __('Naslednja', 'zvij-theme')]); ?>
 <?php
 get_footer();
