@@ -1328,17 +1328,6 @@ a {
   position: relative;
 }
 
-.site-nav .current-menu-item > a::after,
-.site-nav a:hover::after {
-  background: var(--zvij-text);
-  bottom: 18px;
-  content: "";
-  height: 2px;
-  left: 0;
-  position: absolute;
-  right: 0;
-}
-
 .site-actions {
   align-items: center;
   display: flex;
@@ -4710,17 +4699,18 @@ body::before {
 }
 
 .site-nav a {
-  border-bottom: 2px solid transparent;
   font-weight: 700;
-  padding-bottom: 2px;
-  transition: color 0.15s ease, border-color 0.15s ease;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.4em;
+  transition: color 0.15s ease;
 }
 
 .site-nav a:hover,
+.site-nav a:focus-visible,
 .site-nav .current-menu-item > a,
 body.home .site-nav li:first-child a {
-  border-bottom-color: var(--zvij-accent);
   color: var(--zvij-accent);
+  text-decoration-line: underline;
 }
 
 .site-actions {

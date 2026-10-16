@@ -22,7 +22,7 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.61');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.62');
     wp_enqueue_style('zvij-blog-layout', get_template_directory_uri() . '/assets/blog.css', ['zvij-theme-style'], '1.0.0');
 
     if (is_page('clan-zvij-si')) {
