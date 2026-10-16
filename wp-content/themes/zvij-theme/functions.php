@@ -749,7 +749,7 @@ function zvij_home_product_img_url(?WC_Product $product): string {
  * key: black|silver|gold|throwie
  */
 function zvij_kit_flatlay_url(string $key): string {
-    foreach ([$key . '-kit-real-v1.jpg', $key . '-kit-flatlay.png'] as $file) {
+    foreach ([$key . '-kit-real-v2.jpg', $key . '-kit-real-v1.jpg', $key . '-kit-flatlay.png'] as $file) {
         $path = get_template_directory() . '/assets/images/kits/' . $file;
         if (file_exists($path)) {
             return get_template_directory_uri() . '/assets/images/kits/' . $file;

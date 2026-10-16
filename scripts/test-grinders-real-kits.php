@@ -43,7 +43,8 @@ foreach ((array) get_option('zvij_kits', []) as $kit) {
     }
     grinder_check($actual === $expected[$key], "$key defaults match photographed real products");
     $url = zvij_kit_flatlay_url($key);
-    grinder_check(str_contains($url, "$key-kit-real-v1.jpg"), "$key uses reviewed real-product kit photograph");
+    $version = $key === 'gold' ? 'v2' : 'v1';
+    grinder_check(str_contains($url, "$key-kit-real-$version.jpg"), "$key uses reviewed real-product kit photograph");
     foreach ($kit['addons'] as $slug) {
         grinder_check(zvij_kit_item_view($slug)['id'] > 0, "$key optional product $slug resolves");
     }
