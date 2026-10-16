@@ -51,7 +51,7 @@ add_action('wp_enqueue_scripts', function (): void {
     wp_enqueue_script('zvij-analytics', get_template_directory_uri() . '/assets/analytics.js', ['jquery'], '0.1.0', true);
     wp_enqueue_style('zvij-color-scheme', get_template_directory_uri() . '/assets/color-scheme.css', ['zvij-theme-style'], '1.0.1');
     // Run in the head so the saved theme is applied before the body is painted.
-    wp_enqueue_script('zvij-color-scheme', get_template_directory_uri() . '/assets/color-scheme.js', [], '1.0.1', false);
+    wp_enqueue_script('zvij-color-scheme', get_template_directory_uri() . '/assets/color-scheme.js', [], '1.1.0', false);
 });
 
 /**
@@ -1039,3 +1039,12 @@ function zvij_theme_blog_card(): void {
     </article>
     <?php
 }
+
+/**
+ * Temna tema je privzeta že v HTML-ju (brez JavaScripta in brez utripa svetle
+ * strani ob nalaganju). color-scheme.js jo preklopi na svetlo le, kadar je
+ * obiskovalec svetlo izbral sam.
+ */
+add_filter('language_attributes', static function (string $output): string {
+    return is_admin() ? $output : $output . ' data-theme="dark"';
+});

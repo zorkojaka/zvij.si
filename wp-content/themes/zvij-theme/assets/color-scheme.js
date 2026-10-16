@@ -1,7 +1,8 @@
 (() => {
+  // Privzeta je temna tema (Jaka, 17. 10. 2026), ne glede na nastavitev sistema.
+  // Svetla velja le, ko jo obiskovalec izbere s stikalom; izbira se zapomni.
   const key = 'zvij-color-scheme';
   const root = document.documentElement;
-  const system = window.matchMedia('(prefers-color-scheme: dark)');
   let preference = null;
   try {
     const saved = window.localStorage.getItem(key);
@@ -11,7 +12,7 @@
   }
 
   function apply() {
-    const dark = (preference || (system.matches ? 'dark' : 'light')) === 'dark';
+    const dark = (preference || 'dark') === 'dark';
     root.dataset.theme = dark ? 'dark' : 'light';
     const button = document.querySelector('.zv-theme-toggle');
     if (button) {
@@ -34,7 +35,6 @@
       apply();
     });
   });
-  system.addEventListener('change', () => { if (preference === null) apply(); });
   window.addEventListener('storage', event => {
     if (event.key !== key && event.key !== null) return;
     preference = event.newValue === 'dark' || event.newValue === 'light' ? event.newValue : null;

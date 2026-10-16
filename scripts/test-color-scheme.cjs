@@ -37,47 +37,39 @@ function environment({ dark = false, saved = null, blocked = false } = {}) {
   return {
     root, button, values,
     mount() { ready = true; domEvents.DOMContentLoaded(); },
-    system(dark) { media.matches = dark; mediaEvents.change(); },
     storage(newValue, eventKey = key) { windowEvents.storage({ key: eventKey, newValue }); },
   };
 }
 
-const light = environment();
-assert.equal(light.root.dataset.theme, 'light');
-assert.equal(light.button.hidden, true);
-light.mount();
-assert.equal(light.button.hidden, false);
-assert.equal(light.button.attrs['aria-label'], 'Vklopi temno temo');
-light.button.events.click();
-assert.equal(light.root.dataset.theme, 'dark');
-assert.equal(light.values[key], 'dark');
-assert.equal(light.button.attrs['aria-pressed'], 'true');
-assert.equal(light.button.attrs.title, 'Vklopi svetlo temo');
-light.button.events.click();
-assert.equal(light.root.dataset.theme, 'light');
-assert.equal(light.values[key], 'light');
-console.log('PASS toggle, accessible state and persistence');
+const fresh = environment();
+assert.equal(fresh.root.dataset.theme, 'dark');
+assert.equal(fresh.button.hidden, true);
+fresh.mount();
+assert.equal(fresh.button.hidden, false);
+assert.equal(fresh.button.attrs['aria-label'], 'Vklopi svetlo temo');
+assert.equal(fresh.button.attrs['aria-pressed'], 'true');
+fresh.button.events.click();
+assert.equal(fresh.root.dataset.theme, 'light');
+assert.equal(fresh.values[key], 'light');
+assert.equal(fresh.button.attrs['aria-pressed'], 'false');
+assert.equal(fresh.button.attrs.title, 'Vklopi temno temo');
+fresh.button.events.click();
+assert.equal(fresh.root.dataset.theme, 'dark');
+assert.equal(fresh.values[key], 'dark');
+console.log('PASS dark by default, toggle, accessible state and persistence');
 
-const system = environment({ dark: true });
-assert.equal(system.root.dataset.theme, 'dark');
-system.mount();
-system.system(false);
-assert.equal(system.root.dataset.theme, 'light');
-system.system(true);
-assert.equal(system.root.dataset.theme, 'dark');
-console.log('PASS OS preference applies before the body and follows changes');
+assert.equal(environment({ dark: false }).root.dataset.theme, 'dark');
+assert.equal(environment({ dark: true }).root.dataset.theme, 'dark');
+console.log('PASS dark default regardless of OS preference');
 
 for (const saved of ['light', 'dark']) {
-  const explicit = environment({ dark: saved === 'light', saved });
+  const explicit = environment({ saved });
   explicit.mount();
   assert.equal(explicit.root.dataset.theme, saved);
-  explicit.system(false);
-  explicit.system(true);
-  assert.equal(explicit.root.dataset.theme, saved);
 }
-console.log('PASS explicit choice overrides OS preference');
+console.log('PASS saved choice wins over the default');
 
-const storage = environment({ dark: true });
+const storage = environment();
 storage.mount();
 storage.storage('light');
 assert.equal(storage.root.dataset.theme, 'light');
@@ -90,11 +82,12 @@ storage.storage(null, null);
 assert.equal(storage.root.dataset.theme, 'dark');
 console.log('PASS cross-tab changes and storage clearing');
 
-const blocked = environment({ blocked: true, dark: true });
+const blocked = environment({ blocked: true });
+assert.equal(blocked.root.dataset.theme, 'dark');
 blocked.mount();
 blocked.button.events.click();
 assert.equal(blocked.root.dataset.theme, 'light');
 blocked.button.events.click();
 assert.equal(blocked.root.dataset.theme, 'dark');
-assert.equal(environment({ saved: 'invalid', dark: true }).root.dataset.theme, 'dark');
+assert.equal(environment({ saved: 'invalid' }).root.dataset.theme, 'dark');
 console.log('PASS unavailable storage and invalid saved values');
