@@ -36,6 +36,7 @@ if (! defined('ABSPATH')) {
     </div>
   </div>
   <div class="site-footer__legal">
+    <a href="<?php echo esc_url(home_url('/blog/')); ?>"><?php esc_html_e('Blog', 'zvij-theme'); ?></a>
     <?php if ($privacy = get_privacy_policy_url()) : ?>
       <a href="<?php echo esc_url($privacy); ?>"><?php esc_html_e('Politika zasebnosti', 'zvij-theme'); ?></a>
     <?php endif; ?>

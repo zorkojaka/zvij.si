@@ -16,6 +16,9 @@ trap 'rm -rf "$TMP"' EXIT
 
 for name in woocommerce wp-mail-smtp revolut-gateway-for-woocommerce; do
   docker cp "$DEV_WP:/var/www/html/wp-content/plugins/$name" "$TMP/$name" >/dev/null
+  # Brez brisanja bi docker cp novo različico prekopiral čez staro in pustil
+  # datoteke, ki jih nova različica ne uporablja več.
+  docker exec "$PROD_WP" rm -rf "/var/www/html/wp-content/plugins/$name"
   docker cp "$TMP/$name" "$PROD_WP:/var/www/html/wp-content/plugins/" >/dev/null
   rm -rf "${TMP:?}/$name"
   echo "vticnik: $name"
