@@ -17,7 +17,8 @@ $wpdb->query('START TRANSACTION');
 $enabled_before = get_option('zvij_tiers_enabled');
 try {
     $ziggi = wc_get_product(435);     // 2,30 €, nabava 0,96 €
-    $cbd = wc_get_product(74);        // brez nabavne cene
+    $plin = wc_get_product(445);      // nabavna cena se v testu začasno odstrani
+    $cbd = wc_get_product(74);        // variabilen: 1 g po 8,00 €, nabava 1,50 €
     $legacy_ziggi = zvij_credit_legacy_kristali($ziggi);
 
     update_option('zvij_tiers_enabled', 'no');
@@ -27,7 +28,10 @@ try {
     update_option('zvij_tiers', [1 => ['share' => 5, 'min' => 0], 2 => ['share' => 15, 'min' => 100], 3 => ['share' => 25, 'min' => 250], 4 => ['share' => 35, 'min' => 500], 5 => ['share' => 50, 'min' => 1000]]);
     wp_set_current_user(0);
     tier_check(zvij_credit_product_kristali($ziggi) === (int) round((2.30 - 0.96) * 5), 'Gost vidi stopnjo 1: 5 % marže');
-    tier_check(zvij_credit_product_kristali($cbd) === zvij_credit_legacy_kristali($cbd), 'Brez nabavne cene: staro pravilo');
+    delete_post_meta(445, '_zvij_cost');
+    $plin = wc_get_product(445);
+    tier_check(zvij_credit_product_kristali($plin) === zvij_credit_legacy_kristali($plin), 'Brez nabavne cene: staro pravilo');
+    tier_check(zvij_credit_product_kristali($cbd) === (int) round((8.00 - 1.50) * 5), 'Kartica z variacijami: najcenejša variacija (1 g)');
     tier_check(zvij_tiers_kristali_from_margin(1.00, 2.00, 1, 50) === 0, 'Izguba nikoli ne da negativnih kristalov');
 
     $email = 'tier-test-' . bin2hex(random_bytes(5)) . '@example.invalid';
