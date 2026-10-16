@@ -4,7 +4,8 @@
  * »NABAVNA / enoto (bruto)« = redna neto cena pakiranja × (1 − popust) / kosov × (1 + DDV dobavitelja).
  * Stanje tabele 16. 10. 2026. Ne prepiše cene, ki je že vpisana na izdelku (vir resnice je potem WP).
  *
- * Brez vira v tabeli (vpiši ročno): CBD/CBG vršički, JollySafe, Grinder Zvij.si črn.
+ * Vršički, JollySafe in Grinder Zvij.si črn: Jakove cene 16. 10. 2026 (ni v tabeli).
+ * Vršički po variacijah: paket 5 g je pet paketkov po 1 g, zato 5 × cena 1 g.
  *
  * Zagon (dev ali prod): docker exec -u 33 <wordpress> php /var/www/html/scripts/wp-import-costs.php
  */
@@ -32,6 +33,16 @@ $costs = [
     442 => 1.15,  // Ziggi Original Roll
     443 => 1.20,  // Ziggi Natural Roll
     444 => 1.90,  // Ziggi Original Double
+    310 => 1.25,  // CHILLY CBG 1 g
+    311 => 6.25,  // CHILLY CBG 5 g
+    308 => 1.50,  // SMOKEY CBD 1 g
+    309 => 7.50,  // SMOKEY CBD 5 g
+    312 => 1.00,  // FRUTTY CBD 1 g
+    313 => 5.00,  // FRUTTY CBD 5 g
+    243 => 2.50,  // JollySafe Black
+    244 => 2.50,  // JollySafe Silver
+    245 => 2.50,  // JollySafe Gold
+    218 => 6.00,  // Grinder Zvij.si črn
 ];
 
 foreach ($costs as $id => $cost) {

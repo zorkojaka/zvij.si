@@ -177,6 +177,18 @@ function zvij_tiers_kristali_from_margin(float $line_total, float $cost, int $qt
 
 /** Kristali za en kos pri trenutnem gledalcu, ali null, če izdelek nima nabavne cene. */
 function zvij_tiers_unit_kristali(WC_Product $product, ?float $share = null): ?int {
+    // Kartica variabilnega izdelka (vršički 1 g / 5 g) pokaže najcenejšo variacijo,
+    // tako kot cena »od 7,50 €«; nabavna cena je vpisana na variacijah.
+    if ($product->is_type('variable') && zvij_tiers_cost($product) === null) {
+        $cheapest = null;
+        foreach ($product->get_children() as $child_id) {
+            $child = wc_get_product($child_id);
+            if ($child && $child->is_purchasable() && ($cheapest === null || (float) $child->get_price() < (float) $cheapest->get_price())) {
+                $cheapest = $child;
+            }
+        }
+        return $cheapest ? zvij_tiers_unit_kristali($cheapest, $share) : null;
+    }
     $cost = zvij_tiers_cost($product);
     if ($cost === null) {
         return null;
