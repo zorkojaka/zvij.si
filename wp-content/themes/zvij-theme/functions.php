@@ -15,6 +15,8 @@ add_action('after_setup_theme', function (): void {
     add_theme_support('post-thumbnails');
     // Klik na sliko izdelka odpre povečavo čez stran (PhotoSwipe), ne golo datoteko.
     add_theme_support('wc-product-gallery-lightbox');
+    // Velika slika + vrstica sličic (klik na sličico zamenja veliko sliko).
+    add_theme_support('wc-product-gallery-slider');
     add_theme_support('woocommerce');
     add_post_type_support('page', 'excerpt');
 
@@ -24,7 +26,7 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.74');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.78');
     wp_enqueue_style('zvij-blog-layout', get_template_directory_uri() . '/assets/blog.css', ['zvij-theme-style'], '1.0.0');
 
     if (is_page('clan-zvij-si')) {
@@ -46,7 +48,7 @@ add_action('wp_enqueue_scripts', function (): void {
         if (function_exists('WC')) {
             wp_enqueue_script('wc-add-to-cart');
         }
-        wp_enqueue_script('zvij-home', get_template_directory_uri() . '/assets/home.js', ['jquery'], '0.9.38', true);
+        wp_enqueue_script('zvij-home', get_template_directory_uri() . '/assets/home.js', ['jquery'], '0.9.39', true);
     }
 
     wp_enqueue_script('zvij-site', get_template_directory_uri() . '/assets/site.js', [], '1.0.0', true);
@@ -141,14 +143,6 @@ add_action('woocommerce_admin_process_product_object', function (WC_Product $pro
  */
 function zvij_product_loop_buy_block(WC_Product $product): void
 {
-    if (is_product()) {
-        echo '<div class="zv-shop-buy">';
-        echo '<p class="zv-shop-vars__price">' . wp_kses_post($product->get_price_html()) . '</p>';
-        woocommerce_template_loop_add_to_cart();
-        echo '</div>';
-        return;
-    }
-
     if ($product->is_type('variable')) {
         $variations = zvij_homepage_carousel_variations($product);
         $default_variation = $variations[0] ?? [];
@@ -1124,4 +1118,10 @@ add_action('woocommerce_before_variations_form', static function (): void {
     if ($product instanceof WC_Product) {
         echo zvij_variation_swatches_markup($product, 'single'); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped above
     }
+});
+
+// Število v ikoni košarice se po AJAX dodajanju (tudi navadni Woo gumbi) osveži samo.
+add_filter('woocommerce_add_to_cart_fragments', function (array $fragments): array {
+    $fragments['.site-cart b'] = '<b>' . esc_html((string) WC()->cart->get_cart_contents_count()) . '</b>';
+    return $fragments;
 });

@@ -293,7 +293,7 @@
         }
 
         var body = new URLSearchParams();
-        body.set('add-to-cart', variationId);
+        // Brez 'add-to-cart': WC_Form_Handler bi ga obdelal še enkrat (2 kosa namesto 1).
         body.set('product_id', variationId);
         body.set('variation_id', variationId);
         body.set('quantity', '1');
