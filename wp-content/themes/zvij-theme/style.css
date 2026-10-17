@@ -5389,3 +5389,6 @@ body.admin-bar .site-header { top: 32px; }
 @media (max-width: 379px) {
   .site-header .site-actions a.site-join { display: none; }
 }
+
+/* Povečava slik izdelka (PhotoSwipe) nad piškotno pasico in glavo. */
+.pswp{z-index:10000}

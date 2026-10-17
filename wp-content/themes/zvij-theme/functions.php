@@ -13,6 +13,8 @@ require_once __DIR__ . '/inc/shop-groups.php';
 add_action('after_setup_theme', function (): void {
     add_theme_support('title-tag');
     add_theme_support('post-thumbnails');
+    // Klik na sliko izdelka odpre povečavo čez stran (PhotoSwipe), ne golo datoteko.
+    add_theme_support('wc-product-gallery-lightbox');
     add_theme_support('woocommerce');
     add_post_type_support('page', 'excerpt');
 
@@ -22,7 +24,7 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.73');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.74');
     wp_enqueue_style('zvij-blog-layout', get_template_directory_uri() . '/assets/blog.css', ['zvij-theme-style'], '1.0.0');
 
     if (is_page('clan-zvij-si')) {
