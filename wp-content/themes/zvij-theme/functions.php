@@ -26,7 +26,7 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.83');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.84');
     wp_enqueue_style('zvij-blog-layout', get_template_directory_uri() . '/assets/blog.css', ['zvij-theme-style'], '1.0.0');
 
     if (is_page('clan-zvij-si')) {
@@ -1112,18 +1112,32 @@ function zvij_variation_swatches_markup(WC_Product $product, string $context): s
     if ($swatches === []) {
         return '';
     }
-    $html = '<div class="zv-swatches zv-swatches--' . esc_attr($context) . '" role="group" aria-label="' . esc_attr(sprintf(__('%s — izberi različico', 'zvij-theme'), $product->get_name())) . '" data-swatches>';
+    // Pakiranja s količino (DUBI 42 / 420 kosov): na sličici mora pisati,
+    // koliko je v paketu — slika vrečke tega ne pove.
+    $amounts = [];
+    $unit = '';
+    foreach ($swatches as $swatch) {
+        if (! preg_match('/^(\d+(?:[.,]\d+)?)\s*(.*)$/u', trim((string) $swatch['label']), $m)) {
+            $amounts = [];
+            break;
+        }
+        $amounts[] = $m[1];
+        $unit = $unit !== '' ? $unit : trim($m[2]);
+    }
+    $html = '<div class="zv-swatches zv-swatches--' . esc_attr($context) . ($amounts ? ' zv-swatches--amounts' : '') . '" role="group" aria-label="' . esc_attr(sprintf(__('%s — izberi različico', 'zvij-theme'), $product->get_name())) . '" data-swatches>';
     foreach ($swatches as $i => $swatch) {
         $html .= sprintf(
-            '<button type="button" class="zv-swatches__item" data-swatch="%1$d" data-attrs="%2$s" aria-pressed="%3$s" title="%4$s"><img src="%5$s" alt="%4$s" width="40" height="40" loading="lazy"></button>',
+            '<button type="button" class="zv-swatches__item" data-swatch="%1$d" data-attrs="%2$s" aria-pressed="%3$s" title="%4$s"><img src="%5$s" alt="%4$s" width="40" height="40" loading="lazy">%6$s</button>',
             $swatch['id'],
             esc_attr(wp_json_encode($swatch['attrs'])),
             $i === 0 ? 'true' : 'false',
             esc_attr($swatch['label']),
-            esc_url($swatch['thumb'])
+            esc_url($swatch['thumb']),
+            $amounts ? '<span class="zv-swatches__amount">' . esc_html($amounts[$i]) . '</span>' : ''
         );
     }
-    $html .= '<span class="zv-swatches__count">' . esc_html(zvij_variation_count_label(count($swatches))) . '</span></div>';
+    $count_text = ($amounts && $unit !== '') ? $unit : zvij_variation_count_label(count($swatches));
+    $html .= '<span class="zv-swatches__count">' . esc_html($count_text) . '</span></div>';
     return $html;
 }
 
