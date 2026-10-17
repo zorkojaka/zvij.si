@@ -26,7 +26,7 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.78');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.83');
     wp_enqueue_style('zvij-blog-layout', get_template_directory_uri() . '/assets/blog.css', ['zvij-theme-style'], '1.0.0');
 
     if (is_page('clan-zvij-si')) {
@@ -48,7 +48,7 @@ add_action('wp_enqueue_scripts', function (): void {
         if (function_exists('WC')) {
             wp_enqueue_script('wc-add-to-cart');
         }
-        wp_enqueue_script('zvij-home', get_template_directory_uri() . '/assets/home.js', ['jquery'], '0.9.39', true);
+        wp_enqueue_script('zvij-home', get_template_directory_uri() . '/assets/home.js', ['jquery'], '0.9.40', true);
     }
 
     wp_enqueue_script('zvij-site', get_template_directory_uri() . '/assets/site.js', [], '1.0.0', true);
@@ -141,6 +141,14 @@ add_action('woocommerce_admin_process_product_object', function (WC_Product $pro
  * Nakupni blok produktne kartice (kliče ga woocommerce/content-product.php):
  * variabilni izdelki dobijo izbiro količine + AJAX gumb, ostali ceno + gumb.
  */
+/** »/ g« ob ceni vršičkov, ki se prodajajo po gramih (zvij-core/zvij-grams.php). */
+function zvij_per_unit_suffix(WC_Product $product): string
+{
+    return function_exists('zvij_is_gram_product') && zvij_is_gram_product($product)
+        ? '<span class="zv-per-gram" data-per-unit>/ g</span>'
+        : '';
+}
+
 function zvij_product_loop_buy_block(WC_Product $product): void
 {
     if ($product->is_type('variable')) {
@@ -150,10 +158,10 @@ function zvij_product_loop_buy_block(WC_Product $product): void
         if ($variations !== [] && $default_variation !== []) {
             ?>
             <div class="zv-shop-vars zv-carousel-card" data-product-id="<?php echo esc_attr((string) $product->get_id()); ?>" data-carousel-source="shop">
-              <p class="zv-shop-vars__price" data-price-out><?php echo wp_kses_post(wc_price((float) $default_variation['raw_price'])); ?></p>
+              <?php $zvij_single_choice = count($variations) === 1; // vršički po gramih: izbira ni potrebna ?>
               <?php [$zvij_choice_hint, $zvij_choice_group] = zvij_variation_choice_label($product); ?>
-              <div class="zv-carousel-card__hint"><?php echo esc_html($zvij_choice_hint); ?></div>
-              <div class="zv-carousel-card__vars" role="group" aria-label="<?php echo esc_attr($zvij_choice_group); ?>">
+              <div class="zv-carousel-card__hint"<?php echo $zvij_single_choice ? ' hidden' : ''; ?>><?php echo esc_html($zvij_choice_hint); ?></div>
+              <div class="zv-carousel-card__vars" role="group" aria-label="<?php echo esc_attr($zvij_choice_group); ?>"<?php echo $zvij_single_choice ? ' hidden' : ''; ?>>
                 <?php foreach ($variations as $variation_i => $variation) : ?>
                   <button type="button"
                     data-variation-choice
@@ -169,7 +177,11 @@ function zvij_product_loop_buy_block(WC_Product $product): void
                   </button>
                 <?php endforeach; ?>
               </div>
-              <?php echo zvij_homepage_carousel_add_button($product, 0, $default_variation); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+              <?php // Cena levo, gumb desno — na vseh karticah v isti zadnji vrstici. ?>
+              <div class="zv-buyrow">
+                <p class="zv-shop-vars__price"><span data-price-out><?php echo wp_kses_post(wc_price((float) $default_variation['raw_price'])); ?></span> <?php echo zvij_per_unit_suffix($product); // phpcs:ignore WordPress.Security.EscapeOutput -- fiksen HTML ?></p>
+                <?php echo zvij_homepage_carousel_add_button($product, 0, $default_variation); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+              </div>
               <p class="zv-carousel-card__status" data-cart-status aria-live="polite"></p>
             </div>
             <?php
@@ -177,10 +189,10 @@ function zvij_product_loop_buy_block(WC_Product $product): void
         }
     }
 
-    echo '<div class="zv-shop-buy">';
+    echo '<div class="zv-shop-buy"><div class="zv-buyrow">';
     echo '<p class="zv-shop-vars__price">' . wp_kses_post($product->get_price_html()) . '</p>';
     woocommerce_template_loop_add_to_cart();
-    echo '</div>';
+    echo '</div></div>';
 }
 
 add_action('woocommerce_single_product_summary', function (): void {
@@ -982,19 +994,13 @@ function zvij_render_homepage_product_carousel(): void {
               <div class="zv-carousel-card__body">
                 <p class="zv-carousel-card__cat"><?php echo esc_html(zvij_homepage_carousel_label($product)); ?></p>
                 <h3><a href="<?php echo esc_url(get_permalink($product->get_id())); ?>"><?php echo esc_html($product->get_name()); ?></a></h3>
-                <p class="zv-carousel-card__price" data-price-out>
-                  <?php
-                  if ($product->is_type('variable') && isset($default_variation['raw_price'])) {
-                      echo wp_kses_post(wc_price((float) $default_variation['raw_price']));
-                  } else {
-                      echo wp_kses_post($product->get_price_html());
-                  }
-                  ?>
-                </p>
+                <?php $zvij_badge = function_exists('zvij_credit_public_badge') ? zvij_credit_public_badge($product) : ''; ?>
+                <?php if ($zvij_badge !== '') : ?><p class="product-card__credit zv-carousel-card__credit"><?php echo wp_kses_post($zvij_badge); ?></p><?php endif; ?>
                 <?php if ($product->is_type('variable')) : ?>
                   <?php [$zvij_choice_hint, $zvij_choice_group] = zvij_variation_choice_label($product); ?>
-              <div class="zv-carousel-card__hint"><?php echo esc_html($zvij_choice_hint); ?></div>
-                  <div class="zv-carousel-card__vars" role="group" aria-label="<?php echo esc_attr($zvij_choice_group); ?>">
+                  <?php $zvij_single_choice = count($variations) === 1; ?>
+                  <div class="zv-carousel-card__hint"<?php echo $zvij_single_choice ? ' hidden' : ''; ?>><?php echo esc_html($zvij_choice_hint); ?></div>
+                  <div class="zv-carousel-card__vars" role="group" aria-label="<?php echo esc_attr($zvij_choice_group); ?>"<?php echo $zvij_single_choice ? ' hidden' : ''; ?>>
                     <?php foreach ($variations as $variation_i => $variation) : ?>
                       <button type="button"
                         data-variation-choice
@@ -1011,7 +1017,16 @@ function zvij_render_homepage_product_carousel(): void {
                     <?php endforeach; ?>
                   </div>
                 <?php endif; ?>
-                <?php echo zvij_homepage_carousel_add_button($product, $position, $default_variation); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                <div class="zv-buyrow">
+                  <p class="zv-carousel-card__price"><span data-price-out><?php
+                    if ($product->is_type('variable') && isset($default_variation['raw_price'])) {
+                        echo wp_kses_post(wc_price((float) $default_variation['raw_price']));
+                    } else {
+                        echo wp_kses_post($product->get_price_html());
+                    }
+                    ?></span> <?php echo $product->is_type('variable') ? zvij_per_unit_suffix($product) : ''; // phpcs:ignore WordPress.Security.EscapeOutput -- fiksen HTML ?></p>
+                  <?php echo zvij_homepage_carousel_add_button($product, $position, $default_variation); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                </div>
                 <p class="zv-carousel-card__status" data-cart-status aria-live="polite"></p>
               </div>
             </article>

@@ -111,7 +111,8 @@ function zvij_qty_ladder(WC_Product $product): array {
     }
     ksort($ladder);
 
-    return $ladder;
+    // Vršički po gramih (zvij-grams.php) imajo svojo lestvico.
+    return (array) apply_filters('zvij_qty_ladder', $ladder, $product);
 }
 
 /** Popust v odstotkih za dano količino. */
@@ -161,7 +162,8 @@ function zvij_qty_saving(WC_Product $product, int $qty): float {
 
 /** Ali izdelek sploh ima količinsko lestvico. */
 function zvij_qty_has_ladder(WC_Product $product): bool {
-    return zvij_box_qty($product) >= 2 && zvij_qty_ladder($product) !== [];
+    $gram = function_exists('zvij_is_gram_product') && zvij_is_gram_product($product);
+    return (zvij_box_qty($product) >= 2 || $gram) && zvij_qty_ladder($product) !== [];
 }
 
 /* -------------------------------------------------------------------------
@@ -223,6 +225,10 @@ add_action('woocommerce_before_calculate_totals', static function ($cart): void 
 add_action('woocommerce_single_product_summary', static function (): void {
     global $product;
     if (! $product instanceof WC_Product || ! zvij_qty_has_ladder($product)) {
+        return;
+    }
+    // Vršički imajo namesto ponudbe »Vzemi 3« drsnik gramov (zvij-grams.php).
+    if (function_exists('zvij_is_gram_product') && zvij_is_gram_product($product)) {
         return;
     }
 
@@ -306,18 +312,22 @@ add_action('woocommerce_before_cart', static function (): void {
         }
 
         [$min, $pct] = $next;
-        $now   = zvij_qty_line_total($product, $qty);
-        $then  = zvij_qty_line_total($product, $min);
+        // $product v košarici že nosi znižano ceno; osnova mora biti sveža.
+        $fresh = wc_get_product($product->get_id()) ?: $product;
+        $now   = zvij_qty_line_total($fresh, $qty);
+        $then  = zvij_qty_line_total($fresh, $min);
         $extra = $min - $qty;
 
         $lines[] = sprintf(
             /* translators: 1: ime, 2: manjkajoci kosi, 3: nova cena za vse, 4: popust */
             __('%1$s: še %2$d in vseh %5$s dobiš za %3$s (−%4$s %%) namesto %6$s.', 'zvij-core'),
-            $product->get_name(),
+            (function_exists('zvij_is_gram_product') && zvij_is_gram_product($product) && $product->get_parent_id())
+                ? get_the_title($product->get_parent_id())
+                : $product->get_name(),
             $extra,
             wp_strip_all_tags(wc_price($then)),
             number_format_i18n($pct),
-            $min . ' ' . zvij_kosov($min),
+            $min . ' ' . (function_exists('zvij_qty_unit_label') ? zvij_qty_unit_label($product, $min) : zvij_kosov($min)),
             wp_strip_all_tags(wc_price($now))
         );
     }
@@ -348,7 +358,8 @@ add_filter('woocommerce_cart_item_name', static function ($name, $item) {
         return $name;
     }
 
-    $label = ((int) $item['quantity'] >= zvij_box_qty($product))
+    $box = zvij_box_qty($product);
+    $label = ($box >= 2 && (int) $item['quantity'] >= $box)
         ? __('cena cele škatle', 'zvij-core')
         : __('količinski popust', 'zvij-core');
 

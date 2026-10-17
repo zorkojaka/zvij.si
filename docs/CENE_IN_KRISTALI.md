@@ -112,3 +112,21 @@ vrednosti prek `zvij_credit_public_note()`. Prej je bil shranjen v meta
 `_zvij_dobroimetje_note` z vpisano številko — isti podatek na dveh mestih se je
 ob spremembi tečaja razšel (sistem je pripisoval 130, na strani je pisalo 13).
 Meta je odstranjena; ne uvajaj je nazaj.
+
+## Vršički po gramih (17. 10. 2026)
+
+CBD/CBG vršički se ne prodajajo več v pakiranjih 1 g / 5 g. Kupec na strani
+izdelka z drsnikom ali številko izbere grame; v košarico gre variacija »1 g«
+s količino = grami. Cena na gram pade na mejah iz opcije `zvij_gram_tiers`:
+
+| grami | popust na gram |
+|---|---|
+| 1–4 g | osnovna cena |
+| od 5 g | −10 % |
+| od 25 g | −20 % |
+
+Izračun je isti količinski motor kot pri rizlah (`zvij-quantity-pricing.php`,
+filter `zvij_qty_ladder`), koda v `zvij-core/includes/zvij-grams.php`.
+Variacije »5 g« so zasebne (izklopljene), ne izbrisane. Preklop:
+`scripts/wp-grams-switch.php` (idempotentno). Meje spremeniš z
+`wp option update zvij_gram_tiers '{"5":10,"25":20}' --format=json`.

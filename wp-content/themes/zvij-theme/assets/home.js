@@ -396,23 +396,29 @@
       if (!cardWidth) {
         return;
       }
-      track.style.transition = animate ? 'transform 420ms ease' : 'none';
+      // Mehak začetek in konec premika (prej 420 ms ease — sunkovito).
+      track.style.transition = animate ? 'transform 900ms cubic-bezier(0.65, 0, 0.35, 1)' : 'none';
       track.style.transform = 'translate3d(' + ((index * cardWidth * -1) + dragDelta) + 'px, 0, 0)';
     }
 
+    var settle = 0;
     function go(delta) {
+      // Če prejšnji premik ni sprožil transitionend (zavihek v ozadju), bi
+      // index rasel čez klone in trak bi se odpeljal v prazno — zato najprej
+      // poravnamo, šele nato premaknemo.
+      normalize();
+      void track.offsetWidth;
       dragDelta = 0;
       index += delta;
       move(true);
+      window.clearTimeout(settle);
+      settle = window.setTimeout(normalize, 1000);
     }
 
     function normalize() {
-      if (index >= originals.length * 2) {
-        index -= originals.length;
-        move(false);
-      }
-      if (index < originals.length) {
-        index += originals.length;
+      var n = originals.length;
+      if (index >= n * 2 || index < n) {
+        index = n + (((index - n) % n) + n) % n;
         move(false);
       }
     }
@@ -422,10 +428,10 @@
         return;
       }
       timer = window.setInterval(function () {
-        if (!paused && !dragging) {
+        if (!paused && !dragging && !document.hidden) {
           go(1);
         }
-      }, 3600);
+      }, 4200);
     }
 
     function stop() {
@@ -441,6 +447,15 @@
     start();
 
     track.addEventListener('transitionend', normalize);
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) {
+        stop();
+      } else {
+        normalize();
+        measure();
+        start();
+      }
+    });
     window.addEventListener('resize', measure);
 
     if (prev) {
