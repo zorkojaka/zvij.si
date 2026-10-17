@@ -89,7 +89,7 @@ while (have_posts()) :
         ?>
         <section class="zv-about-hero zv-panel">
           <div>
-            <h1>Domač<br>kompanjon<br>ki zrihta robo.</h1>
+            <h1>Majhna ekipa.<br>Preverjena roba.</h1>
             <p>Zvij.si ni samo trgovina. Je ekipa, ki sama uporablja to, kar ponuja. Brez bullshita. Samo kvalitetna roba, pošteno in diskretno.</p>
             <a class="button" href="#ekipa">Spoznaj ekipo</a>
           </div>

@@ -34,7 +34,7 @@ if ($hero_img === '') {
 <section class="zv-hero zv-panel">
   <div class="zv-hero__copy">
     <h1>Tvoj vajb.<br>Tvoja rutina.<br>Tvoj lajf.<br><span>Tvoja pravila.</span></h1>
-    <p>Zvij.si je tvoj domači kompanjon. Zrihtamo robo. Ti uživaš.</p>
+    <p>Slovenska trgovina z vršički za čaj, rizlami in pripomočki. Vse najprej preizkusimo sami, pošljemo pa diskretno.</p>
     <div class="button-row">
       <?php // En sam poziv. Prej sta bila dva enakovredna in nobeden ni bil glavni. ?>
       <a class="button" href="<?php echo esc_url(home_url('/trgovina/')); ?>">Poglej izdelke</a>
