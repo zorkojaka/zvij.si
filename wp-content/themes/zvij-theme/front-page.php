@@ -34,7 +34,7 @@ if ($hero_img === '') {
 <section class="zv-hero zv-panel">
   <div class="zv-hero__copy">
     <h1>Tvoj vajb.<br>Tvoja rutina.<br>Tvoj lajf.<br><span>Tvoja pravila.</span></h1>
-    <p>Našo robo redno sami testiramo. Pošljemo diskretno, ti uživaš.</p>
+    <p>Našo robo redno sami testiramo. Mi grindamo, ti uživaš in zbereš kristale za kriziča. ;)</p>
     <div class="button-row">
       <?php // En sam poziv. Prej sta bila dva enakovredna in nobeden ni bil glavni. ?>
       <a class="button" href="<?php echo esc_url(home_url('/trgovina/')); ?>">Poglej izdelke</a>
