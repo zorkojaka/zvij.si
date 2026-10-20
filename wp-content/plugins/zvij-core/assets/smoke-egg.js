@@ -6,6 +6,41 @@
   var queue = Promise.resolve();
   var clicks = 0;
   var feedbackTimer;
+  function showReward(progress) {
+    feedback.replaceChildren();
+    var count = document.createElement('strong');
+    count.textContent = '+' + progress + '/10';
+    var gem = document.createElement('span');
+    gem.className = 'zv-credit-reward__icon';
+    gem.setAttribute('aria-hidden', 'true');
+    feedback.append(count, gem);
+    feedback.setAttribute('aria-label', 'Pridobil si 1 kristal. Napredek ' + progress + ' od 10.');
+    window.clearTimeout(feedbackTimer);
+    feedbackTimer = window.setTimeout(function () { feedback.replaceChildren(); feedback.removeAttribute('aria-label'); }, 2300);
+    var target = document.querySelector('.site-cart');
+    var source = trigger.getBoundingClientRect();
+    if (!target || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { return; }
+    var end = target.getBoundingClientRect();
+    var crystal = document.createElement('span');
+    crystal.className = 'zv-credit-reward__icon zv-egg-flying-crystal';
+    crystal.setAttribute('aria-hidden', 'true');
+    crystal.style.left = (source.left + source.width / 2 - 8) + 'px';
+    crystal.style.top = (source.top - 8) + 'px';
+    document.body.appendChild(crystal);
+    var dx = end.left + end.width / 2 - source.left - source.width / 2;
+    var dy = end.top + end.height / 2 - source.top;
+    var flight = crystal.animate([
+      {transform: 'translate(0, 0) scale(1)', opacity: 0},
+      {transform: 'translate(-15px, -35px) scale(1.3)', opacity: 1, offset: 0.12},
+      {transform: 'translate(' + (dx - 40) + 'px, ' + (dy * 0.55) + 'px) scale(1)', opacity: 1, offset: 0.6},
+      {transform: 'translate(' + dx + 'px, ' + dy + 'px) scale(.3)', opacity: 0.2}
+    ], {duration: 1150, easing: 'ease-in-out'});
+    flight.finished.then(function () {
+      crystal.remove();
+      target.animate([{transform: 'scale(1)'}, {transform: 'scale(1.15)'}, {transform: 'scale(1)'}], {duration: 280});
+    }).catch(function () { crystal.remove(); });
+    window.setTimeout(function () { crystal.remove(); }, 1600);
+  }
   trigger.addEventListener('click', function () {
     var logo = trigger.parentElement.querySelector('img').getBoundingClientRect();
     var ring = document.createElement('span');
@@ -33,9 +68,7 @@
           if (reward) { reward.textContent = result.data.progress === 10 ? 'Odklenjeno vseh 10 kristalov' : '+1 kristal za vsak odkrit klik'; }
         }
         if (result.success && result.data.awarded) {
-          window.clearTimeout(feedbackTimer);
-          feedback.textContent = '+1 kristal · Kjer je dim, je tudi ogenj';
-          feedbackTimer = window.setTimeout(function () { feedback.textContent = ''; }, 2500);
+          showReward(result.data.progress);
           var balance = document.querySelector('.site-member-balance');
           if (balance) {
             balance.textContent = result.data.balance_label;
