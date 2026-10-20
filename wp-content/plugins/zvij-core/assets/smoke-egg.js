@@ -63,6 +63,20 @@
     var logo = trigger.parentElement.querySelector('img').getBoundingClientRect();
     var ring = document.createElement('span');
     ring.className = 'zv-smoke-ring';
+    ring.style.setProperty('--ring-drift', (Math.random() * 60 - 30) + 'px');
+    var core = document.createElement('span');
+    core.className = 'zv-smoke-ring-core';
+    core.style.animationDelay = '-' + (Math.random() * 3) + 's';
+    ring.appendChild(core);
+    for (var wispIndex = 0; wispIndex < 5; wispIndex += 1) {
+      var wisp = document.createElement('span');
+      wisp.className = 'zv-smoke-ring-wisp';
+      wisp.style.setProperty('--turn', (Math.random() * 360) + 'deg');
+      wisp.style.setProperty('--wisp-scale', (0.7 + Math.random() * 0.8));
+      wisp.style.animationDuration = (2 + Math.random() * 3) + 's';
+      wisp.style.animationDelay = '-' + (Math.random() * 4) + 's';
+      ring.appendChild(wisp);
+    }
     ring.setAttribute('aria-hidden', 'true');
     var originY = logo.top + window.scrollY + logo.height * 0.34;
     ring.style.left = (logo.left + window.scrollX + logo.width * 0.52) + 'px';
