@@ -1,0 +1,9 @@
+.zv-smoke-egg-logo{display:inline-block;position:relative;max-width:100%;line-height:0}
+.site-footer__brand .zv-smoke-egg-logo img{display:block;max-width:100%}
+.zv-smoke-egg-trigger{position:absolute;left:47%;top:30%;width:13%;height:65%;padding:0;background:transparent!important;border:0!important;box-shadow:none!important;cursor:pointer;min-width:0;min-height:0;border-radius:0}
+.zv-smoke-egg-trigger:focus-visible{outline:2px solid #db9c42;outline-offset:3px}
+.zv-smoke-ring{position:fixed;pointer-events:none;z-index:100;width:56px;height:15px;border:3px solid rgba(150,160,150,.65);border-radius:50%;filter:blur(1.5px);animation:zv-smoke-ring-rise 4s ease-out forwards;transform-origin:center}
+[data-theme=dark] .zv-smoke-ring{border-color:rgba(220,227,220,.65)}
+.zv-smoke-egg-feedback{display:block;min-height:24px;font-size:14px;color:inherit}
+@keyframes zv-smoke-ring-rise{0%{opacity:0;transform:translate(-50%,0) scale(.5)}8%{opacity:.85}65%{opacity:.5}100%{opacity:0;transform:translate(calc(-50% + 45px),var(--rise)) scale(3.5)}}
+@media(prefers-reduced-motion:reduce){.zv-smoke-ring{animation:none;opacity:.6;transform:translate(-50%,0)}}

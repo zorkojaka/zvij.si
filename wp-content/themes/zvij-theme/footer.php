@@ -49,7 +49,11 @@ if (! defined('ABSPATH')) {
     <?php endif; ?>
 
     <div class="site-footer__brand">
+      <span class="zv-smoke-egg-logo">
       <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/brand/logo-zvij-outline.svg'); ?>" width="96" height="87" alt="<?php esc_attr_e('zvij.si', 'zvij-theme'); ?>" loading="lazy">
+      <button class="zv-smoke-egg-trigger" type="button" aria-label="Kjer je dim, je tudi ogenj" title="Kjer je dim, je tudi ogenj"></button>
+      </span>
+      <span class="zv-smoke-egg-feedback" role="status" aria-live="polite"></span>
       <address>
         <strong>Zvij.si</strong><br>
         <?php esc_html_e('Tvoj vajb. Tvoja rutina. Tvoj lajf. Tvoja pravila.', 'zvij-theme'); ?>

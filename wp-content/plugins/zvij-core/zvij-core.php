@@ -30,6 +30,7 @@ require_once __DIR__ . '/includes/zvij-age.php';
 require_once __DIR__ . '/includes/zvij-security.php';
 require_once __DIR__ . '/includes/zvij-quotes.php';
 require_once __DIR__ . '/includes/zvij-credit.php';
+require_once __DIR__ . '/includes/zvij-smoke-egg.php';
 require_once __DIR__ . '/includes/zvij-tiers.php';
 require_once __DIR__ . '/includes/zvij-kit-bonus.php';
 require_once __DIR__ . '/includes/zvij-referral.php';
