@@ -11,7 +11,7 @@ function zvij_smoke_egg_progress(int $user_id): int {
 function zvij_smoke_egg_quest(): void {
     if (! is_user_logged_in()) { return; }
     $progress = zvij_smoke_egg_progress(get_current_user_id());
-    echo '<section class="zv-secret-quest" aria-labelledby="zv-secret-quest-title"><div><p class="zv-secret-quest-label">Secret quest</p><h3 id="zv-secret-quest-title">' . esc_html($progress ? 'Kjer je dim, je tudi ogenj' : 'Nekaj se skriva ...') . '</h3></div><div class="zv-secret-quest-progress" role="status" aria-live="polite"><strong data-smoke-quest-progress>' . esc_html($progress ? $progress . '/10' : '?/?') . '</strong><span data-smoke-quest-reward>' . esc_html($progress === 10 ? 'Zdej si se pa že uženu, dost maš... 😶‍🌫️' : ($progress ? '+1 kristal za vsak odkrit klik' : 'Skrita nagrada')) . '</span></div></section>';
+    echo '<section class="zv-acc-card zv-secret-quest" aria-labelledby="zv-secret-quest-title">' . zvij_account_placeholder('izziv') . '<div class="zv-acc-body"><p class="zv-acc-eyebrow">Izzivi</p><div class="zv-secret-quest-row"><h3 id="zv-secret-quest-title">' . esc_html($progress ? 'Kjer je dim, je tudi ogenj' : 'Nekaj se skriva ...') . '</h3><strong class="zv-secret-quest-count" data-smoke-quest-progress role="status" aria-live="polite">' . esc_html($progress ? $progress . '/10' : '?/?') . '</strong></div><div class="zv-acc-bar" aria-hidden="true"><span style="width:' . esc_attr((string) ($progress * 10)) . '%"></span></div><p class="zv-acc-note" data-smoke-quest-reward>' . esc_html($progress === 10 ? 'Zdej si se pa že uženu, dost maš... 😶‍🌫️' : ($progress ? '+1 kristal za vsak odkrit klik' : 'Skrita nagrada')) . '</p></div></section>';
 }
 add_action('woocommerce_account_dashboard', 'zvij_smoke_egg_quest', 12);
 function zvij_smoke_egg_award(int $user_id): bool {
@@ -36,7 +36,7 @@ add_action('wp_ajax_zvij_smoke_egg', function (): void {
 });
 add_action('wp_enqueue_scripts', function (): void {
     $url = plugin_dir_url(dirname(__FILE__)) . 'assets/';
-    wp_enqueue_style('zvij-smoke-egg', $url . 'smoke-egg.css', [], '1.4.0');
-    wp_enqueue_script('zvij-smoke-egg', $url . 'smoke-egg.js', [], '1.4.0', true);
+    wp_enqueue_style('zvij-smoke-egg', $url . 'smoke-egg.css', [], '1.5.0');
+    wp_enqueue_script('zvij-smoke-egg', $url . 'smoke-egg.js', [], '1.5.0', true);
     wp_localize_script('zvij-smoke-egg', 'zvijSmokeEgg', ['url' => admin_url('admin-ajax.php'), 'nonce' => is_user_logged_in() ? wp_create_nonce('zvij_smoke_egg') : '', 'loggedIn' => is_user_logged_in()]);
 });

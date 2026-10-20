@@ -301,7 +301,7 @@ function zvij_invitation_member_stats(int $member_id, string $email): array {
 add_action('wp_enqueue_scripts', function (): void {
     if (function_exists('is_account_page') && is_account_page()) {
         wp_enqueue_style('dashicons');
-        wp_enqueue_style('zvij-invitations', plugins_url('assets/invitations.css', dirname(__DIR__) . '/zvij-core.php'), [], '1.0.0');
+        wp_enqueue_style('zvij-invitations', plugins_url('assets/invitations.css', dirname(__DIR__) . '/zvij-core.php'), [], '1.1.0');
         wp_enqueue_script('zvij-invitations', plugins_url('assets/invitations.js', dirname(__DIR__) . '/zvij-core.php'), [], '1.0.0', true);
     }
 });
@@ -311,7 +311,7 @@ function zvij_invitation_account(): void {
     $email = sanitize_email($user->user_email);
     $member = zvij_membership_find_by_email($email);
     if (! $member) {
-        echo '<section><h3>Zbiraj kristale in povabi prijatelje.</h3>' . zvij_membership_form(['source' => 'account']) . '</section>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        echo '<section class="zv-acc-card zv-acc-card--wide">' . zvij_account_placeholder('članstvo') . '<div class="zv-acc-body"><p class="zv-acc-eyebrow">Članstvo</p><h3>Zbiraj kristale in povabi prijatelje.</h3>' . zvij_membership_form(['source' => 'account']) . '</div></section>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         return;
     }
     $token = zvij_invitation_token($email);
@@ -321,6 +321,7 @@ function zvij_invitation_account(): void {
     $url = zvij_invitation_url($token);
     $qr = zvij_invitation_qr($token);
     $stats = zvij_invitation_member_stats((int) $member['id'], $email);
+    $code = function_exists('zvij_referral_ensure_code') ? zvij_referral_ensure_code($email) : '';
     $message = 'Zvijače za zvijače. Ustvari račun, z nakupi nabiraj kristale in naslednjič plačaj manj. ';
     $shares = [
         ['WhatsApp', 'whatsapp', 'whatsapp', 'https://api.whatsapp.com/send?text=' . rawurlencode($message . zvij_invitation_url($token, 'whatsapp'))],
@@ -329,10 +330,18 @@ function zvij_invitation_account(): void {
         ['X', 'x', 'twitter', 'https://twitter.com/intent/tweet?text=' . rawurlencode($message) . '&url=' . rawurlencode(zvij_invitation_url($token, 'x'))],
     ];
     ?>
-    <section class="zv-invite" aria-labelledby="zv-invite-title">
+    <section class="zv-acc-card zv-acc-card--wide zv-invite" aria-labelledby="zv-invite-title">
+      <?php echo zvij_account_placeholder('povabi prijatelje'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+      <div class="zv-acc-body">
+      <p class="zv-acc-eyebrow">Zvij koda in povabila</p>
+      <?php if ($code !== '') : ?>
+      <div class="zv-invite__code">
+        <p class="zv-acc-code"><?php echo esc_html($code); ?></p>
+        <p class="zv-acc-note">Tvoja osebna koda za uporabo kristalov pri nakupu brez prijave.</p>
+      </div>
+      <?php endif; ?>
       <h3 id="zv-invite-title">Dobra roba se deli s prijatelji.</h3>
-      <p>Pošlji povabilo ali pokaži QR-kodo. Ko si prijatelj prek tvojega povabila ustvari račun, se povežeta. Ob njegovih plačanih nakupih dobiš <strong>dodatnih 10 % njegovih kristalov</strong>. Njemu ostanejo vsi.</p>
-      <p>On dobi 100 kristalov. Ti dobiš še 10. Oba imata nekaj za naslednjič.</p>
+      <p>Prijatelj si prek tvoje povezave ustvari račun. Ob njegovih plačanih nakupih dobiš <strong>10 % njegovih kristalov</strong>, njemu ostanejo vsi.</p>
       <div class="zv-invite__grid">
         <?php if ($qr !== '') : ?>
         <figure class="zv-invite__qr"><img src="<?php echo esc_url($qr); ?>" alt="QR-koda za tvoje osebno povabilo prijateljem" width="180" height="180"><figcaption>Tvoje povabilo, en sken stran.</figcaption><a href="<?php echo esc_url($qr); ?>" download="zvij-povabilo.png">Prenesi QR-kodo</a></figure>
@@ -353,7 +362,8 @@ function zvij_invitation_account(): void {
         </div>
       </div>
       <p class="zv-invite__stats">Prijatelji z računom: <strong><?php echo esc_html((string) $stats['friends']); ?></strong> · Iz povabil: <strong><?php echo esc_html(zvij_kristali_izpis($stats['bonus'])); ?></strong></p>
-      <small>Bonus velja za prijatelje, ki si prek tvoje povezave ustvarijo nov račun, in samo za kristale iz njihovih nakupov. Nagrajujejo se neposredna povabila. Bonus zaokrožimo navzdol na cel kristal; ob stornu nakupa se bonus odšteje.</small>
+      <details class="zv-invite__terms"><summary>Pogoji bonusa</summary><small>Bonus velja za prijatelje, ki si prek tvoje povezave ustvarijo nov račun, in samo za kristale iz njihovih nakupov. Nagrajujejo se neposredna povabila. Bonus zaokrožimo navzdol na cel kristal; ob stornu nakupa se bonus odšteje.</small></details>
+      </div>
     </section>
     <?php
 }

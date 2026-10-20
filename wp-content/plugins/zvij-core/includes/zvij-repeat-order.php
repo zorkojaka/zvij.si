@@ -46,7 +46,7 @@ add_filter('woocommerce_my_account_my_orders_actions', function (array $actions,
     return $actions;
 }, 10, 2);
 
-/** Blok zadnjega naročila na dashboardu Moj račun (nad kristali). */
+/** Kartica zadnjega naročila na dashboardu Moj račun (za izzivi). */
 add_action('woocommerce_account_dashboard', function (): void {
     $user_id = get_current_user_id();
     if (! $user_id) {
@@ -71,7 +71,10 @@ add_action('woocommerce_account_dashboard', function (): void {
         $item_names[] = $item->get_name();
     }
     ?>
-    <section class="zvij-repeat-order">
+    <section class="zv-acc-card zvij-repeat-order">
+      <?php echo zvij_account_placeholder(__('zadnje naročilo', 'zvij-core')); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+      <div class="zv-acc-body">
+      <p class="zv-acc-eyebrow"><?php esc_html_e('Zadnje naročilo', 'zvij-core'); ?></p>
       <h3><?php esc_html_e('Reload zadnjega naročila', 'zvij-core'); ?></h3>
       <p>
         <?php echo esc_html(sprintf(
@@ -84,6 +87,7 @@ add_action('woocommerce_account_dashboard', function (): void {
       <p>
         <a class="button" href="<?php echo esc_url(zvij_repeat_order_url($order)); ?>"><?php esc_html_e('Ponovi naročilo', 'zvij-core'); ?></a>
       </p>
+      </div>
     </section>
     <?php
-}, 8);
+}, 13);

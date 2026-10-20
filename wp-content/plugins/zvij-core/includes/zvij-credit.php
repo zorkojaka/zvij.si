@@ -531,7 +531,7 @@ add_action('woocommerce_checkout_order_processed', function (int $order_id): voi
     }
 }, 20);
 
-/** Stanje in zadnje transakcije v Moj račun. */
+/** Stanje kristalov v Moj račun. */
 add_action('woocommerce_account_dashboard', function (): void {
     $user = wp_get_current_user();
     $email = sanitize_email((string) $user->user_email);
@@ -540,31 +540,16 @@ add_action('woocommerce_account_dashboard', function (): void {
     }
 
     $balance = zvij_credit_balance($email);
-    $recent = zvij_credit_recent($email, 5);
     $months = zvij_kristali_expiry_months();
     ?>
-    <section class="zvij-credit-account">
-      <h3><?php esc_html_e('Kristali', 'zvij-core'); ?></h3>
-      <p class="zvij-credit-account__balance">
-        <strong><?php echo esc_html(zvij_kristali_izpis($balance)); ?></strong>
-        (<?php echo esc_html(zvij_credit_format_eur(zvij_kristali_eur($balance))); ?> €)
-        — <?php esc_html_e('unovčiš jih na blagajni kot popust.', 'zvij-core'); ?>
-        <?php echo esc_html(sprintf(__('Veljajo %d mesecev od zadnje aktivnosti.', 'zvij-core'), $months)); ?>
-      </p>
-      <?php if ($recent !== []) : ?>
-        <table class="woocommerce-table shop_table shop_table_responsive">
-          <thead><tr><th><?php esc_html_e('Datum', 'zvij-core'); ?></th><th><?php esc_html_e('Opis', 'zvij-core'); ?></th><th><?php esc_html_e('Kristali', 'zvij-core'); ?></th></tr></thead>
-          <tbody>
-          <?php foreach ($recent as $row) : ?>
-            <tr>
-              <td data-title="<?php esc_attr_e('Datum', 'zvij-core'); ?>"><?php echo esc_html(mysql2date('j. n. Y', (string) $row['created_at'])); ?></td>
-              <td data-title="<?php esc_attr_e('Opis', 'zvij-core'); ?>"><?php echo esc_html((string) $row['note']); ?></td>
-              <td data-title="<?php esc_attr_e('Kristali', 'zvij-core'); ?>"><?php echo esc_html(($row['amount'] >= 0 ? '+' : '') . (int) $row['amount']); ?></td>
-            </tr>
-          <?php endforeach; ?>
-          </tbody>
-        </table>
-      <?php endif; ?>
+    <section class="zv-acc-card zvij-credit-account">
+      <?php echo zvij_account_placeholder(__('kristali', 'zvij-core')); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+      <div class="zv-acc-body">
+        <p class="zv-acc-eyebrow"><?php esc_html_e('Kristali', 'zvij-core'); ?></p>
+        <p class="zv-acc-big"><?php echo esc_html(zvij_kristali_izpis($balance)); ?> <span><?php echo esc_html('= ' . zvij_credit_format_eur(zvij_kristali_eur($balance)) . ' €'); ?></span></p>
+        <p><?php esc_html_e('Unovčiš jih na blagajni kot popust.', 'zvij-core'); ?></p>
+        <p class="zv-acc-note"><?php echo esc_html(sprintf(__('Veljajo %d mesecev od zadnje aktivnosti.', 'zvij-core'), $months)); ?></p>
+      </div>
     </section>
     <?php
 });

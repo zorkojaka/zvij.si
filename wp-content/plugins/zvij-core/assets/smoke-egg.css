@@ -4,9 +4,6 @@
 .zv-smoke-egg-trigger:focus-visible{outline:2px solid #db9c42;outline-offset:3px}
 .zv-smoke-egg-trigger::after{content:"";position:absolute;left:38%;top:69%;width:3px;height:3px;background:#e5efdb;transform:rotate(45deg);box-shadow:0 0 4px 1px rgba(219,237,199,.35);opacity:.25;pointer-events:none;animation:zv-egg-glint 7s ease-in-out infinite}
 @keyframes zv-egg-glint{0%,65%,100%{opacity:.12}76%{opacity:.55}83%{opacity:.2}88%{opacity:.4}}
-.zv-secret-quest{display:flex;align-items:center;justify-content:space-between;gap:24px;border-top:1px solid currentColor;border-bottom:1px solid currentColor;padding:20px 0;margin:24px 0}
-.zv-secret-quest-label{margin:0 0 4px!important;font-size:12px;opacity:.65}.zv-secret-quest h3{margin:0!important;font-size:18px}.zv-secret-quest-progress{text-align:right;flex-shrink:0}.zv-secret-quest-progress strong{display:block;font-size:24px}.zv-secret-quest-progress span{display:block;font-size:12px;opacity:.75;max-width:180px}
-@media(max-width:480px){.zv-secret-quest{gap:12px}.zv-secret-quest h3{font-size:16px}.zv-secret-quest-progress span{max-width:120px}}
 @media(prefers-reduced-motion:reduce){.zv-smoke-egg-trigger::after{animation:none;opacity:.25}}
 .zv-smoke-ring{position:absolute;pointer-events:none;z-index:100;width:56px;height:15px;border:3px solid rgba(150,160,150,.65);border-radius:50%;filter:blur(1.5px);animation:zv-smoke-ring-rise 10s linear forwards;transform-origin:center}
 [data-theme=dark] .zv-smoke-ring{border-color:rgba(220,227,220,.65)}

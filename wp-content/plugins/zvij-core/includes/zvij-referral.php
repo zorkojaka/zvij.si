@@ -283,8 +283,11 @@ add_action('woocommerce_order_status_changed', function ($order_id, $from, $to, 
     $order->save();
 }, 35, 4);
 
-/** Zvij koda v Moj račun (pod kristali). */
+/** Zvij koda v Moj račun; s povabili jo pokaže kartica povabil. */
 add_action('woocommerce_account_dashboard', function (): void {
+    if (defined('ZVIJ_INVITATIONS_ENABLED') && ZVIJ_INVITATIONS_ENABLED) {
+        return;
+    }
     $user = wp_get_current_user();
     $email = sanitize_email((string) $user->user_email);
     if ($email === '' || ! zvij_membership_find_by_email($email)) {
@@ -296,16 +299,13 @@ add_action('woocommerce_account_dashboard', function (): void {
         return;
     }
     ?>
-    <section class="zvij-code-account">
-      <h3><?php esc_html_e('Tvoja Zvij koda', 'zvij-core'); ?></h3>
-      <p>
-        <strong style="font-size:1.2em;letter-spacing:0.06em;"><?php echo esc_html($code); ?></strong><br>
-        <?php if (defined('ZVIJ_INVITATIONS_ENABLED') && ZVIJ_INVITATIONS_ENABLED) : ?>
-        <?php esc_html_e('To je tvoja osebna koda za uporabo kristalov pri nakupu brez prijave. Za povabila uporabi povezavo ali QR-kodo spodaj.', 'zvij-core'); ?>
-        <?php else : ?>
-        <?php echo esc_html(sprintf('Povabi prijatelja: ob vpisu kode na blagajni prijatelj dobi %s %% popusta na prvo naročilo, ti pa %s, ko je njegovo naročilo plačano.', zvij_referral_friend_percent(), zvij_kristali_izpis(zvij_referral_owner_kristali()))); ?>
-        <?php endif; ?>
-      </p>
+    <section class="zv-acc-card zv-acc-card--wide zvij-code-account">
+      <?php echo zvij_account_placeholder(__('Zvij koda', 'zvij-core')); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+      <div class="zv-acc-body">
+        <p class="zv-acc-eyebrow"><?php esc_html_e('Tvoja Zvij koda', 'zvij-core'); ?></p>
+        <p class="zv-acc-code"><?php echo esc_html($code); ?></p>
+        <p><?php echo esc_html(sprintf('Prijatelj ob vpisu kode na blagajni dobi %s %% popusta na prvo naročilo, ti pa %s, ko je plačano.', zvij_referral_friend_percent(), zvij_kristali_izpis(zvij_referral_owner_kristali()))); ?></p>
+      </div>
     </section>
     <?php
 }, 15);

@@ -1,5 +1,4 @@
-.zv-invite { border-top: 1px solid var(--zvij-line, #ddd); padding-top: 28px; margin: 32px 0; }
-.zv-invite h3 { font-size: 26px; line-height: 1.25; letter-spacing: 0; }
+.zv-invite h3 { font-size: 22px; line-height: 1.25; letter-spacing: 0; }
 .zv-invite > p { max-width: 760px; }
 .zv-invite__grid { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 28px; align-items: center; margin: 24px 0; }
 .zv-invite__qr { margin: 0; text-align: center; }
@@ -7,13 +6,16 @@
 .zv-invite__qr figcaption, .zv-invite__qr a { font-size: 13px; }
 .zv-invite__tools { min-width: 0; }
 .zv-invite__tools label { display: block; font-weight: 700; margin-bottom: 8px; }
-.zv-invite__tools input { width: 100%; min-width: 0; padding: 12px; font-size: 14px; border: 1px solid #d5d9cf; border-radius: 6px; }
+.zv-invite__tools input { width: 100%; min-width: 0; padding: 12px; font-size: 14px; border: 1px solid var(--zvij-line, #d5d9cf); border-radius: 6px; background: var(--zvij-panel, #fff); color: inherit; }
 .zv-invite__actions, .zv-invite__social { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
 .zv-invite__actions .button { display: inline-flex; align-items: center; gap: 8px; }
 .zv-invite__actions [hidden] { display: none !important; }
 .zv-invite__social a { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; padding: 8px 10px; border: 1px solid #d5d9cf; border-radius: 6px; text-decoration: none; }
-.zv-invite__social a:hover { background: #e8efdd; }
+.zv-invite__social a:hover { background: var(--zvij-panel-alt, #e8efdd); }
 .zv-invite__feedback { min-height: 24px; font-size: 14px; margin-bottom: 0; }
-.zv-invite small { display: block; color: #64695f; max-width: 760px; line-height: 1.6; }
-.zv-invite__stats { padding: 16px 0; border-top: 1px solid #ddd; }
+.zv-invite small { display: block; color: var(--zvij-muted, #64695f); max-width: 760px; line-height: 1.6; margin-top: 8px; }
+.zv-invite__stats { padding: 14px 0 0; margin: 0 0 8px; border-top: 1px solid var(--zvij-line, #ddd); }
+.zv-invite__terms summary { cursor: pointer; font-size: 14px; color: var(--zvij-muted, #64695f); }
+.zv-invite__code { padding: 14px 16px; margin: 0 0 18px; border-radius: var(--zvij-radius-sm, 10px); background: var(--zvij-panel-alt, #ecebe4); }
+.zv-invite__code p { margin: 0; }
 @media (max-width: 700px) { .zv-invite__grid { grid-template-columns: minmax(0, 1fr); } .zv-invite__qr { text-align: left; } .zv-invite__qr img { margin-left: 0; } .zv-invite__actions .button { width: auto; } }

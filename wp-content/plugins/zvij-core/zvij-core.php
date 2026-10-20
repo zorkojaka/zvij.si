@@ -19,6 +19,7 @@ define('ZVIJ_CORE_VERSION', ZVIJ_INVITATIONS_ENABLED ? '0.15.0' : '0.9.1');
 define('ZVIJ_MEMBER_PRIVACY_VERSION', '2026-06-30');
 
 require_once __DIR__ . '/includes/zvij-copy.php';
+require_once __DIR__ . '/includes/zvij-account.php';
 require_once __DIR__ . '/includes/zvij-quantity-pricing.php';
 require_once __DIR__ . '/includes/zvij-grams.php';
 require_once __DIR__ . '/includes/zvij-orders.php';

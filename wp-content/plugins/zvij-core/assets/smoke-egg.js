@@ -84,7 +84,9 @@
           var progress = document.querySelector('[data-smoke-quest-progress]');
           var reward = document.querySelector('[data-smoke-quest-reward]');
           var title = document.getElementById('zv-secret-quest-title');
+          var bar = document.querySelector('.zv-secret-quest .zv-acc-bar span');
           if (progress) { progress.textContent = result.data.progress + '/10'; }
+          if (bar) { bar.style.width = (result.data.progress * 10) + '%'; }
           if (title) { title.textContent = 'Kjer je dim, je tudi ogenj'; }
           if (reward) { reward.textContent = result.data.progress === 10 ? 'Zdej si se pa že uženu, dost maš... 😶‍🌫️' : '+1 kristal za vsak odkrit klik'; }
         }

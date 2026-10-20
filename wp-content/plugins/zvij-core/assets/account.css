@@ -1,0 +1,43 @@
+/* Moj račun → nadzorna plošča: mreža kartic. */
+.zv-acc-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; align-items: start; }
+.zv-acc-grid > :not(.zv-acc-card) { grid-column: 1 / -1; }
+.zv-acc-card { margin: 0; min-width: 0; overflow: hidden; background: var(--zvij-panel, #fff); border: 1px solid var(--zvij-line, #e3e1d9); border-radius: var(--zvij-radius, 16px); }
+.zv-acc-card--wide { grid-column: 1 / -1; }
+.zv-acc-body { padding: 18px 20px 20px; }
+.zv-acc-body > :last-child { margin-bottom: 0; }
+.zv-acc-body p { margin: 0 0 10px; }
+.zv-acc-card h2, .zv-acc-card h3 { margin: 0 0 10px; line-height: 1.2; }
+.zv-acc-card h2 { font-size: 26px; }
+.zv-acc-card h3 { font-size: 20px; }
+.zv-acc-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--zvij-muted, #6f7268); margin: 0 0 6px !important; }
+.zv-acc-note { font-size: 14px; color: var(--zvij-muted, #6f7268); }
+.zv-acc-big { font-size: 28px; font-weight: 700; line-height: 1.1; }
+.zv-acc-big span { font-size: 16px; font-weight: 400; color: var(--zvij-muted, #6f7268); }
+.zv-acc-code { font-size: 24px; font-weight: 700; letter-spacing: .08em; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+/* Mesto za sliko: zamenjaj z <img>, ko bo ilustracija pripravljena. */
+.zv-acc-media { display: flex; align-items: center; justify-content: center; aspect-ratio: 16 / 5; min-height: 84px; margin: 10px 10px 0; border: 2px dashed var(--zvij-line, #e3e1d9); border-radius: var(--zvij-radius-sm, 10px); background: repeating-linear-gradient(135deg, transparent 0 12px, var(--zvij-panel-alt, #ecebe4) 12px 13px); color: var(--zvij-muted, #6f7268); font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.zv-acc-media span { padding: 4px 10px; border-radius: 999px; background: var(--zvij-panel, #fff); }
+.zv-acc-card--wide .zv-acc-media { aspect-ratio: auto; height: 110px; }
+
+.zv-acc-bar { height: 8px; margin: 4px 0 12px; border-radius: 999px; background: var(--zvij-panel-alt, #ecebe4); overflow: hidden; }
+.zv-acc-bar span { display: block; height: 100%; min-width: 4px; border-radius: inherit; background: var(--zvij-accent, #2f7d3a); transition: width .4s ease; }
+
+.zv-acc-links { display: flex; flex-wrap: wrap; gap: 8px; }
+.zv-acc-links a { padding: 7px 14px; border: 1px solid var(--zvij-line, #e3e1d9); border-radius: 999px; color: var(--zvij-text, #14160f); font-size: 14px; text-decoration: none; }
+.zv-acc-links a:hover { background: var(--zvij-panel-alt, #ecebe4); }
+.zv-acc-links .zv-acc-links__logout { border-color: transparent; color: var(--zvij-muted, #6f7268); }
+
+.zv-secret-quest-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.zv-secret-quest-row h3 { margin: 0 0 8px; }
+.zv-secret-quest-count { font-size: 22px; flex-shrink: 0; }
+
+@media (max-width: 1100px) { .zv-acc-grid { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 600px) {
+  .zv-acc-grid { gap: 14px; }
+  .zv-acc-body { padding: 14px 16px 16px; }
+  .zv-acc-card h2 { font-size: 22px; }
+  .zv-acc-card h3 { font-size: 18px; }
+  .zv-acc-media, .zv-acc-card--wide .zv-acc-media { aspect-ratio: auto; min-height: 64px; }
+  .zv-acc-code { font-size: 20px; }
+}

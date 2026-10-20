@@ -267,19 +267,26 @@ add_action('woocommerce_account_dashboard', function (): void {
         return;
     }
     ?>
-    <section class="zvij-tier-account">
-      <h3><?php echo esc_html(sprintf(__('Stopnja članstva: %d od 5', 'zvij-core'), $tier['level'])); ?></h3>
-      <p>
-        <?php if ($tier['next_level']) : ?>
-          <?php echo esc_html(sprintf(
-              __('Še %1$s € nakupov v zadnjih 12 mesecih do stopnje %2$d — višja stopnja pomeni več kristalov pri vsakem nakupu.', 'zvij-core'),
+    <section class="zv-acc-card zvij-tier-account">
+      <?php echo zvij_account_placeholder(__('stopnja članstva', 'zvij-core')); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+      <div class="zv-acc-body">
+        <p class="zv-acc-eyebrow"><?php esc_html_e('Članstvo', 'zvij-core'); ?></p>
+        <h3><?php echo esc_html(sprintf(__('Stopnja %d od 5', 'zvij-core'), $tier['level'])); ?></h3>
+        <?php if ($tier['next_level']) :
+            $from = (float) (zvij_tiers_config()[$tier['level']]['min'] ?? 0);
+            $pct = $tier['next_min'] > $from ? (int) round(100 * min(1, max(0, ($tier['spend'] - $from) / ($tier['next_min'] - $from)))) : 0;
+            ?>
+          <div class="zv-acc-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="<?php echo esc_attr((string) $pct); ?>"><span style="width:<?php echo esc_attr((string) $pct); ?>%"></span></div>
+          <p><?php echo esc_html(sprintf(
+              __('Še %1$s € nakupov do stopnje %2$d.', 'zvij-core'),
               number_format_i18n(max(0, $tier['next_min'] - $tier['spend']), 2),
               $tier['next_level']
-          )); ?>
+          )); ?></p>
+          <p class="zv-acc-note"><?php esc_html_e('Višja stopnja = več kristalov pri vsakem nakupu. Šteje zadnjih 12 mesecev.', 'zvij-core'); ?></p>
         <?php else : ?>
-          <?php esc_html_e('Pri vsakem nakupu zbiraš največ kristalov.', 'zvij-core'); ?>
+          <p><?php esc_html_e('Pri vsakem nakupu zbiraš največ kristalov.', 'zvij-core'); ?></p>
         <?php endif; ?>
-      </p>
+      </div>
     </section>
     <?php
 }, 5);
