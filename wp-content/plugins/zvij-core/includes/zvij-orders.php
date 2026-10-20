@@ -135,7 +135,7 @@ add_action('admin_post_zvij_print_order', function (): void {
     if (empty($shipping['address_1'])) {
         $shipping = $order->get_address('billing');
     }
-    $is_cod = $order->get_payment_method() === 'cod';
+    $is_cod = $order->get_payment_method() === 'cod' && ! zvij_dispatch_paid($order);
 
     header('Content-Type: text/html; charset=utf-8');
     ?>

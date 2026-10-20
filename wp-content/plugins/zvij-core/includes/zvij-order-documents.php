@@ -1,6 +1,7 @@
 <?php
 /** Authenticated order workspace and read-only print documents. */
 if (! defined('ABSPATH')) { exit; }
+require_once __DIR__ . '/zvij-dispatch.php';
 
 function zvij_order_workspace_url(int $id, string $document = ''): string {
     return add_query_arg(['page' => 'zvij-order-documents', 'order_id' => $id, 'document' => $document], admin_url('admin.php'));
@@ -80,7 +81,7 @@ function zvij_order_workspace(): void {
     $title = $invoice !== '' ? 'Račun ' . $invoice : 'Predračun ' . $order->get_order_number();
     echo '<div class="wrap zv-order-workspace"><div class="zv-doc-toolbar"><h1>Naročilo #' . esc_html($order->get_order_number()) . '</h1>';
     $links = ['' => 'Pregled', 'invoice' => 'Račun', 'label' => 'Naslovna nalepka'];
-    if ($cod) { $links['upn'] = 'UPN za povzetje'; }
+    if ($cod && ! zvij_dispatch_paid($order)) { $links['upn'] = 'UPN za povzetje'; }
     foreach ($links as $key => $label) {
         echo '<a class="button" href="' . esc_url(zvij_order_workspace_url($order->get_id(), $key)) . '">' . esc_html($label) . '</a> ';
     }
@@ -112,6 +113,7 @@ function zvij_order_workspace(): void {
     <?php
     echo '<section class="zv-order-document' . ($document === 'label' ? ' zv-label' : '') . '">';
     if ($document === '') {
+        zvij_dispatch_workspace($order);
         echo '<h2>' . esc_html(wc_get_order_status_name($order->get_status())) . '</h2>';
         echo '<p>Plačilo: ' . esc_html($order->get_payment_method_title()) . ' | Skupaj: ' . wp_kses_post($order->get_formatted_order_total()) . '</p>';
         echo '<p>Izberi dokument zgoraj in pritisni Natisni. Povezave v e-pošti ostanejo uporabne tudi pozneje, po prijavi.</p>';
@@ -119,10 +121,11 @@ function zvij_order_workspace(): void {
     } elseif ($document === 'label') {
         zvij_order_document_addresses($order, true);
         echo '<p>Naročilo #' . esc_html($order->get_order_number()) . '</p>';
-        if ($cod) { echo '<p><strong>Odkupnina: ' . wp_kses_post($order->get_formatted_order_total()) . '</strong></p>'; }
+        if ($cod && ! zvij_dispatch_paid($order)) { echo '<p><strong>Odkupnina: ' . wp_kses_post($order->get_formatted_order_total()) . '</strong></p>'; }
     } elseif ($document === 'invoice') {
         echo '<header class="zv-invoice-head"><img class="zv-invoice-logo" src="' . esc_url(get_template_directory_uri() . '/assets/images/brand/logo-zvij-outline.svg') . '" alt="Zvij.si"><div><h2>' . esc_html($title) . '</h2><p>Datum: ' . esc_html(zvij_invoice_date($order)) . '</p><p>Naročilo #' . esc_html($order->get_order_number()) . '</p></div></header>';
         zvij_order_document_addresses($order, false);
+        echo '<p><strong>' . (zvij_dispatch_paid($order) ? 'ŽE PLAČANO. Ne plačujte ponovno.' : ($cod ? 'Plačilo po povzetju ob prevzemu.' : 'Plačilo še ni potrjeno.')) . '</strong></p>';
         echo '<table><thead><tr><th>Izdelek</th><th>Količina</th><th>Znesek</th></tr></thead><tbody>';
         foreach ($order->get_items() as $item) {
             echo '<tr><td>' . esc_html($item->get_name()) . '</td><td>' . esc_html((string) $item->get_quantity()) . '</td><td>' . wp_kses_post($order->get_formatted_line_subtotal($item)) . '</td></tr>';
@@ -131,7 +134,7 @@ function zvij_order_workspace(): void {
             echo '<tr><th colspan="2">' . esc_html($total['label']) . '</th><td>' . wp_kses_post($total['value']) . '</td></tr>';
         }
         echo '</tbody></table><p>' . esc_html(zvij_invoice_vat_note()) . '</p><p>Način plačila: ' . esc_html($order->get_payment_method_title()) . '</p><footer class="zv-invoice-foot">Hvala za naročilo. Zvij.si</footer>';
-    } elseif ($document === 'upn' && $cod) {
+    } elseif ($document === 'upn' && $cod && ! zvij_dispatch_paid($order)) {
         echo '<h2>UPN / podatki za odkupnino</h2>';
         zvij_order_document_addresses($order, false);
         echo '<p>Znesek: <strong>' . wp_kses_post($order->get_formatted_order_total()) . '</strong><br>IBAN: ' . esc_html(get_option('zvij_invoice_trr', '')) . '<br>Sklic: ' . esc_html(zvij_upnqr_reference($order)) . '<br>Namen: Nakup Zvij.si - narocilo ' . esc_html($order->get_order_number()) . '</p>';

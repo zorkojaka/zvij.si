@@ -22,11 +22,12 @@ add_action('admin_menu', function (): void {
 
 /** Paid orders created in the last N days. */
 function zvij_dashboard_orders(int $days): array {
-    return wc_get_orders([
+    $orders = wc_get_orders([
         'limit' => -1,
-        'status' => zvij_paid_statuses(),
+        'status' => array_merge(zvij_paid_statuses(), ['zvij-shipped']),
         'date_created' => '>=' . strtotime('-' . $days . ' days midnight'),
     ]);
+    return array_values(array_filter($orders, static fn (WC_Order $order): bool => ! $order->has_status('zvij-shipped') || zvij_dispatch_paid($order)));
 }
 
 function zvij_dashboard_sum(array $orders): float {
