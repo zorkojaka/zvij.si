@@ -17,7 +17,7 @@ if (! defined('ABSPATH')) {
     ?>
     <div class="site-footer__member" id="postani-clan">
       <p class="site-footer__eyebrow"><?php esc_html_e('Član Zvij.si', 'zvij-theme'); ?></p>
-      <h2><?php esc_html_e('Postani član', 'zvij-theme'); ?></h2>
+      <h2><?php echo is_user_logged_in() ? 'Tvoje članstvo je aktivno' : 'Postani član'; ?></h2>
       <p><?php esc_html_e('Novi izdelki, članske ponudbe in občasne Zvijače za zvijače.', 'zvij-theme'); ?></p>
       <?php echo function_exists('zvij_membership_form') ? zvij_membership_form(['source' => 'footer']) : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
     </div>

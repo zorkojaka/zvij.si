@@ -17,7 +17,10 @@ get_header();
     <h1>Zvijače za zvijače.</h1>
     <p>Robo bi naročil tako ali tako. Zakaj ne bi ob tem nabral še nekaj za naslednjič?</p>
     <p>Kot se na dnu grinderja počasi nabira tisto fino, se ti pri nas z nakupi nabirajo <strong>kristali</strong>. Le da ti naš kupček zniža naslednji račun.</p>
-    <a class="button button--lime" href="#postani-clan">Postani član</a>
+    <?php if (is_user_logged_in()) : ?>
+    <p><strong>Tvoje članstvo je aktivno.</strong> <?php echo esc_html(function_exists('zvij_credit_balance') ? zvij_kristali_izpis(zvij_credit_balance(wp_get_current_user()->user_email)) : ''); ?></p>
+    <a class="button button--lime" href="<?php echo esc_url(wc_get_page_permalink('myaccount')); ?>">Moj račun in kristali</a>
+    <?php else : ?><a class="button button--lime" href="#postani-clan">Postani član</a><?php endif; ?>
   </header>
 
   <section class="zv-members__how" aria-labelledby="kristali-title">

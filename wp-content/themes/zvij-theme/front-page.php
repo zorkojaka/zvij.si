@@ -103,8 +103,8 @@ $reload_bg = $reload_bg !== '' ? $reload_bg : zvij_kit_flatlay_url('throwie');
   <div class="zv-member__card">zvij.si<br><span>ČLAN</span></div>
   <div>
     <p class="zv-kicker">Član Zvij.si</p>
-    <h2 class="zv-member__slogan">Postani član Zvij.si</h2>
-    <p>Prejmi kodo za prvi nakup. Na mail ti bomo občasno poslali tudi kakšno Zvijačo za zvijače.</p>
+    <h2 class="zv-member__slogan"><?php echo is_user_logged_in() ? 'Si že med člani Zvij.si' : 'Postani član Zvij.si'; ?></h2>
+    <p><?php echo is_user_logged_in() ? 'Tvoje članstvo je aktivno. Stanje kristalov in povabila prijateljem najdeš v svojem računu.' : 'Ustvari račun in z nakupi zbiraj kristale. Na Zvijače za zvijače se lahko naročiš po želji.'; ?></p>
   </div>
   <div class="zv-member__form">
     <?php echo function_exists('zvij_membership_form') ? zvij_membership_form(['source' => 'homepage']) : '<a class="button" href="' . esc_url(home_url('/clan-zvij-si/')) . '">Postani član</a>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
