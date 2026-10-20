@@ -7,6 +7,7 @@
 if (! defined('ABSPATH')) {
     exit;
 }
+require_once __DIR__ . '/zvij-return-invitation.php';
 
 add_action('admin_menu', function (): void {
     add_menu_page(
