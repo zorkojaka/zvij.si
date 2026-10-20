@@ -29,7 +29,7 @@ function zvij_return_invitation_coupon(int $id): string {
 }
 add_action('admin_menu', function (): void {
     add_submenu_page('zvij-dashboard', 'Povabilo starim članom', 'Povabilo starim članom', 'manage_options', 'zvij-return-invitation', 'zvij_return_invitation_page');
-});
+}, 20); // po glavnem meniju Zvij.si, sicer WordPress zavrne dostop
 function zvij_return_invitation_page(): void {
     if (! current_user_can('manage_options')) { return; }
     $users = get_users(['meta_key' => '_zvij_legacy_invitee', 'meta_value' => 'yes']);
