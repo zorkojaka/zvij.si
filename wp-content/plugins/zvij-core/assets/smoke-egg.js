@@ -64,11 +64,14 @@
     var ring = document.createElement('span');
     ring.className = 'zv-smoke-ring';
     ring.setAttribute('aria-hidden', 'true');
-    ring.style.left = (logo.left + logo.width * 0.52) + 'px';
-    ring.style.top = (logo.top + logo.height * 0.34) + 'px';
-    ring.style.setProperty('--rise', '-' + (logo.top + 140) + 'px');
+    var originY = logo.top + window.scrollY + logo.height * 0.34;
+    ring.style.left = (logo.left + window.scrollX + logo.width * 0.52) + 'px';
+    ring.style.top = originY + 'px';
+    ring.style.setProperty('--rise', '-' + (originY + 40) + 'px');
+    var duration = Math.max(6500, Math.min(18000, originY * 5));
+    ring.style.animationDuration = duration + 'ms';
     document.body.appendChild(ring);
-    window.setTimeout(function () { ring.remove(); }, 4100);
+    window.setTimeout(function () { ring.remove(); }, duration + 100);
     if (!window.zvijSmokeEgg || !zvijSmokeEgg.loggedIn) { return; }
     clicks += 1;
     if (clicks > 10) { return; }

@@ -8,7 +8,7 @@
 .zv-secret-quest-label{margin:0 0 4px!important;font-size:12px;opacity:.65}.zv-secret-quest h3{margin:0!important;font-size:18px}.zv-secret-quest-progress{text-align:right;flex-shrink:0}.zv-secret-quest-progress strong{display:block;font-size:24px}.zv-secret-quest-progress span{display:block;font-size:12px;opacity:.75;max-width:180px}
 @media(max-width:480px){.zv-secret-quest{gap:12px}.zv-secret-quest h3{font-size:16px}.zv-secret-quest-progress span{max-width:120px}}
 @media(prefers-reduced-motion:reduce){.zv-smoke-egg-trigger::after{animation:none;opacity:.25}}
-.zv-smoke-ring{position:fixed;pointer-events:none;z-index:100;width:56px;height:15px;border:3px solid rgba(150,160,150,.65);border-radius:50%;filter:blur(1.5px);animation:zv-smoke-ring-rise 4s ease-out forwards;transform-origin:center}
+.zv-smoke-ring{position:absolute;pointer-events:none;z-index:100;width:56px;height:15px;border:3px solid rgba(150,160,150,.65);border-radius:50%;filter:blur(1.5px);animation:zv-smoke-ring-rise 10s linear forwards;transform-origin:center}
 [data-theme=dark] .zv-smoke-ring{border-color:rgba(220,227,220,.65)}
 .zv-smoke-egg-feedback{display:block;min-height:24px;font-size:14px;color:inherit}
 .zv-smoke-egg-feedback{display:flex;align-items:center;justify-content:center;gap:6px;min-height:24px}

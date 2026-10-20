@@ -21,6 +21,8 @@
   var windTo = Math.random() * 0.1;
   var windStart = 0;
   var windDuration = 4000 + Math.random() * 6000;
+  var lastScroll = window.scrollY;
+  var scrollFlow = 0;
 
   function updateWind() {
     var progress = Math.min(1, (time - windStart) / windDuration);
@@ -56,7 +58,7 @@
     var ease = Math.min(1, distance / 180);
     // Wind affects older smoke more, while the source remains on the logo.
     var breeze = Math.min(Math.max(0, distance) * 0.55, width) * wind * ease;
-    return sourceX + breeze + ease * spread * (
+    return sourceX + breeze + Math.sin(distance * 0.008 - time * 0.001) * scrollFlow * ease + ease * spread * (
       Math.sin(phase + strand * 0.37) * 0.65 +
       Math.sin(phase * 0.53 + strand * 0.7 + 1.4) * 0.35
     );
@@ -69,6 +71,7 @@
     if (now - previous < (width < 600 ? 66 : 50)) { frame = requestAnimationFrame(draw); return; }
     time += previous ? Math.min(80, now - previous) : 0;
     updateWind();
+    scrollFlow *= 0.94;
     previous = now;
     if (dirty) { measure(); }
     context.clearRect(0, 0, width, height);
@@ -108,6 +111,11 @@
     if (!document.hidden) { frame = requestAnimationFrame(draw); }
   }
   window.addEventListener('resize', function () { dirty = true; }, {passive: true});
+  window.addEventListener('scroll', function () {
+    var delta = window.scrollY - lastScroll;
+    lastScroll = window.scrollY;
+    scrollFlow = Math.max(-25, Math.min(25, scrollFlow + delta * 0.08));
+  }, {passive: true});
   logo.addEventListener('load', function () { dirty = true; });
   if (window.ResizeObserver) {
     new ResizeObserver(function () { dirty = true; }).observe(document.body);
