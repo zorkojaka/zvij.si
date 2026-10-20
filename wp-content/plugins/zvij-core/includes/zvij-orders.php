@@ -9,6 +9,8 @@ if (! defined('ABSPATH')) {
 
 const ZVIJ_ORDER_STATUS_READY = 'zvij-ready';
 
+require_once __DIR__ . '/zvij-order-documents.php';
+
 add_action('init', function (): void {
     register_post_status('wc-' . ZVIJ_ORDER_STATUS_READY, [
         'label' => 'Pripravljeno za odpremo',
