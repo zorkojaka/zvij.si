@@ -8,10 +8,21 @@ $email = 'smoke-test-' . wp_generate_password(10, false) . '@example.invalid';
 $id = wc_create_new_customer($email);
 if (is_wp_error($id)) { exit('FAIL test setup'); }
 try {
-    $awards = 0;
+    wp_set_current_user($id);
+    ob_start(); zvij_smoke_egg_quest(); $quest = ob_get_clean();
+    if (strpos($quest, '?/?') === false) { throw new Exception('Quest must start hidden'); }
+    echo "PASS undiscovered quest shows ?/?\n";
+    zvij_smoke_egg_award($id);
+    ob_start(); zvij_smoke_egg_quest(); $quest = ob_get_clean();
+    if (strpos($quest, '1/10') === false) { throw new Exception('First-click progress missing'); }
+    echo "PASS first click reveals 1/10\n";
+    $awards = 1;
     for ($n = 0; $n < 25; $n++) { $awards += zvij_smoke_egg_award($id) ? 1 : 0; }
     if ($awards !== 10 || zvij_credit_balance($email) !== 10) { throw new Exception('Reward cap failed'); }
     echo "PASS exactly ten rewards after 25 clicks\n";
+    ob_start(); zvij_smoke_egg_quest(); $quest = ob_get_clean();
+    if (strpos($quest, '10/10') === false) { throw new Exception('Completion missing'); }
+    echo "PASS completed quest shows 10/10\n";
     if (zvij_smoke_egg_award(0)) { throw new Exception('Guest rewarded'); }
     echo "PASS guests cannot earn\n";
     wp_set_current_user($id);

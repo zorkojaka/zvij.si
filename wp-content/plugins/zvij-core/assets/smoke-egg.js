@@ -24,6 +24,14 @@
         method: 'POST', credentials: 'same-origin',
         body: new URLSearchParams({action: 'zvij_smoke_egg', nonce: zvijSmokeEgg.nonce})
       }).then(function (response) { return response.json(); }).then(function (result) {
+        if (result.success && result.data.progress > 0) {
+          var progress = document.querySelector('[data-smoke-quest-progress]');
+          var reward = document.querySelector('[data-smoke-quest-reward]');
+          var title = document.getElementById('zv-secret-quest-title');
+          if (progress) { progress.textContent = result.data.progress + '/10'; }
+          if (title) { title.textContent = 'Kjer je dim, je tudi ogenj'; }
+          if (reward) { reward.textContent = result.data.progress === 10 ? 'Odklenjeno vseh 10 kristalov' : '+1 kristal za vsak odkrit klik'; }
+        }
         if (result.success && result.data.awarded) {
           window.clearTimeout(feedbackTimer);
           feedback.textContent = '+1 kristal · Kjer je dim, je tudi ogenj';
