@@ -42,6 +42,23 @@ require_once __DIR__ . '/includes/zvij-reload-reminder.php';
 require_once __DIR__ . '/includes/zvij-abandoned-cart.php';
 
 register_activation_hook(__FILE__, 'zvij_membership_install');
+add_filter('option_woocommerce_enable_myaccount_registration', static fn () => 'yes');
+add_filter('option_woocommerce_registration_generate_password', static fn () => 'no');
+add_action('woocommerce_register_form', function (): void {
+    echo '<p><label><input type="checkbox" name="zvij_newsletter" value="1"> Želim prejemati Zvijače za zvijače: novice in ponudbe po e-pošti. Odjavim se lahko kadarkoli.</label></p>';
+});
+add_action('woocommerce_created_customer', function (int $id): void {
+    if (empty($_POST['zvij_newsletter'])) { return; }
+    $user = get_userdata($id);
+    if (! $user) { return; }
+    $email = $user->user_email;
+    $coupon = zvij_membership_generate_coupon($email);
+    $provider = zvij_membership_sync_mailerlite($email, $user->first_name, 'account', $coupon);
+    zvij_membership_upsert(['email' => $email, 'name' => $user->first_name, 'source' => 'account', 'first_order_coupon' => $coupon, 'provider_status' => $provider['status'], 'provider_message' => $provider['message']]);
+    global $wpdb;
+    $wpdb->update(zvij_membership_table(), ['consent_at' => current_time('mysql'), 'consent_ip_hash' => zvij_membership_client_ip_hash(), 'privacy_version' => ZVIJ_MEMBER_PRIVACY_VERSION], ['email' => $email]);
+    zvij_membership_send_welcome_email($email, $coupon);
+}, 30);
 add_action('plugins_loaded', 'zvij_membership_install');
 
 function zvij_membership_table(): string {
@@ -453,6 +470,7 @@ function zvij_membership_send_welcome_email(string $email, string $coupon): bool
 
     $message .= "Na mail ti bomo občasno poslali tudi kakšno Zvijačo za zvijače: nove izdelke, uporabne ideje, članske ponudbe in stvari, ki ti olajšajo ritual.\n\n";
     $message .= "Poglej ponudbo: {$shop_url}\n\n";
+    $message .= 'Tvoj račun in kristali: ' . wc_get_page_permalink('myaccount') . "\nČe je račun nov, prejmeš še ločeno sporočilo za nastavitev gesla. Če račun že imaš, uporabi obstoječe geslo.\n\n";
     $message .= "Odjava: povezava za odjavo bo aktivna po povezavi z MailerLite.\n";
     $message .= "Politika zasebnosti: {$privacy_url}\n\n";
     $message .= "Zvij.si\nTvoj vajb. Tvoja rutina. Tvoj lajf. Tvoja pravila.\n";
@@ -473,6 +491,16 @@ function zvij_membership_send_welcome_email(string $email, string $coupon): bool
     return $delivered;
 }
 
+/** Use WooCommerce's password-setup email; never authenticate an existing email. */
+function zvij_membership_ensure_customer(string $email, string $name = '') {
+    $existing = get_user_by('email', $email);
+    if ($existing) { return $existing->ID; }
+    if (! function_exists('wc_create_new_customer')) {
+        return new WP_Error('shop_unavailable', 'Trgovina trenutno ni na voljo.');
+    }
+    return wc_create_new_customer($email, '', '', ['first_name' => $name]);
+}
+
 function zvij_membership_process_signup(array $input, bool $send_email = true): array {
     $email = sanitize_email((string) ($input['email'] ?? ''));
     $name = sanitize_text_field((string) ($input['name'] ?? ''));
@@ -480,6 +508,24 @@ function zvij_membership_process_signup(array $input, bool $send_email = true): 
 
     if (! is_email($email)) {
         return ['ok' => false, 'public_message' => 'Prijava trenutno ni uspela. Poskusi ponovno ali nam piši.'];
+    }
+
+    if ($source !== 'admin_test') {
+        $password = (string) ($input['password'] ?? '');
+        if (is_user_logged_in()) {
+            $email = wp_get_current_user()->user_email;
+        } else {
+            if (get_user_by('email', $email) || strlen($password) < 12) {
+                return ['ok' => false, 'public_message' => 'Če račun že imaš, se prijavi. Za nov račun izberi geslo z vsaj 12 znaki.'];
+            }
+            $customer = wc_create_new_customer($email, '', $password, ['first_name' => $name]);
+            if (is_wp_error($customer)) {
+                return ['ok' => false, 'public_message' => 'Računa ni mogoče ustvariti. Poskusi prijavo ali ponastavitev gesla.'];
+            }
+        }
+        if (empty($input['consent'])) {
+            return ['ok' => true, 'email' => $email, 'public_message' => 'Članstvo je pripravljeno. Prijavi se v Moj račun.'];
+        }
     }
 
     $coupon = zvij_membership_generate_coupon($email);
@@ -506,6 +552,13 @@ function zvij_membership_process_signup(array $input, bool $send_email = true): 
         ], ['email' => $email]);
     }
 
+    if ($send_email && $source !== 'admin_test') {
+        $customer = zvij_membership_ensure_customer($email, $name);
+        if (is_wp_error($customer)) {
+            return ['ok' => false, 'public_message' => 'Članstvo je shranjeno, vendar računa ni bilo mogoče ustvariti. Piši nam za pomoč.'];
+        }
+    }
+
     if ($send_email) {
         zvij_membership_send_welcome_email($email, $coupon);
     }
@@ -518,7 +571,7 @@ function zvij_membership_process_signup(array $input, bool $send_email = true): 
         'email' => $email,
         'coupon' => $coupon,
         'provider_status' => $provider['status'],
-        'public_message' => 'Dobrodošel med člani Zvij.si. Preveri svoj e-poštni predal.',
+        'public_message' => 'Dobrodošel med člani Zvij.si. Preveri e-pošto za dostop do svojega računa.',
     ];
 }
 
@@ -528,8 +581,8 @@ function zvij_membership_form(array $args = []): string {
     $message = '';
     if (isset($_GET['zvij_member'])) {
         $message = $_GET['zvij_member'] === 'ok'
-            ? 'Dobrodošel med člani Zvij.si. Preveri svoj e-poštni predal.'
-            : 'Prijava trenutno ni uspela. Poskusi ponovno ali nam piši.';
+            ? 'Urejeno. Prijavi se v Moj račun s svojim e-poštnim naslovom in geslom. Na novice si prijavljen samo, če si jih izbral.'
+            : 'Prijava ni uspela. Če račun že imaš, se najprej prijavi v Moj račun. Za nov račun izberi geslo z vsaj 12 znaki.';
     }
 
     ob_start();
@@ -548,14 +601,18 @@ function zvij_membership_form(array $args = []): string {
         </label>
         <label>
           <span>E-poštni naslov</span>
-          <input type="email" name="email" autocomplete="email" required>
+          <input type="email" name="email" autocomplete="email" value="<?php echo is_user_logged_in() ? esc_attr(wp_get_current_user()->user_email) : ''; ?>" <?php echo is_user_logged_in() ? 'readonly' : ''; ?> required>
         </label>
+        <?php if (! is_user_logged_in()) : ?>
+        <label><span>Geslo (vsaj 12 znakov)</span><input type="password" name="password" autocomplete="new-password" minlength="12" required></label>
+        <?php endif; ?>
       </div>
       <label class="zvij-member-form__consent">
-        <input type="checkbox" name="consent" value="1" required>
+        <input type="checkbox" name="consent" value="1">
         <span>Strinjam se, da mi Zvij.si pošilja novice, ponudbe in vsebine po e-pošti. Odjavim se lahko kadarkoli.<?php if ($privacy_url !== '') : ?> <a href="<?php echo esc_url($privacy_url); ?>">Politika zasebnosti</a>.<?php endif; ?></span>
       </label>
-      <button class="button" type="submit">Postani član</button>
+      <button class="button" type="submit"><?php echo is_user_logged_in() ? 'Shrani prijavo na novice' : 'Ustvari članski račun'; ?></button>
+      <?php if (! is_user_logged_in()) : ?><p>Že imaš račun? <a href="<?php echo esc_url(wc_get_page_permalink('myaccount')); ?>">Prijavi se</a>.</p><?php endif; ?>
       <?php if ($message !== '') : ?><p class="zvij-member-form__message"><?php echo esc_html($message); ?></p><?php endif; ?>
     </form>
     <?php
@@ -577,7 +634,7 @@ function zvij_membership_handle_signup(): void {
         wp_safe_redirect(add_query_arg('zvij_member', 'fail', $fallback));
         exit;
     }
-    if (! empty($_POST['website']) || empty($_POST['consent']) || zvij_membership_rate_limited()) {
+    if (! empty($_POST['website']) || zvij_membership_rate_limited()) {
         wp_safe_redirect(add_query_arg('zvij_member', 'fail', $fallback));
         exit;
     }
@@ -586,6 +643,8 @@ function zvij_membership_handle_signup(): void {
         'email' => (string) ($_POST['email'] ?? ''),
         'name' => (string) ($_POST['name'] ?? ''),
         'source' => (string) ($_POST['source'] ?? 'manual'),
+        'password' => (string) wp_unslash($_POST['password'] ?? ''),
+        'consent' => ! empty($_POST['consent']),
     ]);
 
     wp_safe_redirect(add_query_arg('zvij_member', $result['ok'] ? 'ok' : 'fail', $fallback));
