@@ -42,6 +42,27 @@ add_action('admin_post_zvij_issue_invoice', function (): void {
     exit;
 });
 
+add_action('admin_post_zvij_correct_invoice', function (): void {
+    if (! current_user_can('manage_woocommerce')) { wp_die('Dostop ni dovoljen.', '', ['response' => 403]); }
+    $id = absint($_POST['order_id'] ?? 0);
+    check_admin_referer('zvij_correct_invoice_' . $id);
+    $order = wc_get_order($id);
+    $number = sanitize_text_field(wp_unslash($_POST['invoice_number'] ?? ''));
+    $reason = sanitize_textarea_field(wp_unslash($_POST['reason'] ?? ''));
+    if (! $order instanceof WC_Order || ! $order->get_meta(ZVIJ_INVOICE_NUMBER_META) || $reason === '' || ! preg_match('~^([1-9][0-9]*)/(0[1-9]|1[0-2])/([0-9]{4})$~', $number, $parts)) {
+        wp_die('Vnesi številko v obliki ZZ/MM/LLLL in razlog popravka.');
+    }
+    $duplicates = wc_get_orders(['limit' => 1, 'exclude' => [$id], 'meta_key' => ZVIJ_INVOICE_NUMBER_META, 'meta_value' => $number]);
+    if ($duplicates) { wp_die('To številko že uporablja drugo naročilo.'); }
+    $old = (string) $order->get_meta(ZVIJ_INVOICE_NUMBER_META);
+    $order->update_meta_data(ZVIJ_INVOICE_NUMBER_META, $number);
+    $order->update_meta_data(ZVIJ_INVOICE_SEQ_META, (int) $parts[1]);
+    $order->save();
+    $order->add_order_note(sprintf('Ročni popravek računa: %s -> %s. Uporabnik #%d. Razlog: %s', $old, $number, get_current_user_id(), $reason));
+    wp_safe_redirect(zvij_order_workspace_url($id, 'invoice'));
+    exit;
+});
+
 add_action('woocommerce_admin_order_data_after_order_details', function ($order): void {
     if ($order instanceof WC_Order) {
         echo '<p class="form-field form-field-wide"><a class="button" href="' . esc_url(zvij_order_workspace_url($order->get_id())) . '">Dokumenti in tisk</a></p>';
@@ -65,11 +86,17 @@ function zvij_order_workspace(): void {
     }
     echo '<a class="button" href="' . esc_url(zvij_order_print_url($order->get_id())) . '">Seznam za pakiranje</a> ';
     echo '<a class="button" href="' . esc_url($order->get_edit_order_url()) . '">Uredi naročilo</a> ';
+    echo '<a class="button" href="' . esc_url(admin_url('admin.php?page=wc-settings&tab=general#zvij_invoice_next_seq')) . '">Nastavi naslednjo številko računa</a> ';
     if ($document !== '') { echo '<button class="button button-primary" onclick="window.print()">Natisni</button>'; }
     if ($document === 'invoice' && $invoice === '' && ! $order->has_status(['cancelled', 'failed', 'refunded', 'checkout-draft'])) {
         echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '"><input type="hidden" name="action" value="zvij_issue_invoice"><input type="hidden" name="order_id" value="' . esc_attr((string) $order->get_id()) . '">';
         wp_nonce_field('zvij_issue_invoice_' . $order->get_id());
         echo '<p>To naročilo še nima številke računa. Ob izdaji prejme naslednjo zaporedno številko. Izdaja ne spremeni stanja plačila.</p><button class="button button-primary">Izdaj račun</button></form>';
+    }
+    if ($document === 'invoice' && $invoice !== '') {
+        echo '<details><summary>Izjemni popravek številke računa</summary><form method="post" action="' . esc_url(admin_url('admin-post.php')) . '"><input type="hidden" name="action" value="zvij_correct_invoice"><input type="hidden" name="order_id" value="' . esc_attr((string) $order->get_id()) . '">';
+        wp_nonce_field('zvij_correct_invoice_' . $order->get_id());
+        echo '<p><label>Številka računa <input required name="invoice_number" value="' . esc_attr($invoice) . '" pattern="[0-9]+/[0-9]{2}/[0-9]{4}"></label></p><p><label>Razlog popravka <input required name="reason"></label></p><p>Popravek se zabeleži v opombe naročila. Že poslana e-pošta ostane nespremenjena. Števec naslednjega računa nastavi ločeno.</p><button class="button">Shrani popravek</button></form></details>';
     }
     echo '</div>';
     ?>
