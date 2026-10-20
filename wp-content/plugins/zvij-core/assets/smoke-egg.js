@@ -16,7 +16,7 @@
     feedback.append(count, gem);
     if (progress === 10) {
       var complete = document.createElement('span');
-      complete.textContent = 'Zdej si se pa že uženu, dost maš... 😈';
+      complete.textContent = 'Zdej si se pa že uženu, dost maš... 😶‍🌫️';
       feedback.appendChild(complete);
       feedback.style.flexWrap = 'wrap';
       complete.style.flexBasis = '100%';
@@ -72,7 +72,7 @@
           var title = document.getElementById('zv-secret-quest-title');
           if (progress) { progress.textContent = result.data.progress + '/10'; }
           if (title) { title.textContent = 'Kjer je dim, je tudi ogenj'; }
-          if (reward) { reward.textContent = result.data.progress === 10 ? 'Zdej si se pa že uženu, dost maš... 😈' : '+1 kristal za vsak odkrit klik'; }
+          if (reward) { reward.textContent = result.data.progress === 10 ? 'Zdej si se pa že uženu, dost maš... 😶‍🌫️' : '+1 kristal za vsak odkrit klik'; }
         }
         if (result.success && result.data.awarded) {
           showReward(result.data.progress);
