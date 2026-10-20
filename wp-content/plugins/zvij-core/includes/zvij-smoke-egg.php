@@ -36,7 +36,7 @@ add_action('wp_ajax_zvij_smoke_egg', function (): void {
 });
 add_action('wp_enqueue_scripts', function (): void {
     $url = plugin_dir_url(dirname(__FILE__)) . 'assets/';
-    wp_enqueue_style('zvij-smoke-egg', $url . 'smoke-egg.css', [], '1.2.0');
-    wp_enqueue_script('zvij-smoke-egg', $url . 'smoke-egg.js', [], '1.2.2', true);
+    wp_enqueue_style('zvij-smoke-egg', $url . 'smoke-egg.css', [], '1.3.0');
+    wp_enqueue_script('zvij-smoke-egg', $url . 'smoke-egg.js', [], '1.3.0', true);
     wp_localize_script('zvij-smoke-egg', 'zvijSmokeEgg', ['url' => admin_url('admin-ajax.php'), 'nonce' => is_user_logged_in() ? wp_create_nonce('zvij_smoke_egg') : '', 'loggedIn' => is_user_logged_in()]);
 });

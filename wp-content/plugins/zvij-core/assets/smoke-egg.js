@@ -6,7 +6,7 @@
   var queue = Promise.resolve();
   var clicks = 0;
   var feedbackTimer;
-  function showReward(progress) {
+  function showReward(progress, balanceLabel) {
     feedback.replaceChildren();
     var count = document.createElement('strong');
     count.textContent = '+' + progress + '/10';
@@ -24,9 +24,18 @@
     feedback.setAttribute('aria-label', 'Pridobil si 1 kristal. Napredek ' + progress + ' od 10.');
     window.clearTimeout(feedbackTimer);
     feedbackTimer = window.setTimeout(function () { feedback.replaceChildren(); feedback.removeAttribute('aria-label'); }, progress === 10 ? 8000 : 2300);
-    var target = document.querySelector('.site-cart');
+    var target = document.querySelector('.site-member-balance');
     var source = trigger.getBoundingClientRect();
-    if (!target || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { return; }
+    function updateBalance() {
+      if (target) {
+        target.textContent = balanceLabel;
+        target.setAttribute('aria-label', 'Prijavljen član. ' + balanceLabel + '. Odpri moj račun.');
+      }
+    }
+    if (!target || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      updateBalance();
+      return Promise.resolve();
+    }
     var end = target.getBoundingClientRect();
     var crystal = document.createElement('span');
     crystal.className = 'zv-credit-reward__icon zv-egg-flying-crystal';
@@ -41,12 +50,14 @@
       {transform: 'translate(-15px, -35px) scale(1.3)', opacity: 1, offset: 0.12},
       {transform: 'translate(' + (dx - 40) + 'px, ' + (dy * 0.55) + 'px) scale(1)', opacity: 1, offset: 0.6},
       {transform: 'translate(' + dx + 'px, ' + dy + 'px) scale(.3)', opacity: 0.2}
-    ], {duration: 1150, easing: 'ease-in-out'});
-    flight.finished.then(function () {
+    ], {duration: 2400, easing: 'ease-in-out'});
+    var arrival = flight.finished.then(function () {
       crystal.remove();
+      updateBalance();
       target.animate([{transform: 'scale(1)'}, {transform: 'scale(1.15)'}, {transform: 'scale(1)'}], {duration: 280});
-    }).catch(function () { crystal.remove(); });
-    window.setTimeout(function () { crystal.remove(); }, 1600);
+    }).catch(function () { crystal.remove(); updateBalance(); });
+    window.setTimeout(function () { crystal.remove(); }, 2900);
+    return arrival;
   }
   trigger.addEventListener('click', function () {
     var logo = trigger.parentElement.querySelector('img').getBoundingClientRect();
@@ -75,12 +86,7 @@
           if (reward) { reward.textContent = result.data.progress === 10 ? 'Zdej si se pa že uženu, dost maš... 😶‍🌫️' : '+1 kristal za vsak odkrit klik'; }
         }
         if (result.success && result.data.awarded) {
-          showReward(result.data.progress);
-          var balance = document.querySelector('.site-member-balance');
-          if (balance) {
-            balance.textContent = result.data.balance_label;
-            balance.setAttribute('aria-label', 'Prijavljen član. ' + result.data.balance_label + '. Odpri moj račun.');
-          }
+          return showReward(result.data.progress, result.data.balance_label);
         }
       }).catch(function () { clicks -= 1; });
     });
