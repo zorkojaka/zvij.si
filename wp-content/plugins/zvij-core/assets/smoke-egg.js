@@ -14,9 +14,16 @@
     gem.className = 'zv-credit-reward__icon';
     gem.setAttribute('aria-hidden', 'true');
     feedback.append(count, gem);
+    if (progress === 10) {
+      var complete = document.createElement('span');
+      complete.textContent = 'Zdej si se pa že uženu, dost maš... 😈';
+      feedback.appendChild(complete);
+      feedback.style.flexWrap = 'wrap';
+      complete.style.flexBasis = '100%';
+    }
     feedback.setAttribute('aria-label', 'Pridobil si 1 kristal. Napredek ' + progress + ' od 10.');
     window.clearTimeout(feedbackTimer);
-    feedbackTimer = window.setTimeout(function () { feedback.replaceChildren(); feedback.removeAttribute('aria-label'); }, 2300);
+    feedbackTimer = window.setTimeout(function () { feedback.replaceChildren(); feedback.removeAttribute('aria-label'); }, progress === 10 ? 8000 : 2300);
     var target = document.querySelector('.site-cart');
     var source = trigger.getBoundingClientRect();
     if (!target || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { return; }
@@ -65,7 +72,7 @@
           var title = document.getElementById('zv-secret-quest-title');
           if (progress) { progress.textContent = result.data.progress + '/10'; }
           if (title) { title.textContent = 'Kjer je dim, je tudi ogenj'; }
-          if (reward) { reward.textContent = result.data.progress === 10 ? 'Odklenjeno vseh 10 kristalov' : '+1 kristal za vsak odkrit klik'; }
+          if (reward) { reward.textContent = result.data.progress === 10 ? 'Zdej si se pa že uženu, dost maš... 😈' : '+1 kristal za vsak odkrit klik'; }
         }
         if (result.success && result.data.awarded) {
           showReward(result.data.progress);
