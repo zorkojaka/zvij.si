@@ -23,6 +23,7 @@ require_once __DIR__ . '/includes/zvij-account.php';
 require_once __DIR__ . '/includes/zvij-quantity-pricing.php';
 require_once __DIR__ . '/includes/zvij-grams.php';
 require_once __DIR__ . '/includes/zvij-orders.php';
+require_once __DIR__ . '/includes/zvij-spider.php';
 require_once __DIR__ . '/includes/zvij-dashboard.php';
 require_once __DIR__ . '/includes/zvij-invoice.php';
 require_once __DIR__ . '/includes/zvij-payment-qr.php';

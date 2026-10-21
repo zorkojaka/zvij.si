@@ -30,6 +30,7 @@ function zvij_dispatch_notify(WC_Order $order): bool {
         $message .= 'Številka pošiljke: ' . $number . "\nSledi pošiljki: " . zvij_dispatch_tracking_url($number) . "\n\n";
     }
     $message .= zvij_dispatch_paid($order) ? "Naročilo je že plačano. Ne plačuj ponovno.\n" : ($order->get_payment_method() === 'cod' ? "Plačilo po povzetju ob prevzemu: " . html_entity_decode(wp_strip_all_tags($order->get_formatted_order_total()), ENT_QUOTES, 'UTF-8') . "\n" : "Stanje plačila preveri v svojem naročilu.\n");
+    $message = (string) apply_filters('zvij_dispatch_message', $message, $order);
     $ok = wp_mail($order->get_billing_email(), 'Tvoje naročilo #' . $order->get_order_number() . ' je poslano', $message . "\nHvala, Zvij.si", ['Content-Type: text/plain; charset=UTF-8']);
     $order->update_meta_data('_zvij_dispatch_email', $ok ? 'sent' : 'failed');
     $order->save();
