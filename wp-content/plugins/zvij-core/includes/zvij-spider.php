@@ -6,17 +6,25 @@ add_action('woocommerce_order_status_zvij-shipped', function ($id): void {
     $order = wc_get_order($id);
     if ($order instanceof WC_Order) { zvij_invoice_number($order); }
 }, 15);
-add_filter('zvij_dispatch_message', function (string $message, WC_Order $order): string {
+add_filter('zvij_dispatch_message', function (string $message, WC_Order $order, array $custom = []): string {
     $number = (string) $order->get_meta(ZVIJ_INVOICE_NUMBER_META);
     // A status hook may have saved the number using another order instance.
     if ($number === '') { $fresh = wc_get_order($order->get_id()); $number = $fresh ? (string) $fresh->get_meta(ZVIJ_INVOICE_NUMBER_META) : ''; }
+    // Dispatch issues the invoice; a preview must not use up a number.
+    if ($number === '' && ! empty($custom['preview'])) { $number = '(številka bo dodeljena ob pošiljanju)'; }
     if ($number === '') { return $message; }
     $seller = zvij_invoice_seller();
     $message .= "\nRAČUN " . $number . "\nDatum: " . zvij_invoice_date($order) . "\n" . $seller['name'] . "\n" . implode("\n", $seller['lines']) . "\n\nKupec:\n" . html_entity_decode(wp_strip_all_tags(str_replace(['<br/>','<br />','<br>'], "\n", $order->get_formatted_billing_address())), ENT_QUOTES, 'UTF-8') . "\n\n";
     foreach ($order->get_items() as $item) { $message .= $item->get_quantity() . ' × ' . $item->get_name() . ': ' . html_entity_decode(wp_strip_all_tags($order->get_formatted_line_subtotal($item)), ENT_QUOTES, 'UTF-8') . "\n"; }
     foreach ($order->get_order_item_totals() as $total) { $message .= wp_strip_all_tags($total['label']) . ' ' . html_entity_decode(wp_strip_all_tags($total['value']), ENT_QUOTES, 'UTF-8') . "\n"; }
     return $message . zvij_invoice_vat_note() . "\n";
-}, 10, 2);
+}, 10, 3);
+/** Own message to the customer, optionally with the already issued invoice. */
+function zvij_spider_message_email(WC_Order $order, string $text, bool $invoice): array {
+    $message = "Živjo,\n\n" . trim($text) . "\n";
+    if ($invoice) { $message = (string) apply_filters('zvij_dispatch_message', $message . "\n", $order, []); }
+    return ['subject' => 'Glede tvojega naročila #' . $order->get_order_number(), 'heading' => 'Naročilo #' . $order->get_order_number(), 'text' => $message . "\nHvala, Zvij.si"];
+}
 function zvij_spider_text(string $html): string {
     return trim(html_entity_decode(wp_strip_all_tags(str_replace(['<br/>', '<br />', '<br>'], "\n", $html)), ENT_QUOTES, 'UTF-8'));
 }
@@ -74,16 +82,28 @@ add_action('rest_api_init', function (): void {
     register_rest_route('zvij/v1', '/spider-command', ['methods' => 'POST', 'permission_callback' => 'zvij_spider_verify_command', 'callback' => function (WP_REST_Request $request) {
         $input = $request->get_json_params(); $id = absint($input['orderId'] ?? 0); $event = sanitize_key($input['eventId'] ?? '');
         $operation = $input['operation'] ?? ''; $order = wc_get_order($id);
-        if (! $order instanceof WC_Order || ! preg_match('/^[a-f0-9]{32}$/', $event) || ! in_array($operation, ['paid', 'ship'], true)) { return new WP_Error('invalid_command', 'Invalid command', ['status' => 400]); }
+        if (! $order instanceof WC_Order || ! preg_match('/^[a-f0-9]{32}$/', $event) || ! in_array($operation, ['paid', 'ship', 'email', 'preview'], true)) { return new WP_Error('invalid_command', 'Invalid command', ['status' => 400]); }
+        $field = static fn (string $key): string => sanitize_textarea_field(mb_substr((string) ($input[$key] ?? ''), 0, 3000));
+        $custom = ['intro' => $field('intro'), 'note' => $field('note')];
+        $tracking = strtoupper(preg_replace('/\s+/', '', sanitize_text_field($input['tracking'] ?? '')));
+        $invoice = ! empty($input['invoice']) && (string) $order->get_meta(ZVIJ_INVOICE_NUMBER_META) !== '';
+        if ($operation === 'preview') {
+            $email = ($input['kind'] ?? '') === 'message' ? zvij_spider_message_email($order, $field('text'), $invoice) : zvij_dispatch_email($order, $tracking, $custom + ['preview' => true]);
+            return ['ok' => true, 'preview' => ['subject' => $email['subject'], 'text' => $email['text'], 'to' => $order->get_billing_email()], 'state' => zvij_spider_state($order)];
+        }
+        if ($operation === 'email' && trim($field('text')) === '') { return new WP_Error('invalid_command', 'Invalid command', ['status' => 400]); }
         $lock = 'zvij_dispatch_lock_' . $id;
         if (! add_option($lock, time(), '', false)) { return new WP_Error('busy', 'Order busy', ['status' => 409]); }
         try {
             $done = (array) $order->get_meta('_zvij_spider_actions');
             if (in_array($event, $done, true)) { return ['ok' => true, 'duplicate' => true, 'state' => zvij_spider_state($order)]; }
-            $result = zvij_dispatch_update($order, $operation, sanitize_text_field($input['tracking'] ?? ''));
+            $result = $operation === 'email'
+                ? (zvij_send_customer_email($order, zvij_spider_message_email($order, $field('text'), $invoice)) ? true : new WP_Error('email_failed', 'Sporočila ni bilo mogoče poslati. Poskusi ponovno.'))
+                : zvij_dispatch_update($order, $operation, $tracking, $custom);
             if (is_wp_error($result)) { return new WP_Error('dispatch_failed', $result->get_error_message(), ['status' => 409, 'state' => zvij_spider_state(wc_get_order($id))]); }
             $done[] = $event; $order->update_meta_data('_zvij_spider_actions', array_slice($done, -100)); $order->save();
-            $order->add_order_note('Spider: izrecno potrjeno dejanje ' . $operation . ', referenca ' . $event);
+            $extra = $operation === 'email' ? $field('text') : trim($custom['intro'] . "\n" . $custom['note']);
+            $order->add_order_note('Spider: izrecno potrjeno dejanje ' . $operation . ', referenca ' . $event . ($extra !== '' ? "\nBesedilo za kupca:\n" . $extra : ''));
             return ['ok' => true, 'status' => $order->get_status(), 'state' => zvij_spider_state(wc_get_order($id))];
         } finally { delete_option($lock); }
     }]);

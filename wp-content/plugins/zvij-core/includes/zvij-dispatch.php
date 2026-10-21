@@ -23,33 +23,42 @@ function zvij_dispatch_tracking_required(WC_Order $order): bool {
     return stripos(remove_accents($order->get_shipping_method()), 'sleden') !== false;
 }
 
-function zvij_dispatch_notify(WC_Order $order): bool {
-    $number = (string) $order->get_meta('_zvij_tracking_number');
-    $message = "Živjo,\n\ntvoje naročilo #" . $order->get_order_number() . " smo poslali.\n\n";
+/** Dispatch email content: optional own intro and note, then tracking, payment and invoice. */
+function zvij_dispatch_email(WC_Order $order, string $number, array $custom = []): array {
+    $intro = trim((string) ($custom['intro'] ?? ''));
+    $note = trim((string) ($custom['note'] ?? ''));
+    $message = "Živjo,\n\n" . ($intro !== '' ? $intro : 'tvoje naročilo #' . $order->get_order_number() . ' smo poslali.') . "\n\n" . ($note !== '' ? $note . "\n\n" : '');
     if ($number !== '') {
         $message .= 'Številka pošiljke: ' . $number . "\nSledi pošiljki: " . zvij_dispatch_tracking_url($number) . "\n\n";
     }
     $message .= zvij_dispatch_paid($order) ? "Naročilo je že plačano. Ne plačuj ponovno.\n" : ($order->get_payment_method() === 'cod' ? "Plačilo po povzetju ob prevzemu: " . html_entity_decode(wp_strip_all_tags($order->get_formatted_order_total()), ENT_QUOTES, 'UTF-8') . "\n" : "Stanje plačila preveri v svojem naročilu.\n");
-    $message = (string) apply_filters('zvij_dispatch_message', $message, $order);
-    $subject = 'Tvoje naročilo #' . $order->get_order_number() . ' je poslano';
-    // Same header, footer and styles as the other WooCommerce emails the customer receives.
+    $message = (string) apply_filters('zvij_dispatch_message', $message, $order, $custom);
+    return ['subject' => 'Tvoje naročilo #' . $order->get_order_number() . ' je poslano', 'heading' => 'Naročilo #' . $order->get_order_number() . ' je na poti', 'text' => $message . "\nHvala, Zvij.si"];
+}
+/** Same header, footer and styles as the other WooCommerce emails the customer receives. */
+function zvij_send_customer_email(WC_Order $order, array $email): bool {
     $mailer = WC()->mailer();
-    $html = $mailer->wrap_message('Naročilo #' . $order->get_order_number() . ' je na poti', make_clickable(esc_html($message . "\nHvala, Zvij.si")));
-    $ok = (bool) $mailer->send($order->get_billing_email(), $subject, $html, "Content-Type: text/html; charset=UTF-8\r\n");
+    $html = $mailer->wrap_message($email['heading'], make_clickable(esc_html($email['text'])));
+    return (bool) $mailer->send($order->get_billing_email(), $email['subject'], $html, "Content-Type: text/html; charset=UTF-8\r\n");
+}
+function zvij_dispatch_notify(WC_Order $order, array $custom = []): bool {
+    $ok = zvij_send_customer_email($order, zvij_dispatch_email($order, (string) $order->get_meta('_zvij_tracking_number'), $custom));
     $order->update_meta_data('_zvij_dispatch_email', $ok ? 'sent' : 'failed');
     $order->save();
     return $ok;
 }
 
-function zvij_dispatch_update(WC_Order $order, string $action, string $tracking = '') {
+function zvij_dispatch_update(WC_Order $order, string $action, string $tracking = '', array $custom = []) {
     if ($order->has_status(['cancelled', 'failed', 'refunded', 'checkout-draft'])) { return new WP_Error('invalid_status', 'Tega naročila ni mogoče odpremiti.'); }
     if ($action === 'paid') {
         if (! zvij_dispatch_paid($order)) {
             $shipped = (bool) $order->get_meta('_zvij_dispatched_at');
-            $order->payment_complete();
+            // Payment is an internal fact; the customer gets the invoice with the dispatch email.
+            add_filter('woocommerce_email_enabled_customer_processing_order', '__return_false', 99);
+            try { $order->payment_complete(); } finally { remove_filter('woocommerce_email_enabled_customer_processing_order', '__return_false', 99); }
             if (! $order->get_date_paid()) { $order->set_date_paid(time()); $order->save(); }
             zvij_invoice_number($order);
-            $order->add_order_note('Plačilo ročno potrjeno v odpremnem pregledu. Uporabnik #' . get_current_user_id());
+            $order->add_order_note('Plačilo ročno potrjeno v odpremnem pregledu, kupec ni obveščen. Uporabnik #' . get_current_user_id());
             if ($shipped) { $order->update_status('zvij-shipped'); }
         }
         return true;
@@ -68,7 +77,7 @@ function zvij_dispatch_update(WC_Order $order, string $action, string $tracking 
     $order->update_meta_data('_zvij_dispatched_at', current_time('mysql'));
     $order->save();
     $order->update_status('zvij-shipped', 'Oddano na pošto. Uporabnik #' . get_current_user_id());
-    return zvij_dispatch_notify($order) ? true : new WP_Error('email_failed', 'Naročilo je označeno kot poslano, obvestila pa ni bilo mogoče poslati. Poskusi ponovno.');
+    return zvij_dispatch_notify($order, $custom) ? true : new WP_Error('email_failed', 'Naročilo je označeno kot poslano, obvestila pa ni bilo mogoče poslati. Poskusi ponovno.');
 }
 
 add_action('admin_post_zvij_dispatch', function (): void {
