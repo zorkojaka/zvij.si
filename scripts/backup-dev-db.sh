@@ -11,6 +11,8 @@ STAMP="$(date +%Y%m%d)"
 mkdir -p "$BACKUP_DIR"
 
 # DB dump prek mariadb containerja (geslo je v env containerja).
+# razvojna trgovina teče le po potrebi (scripts/dev.sh): ko je ustavljena, ni kaj kopirati
+if [ "$(docker inspect -f '{{.State.Running}}' zvij-dev-mariadb 2>/dev/null)" != "true" ]; then echo "$(date -Is) dev ustavljen, kopija preskočena"; exit 0; fi
 docker exec zvij-dev-mariadb sh -c 'mariadb-dump -u root -p"$MARIADB_ROOT_PASSWORD" --single-transaction zvij_dev' \
   | gzip > "$BACKUP_DIR/db-$STAMP.sql.gz.tmp"
 mv "$BACKUP_DIR/db-$STAMP.sql.gz.tmp" "$BACKUP_DIR/db-$STAMP.sql.gz"

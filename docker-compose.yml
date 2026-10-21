@@ -70,6 +70,7 @@ services:
       - ./wp-content/plugins/zvij-core:/var/www/html/wp-content/plugins/zvij-core:ro
       - ./scripts:/var/www/html/scripts:ro
       - ./.deploy/php/uploads.ini:/usr/local/etc/php/conf.d/zvij-uploads.ini:ro
+      - ./.deploy/apache/mpm_prefork.conf:/etc/apache2/mods-available/mpm_prefork.conf:ro
       - ./data:/var/www/html/data:ro
     networks:
       - zvij_dev
