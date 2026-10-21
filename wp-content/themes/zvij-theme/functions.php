@@ -64,13 +64,23 @@ add_action('wp_enqueue_scripts', function (): void {
 });
 
 /**
+ * Ekipa trgovine (prijavljeni skrbniki in upravitelji trgovine) se v analitiki ne šteje.
+ * Prijavljeni kupci se štejejo.
+ */
+function zvij_analitika_izkljucena(): bool
+{
+    return is_user_logged_in() && (current_user_can('manage_woocommerce') || current_user_can('manage_options'));
+}
+
+/**
  * Plausible (samohostan na analitika.zvij.si): brez piškotkov, zato se
  * nalaga brez privolitve. data-domain sledi trenutni domeni, da ob
  * migraciji dev -> zvij.si samodejno poroča v pravi dashboard.
+ * Strežnik (agenti, posnetki) je izključen v Plausiblu po IP-ju.
  */
 add_action('wp_head', function (): void {
     $host = (string) wp_parse_url(home_url(), PHP_URL_HOST);
-    if ($host === '') {
+    if ($host === '' || zvij_analitika_izkljucena()) {
         return;
     }
 
@@ -88,7 +98,7 @@ add_action('woocommerce_thankyou', function ($order_id): void {
         return;
     }
 
-    if ($order->get_meta('_zvij_plausible_purchase') !== '') {
+    if ($order->get_meta('_zvij_plausible_purchase') !== '' || zvij_analitika_izkljucena()) {
         return;
     }
 
@@ -104,6 +114,29 @@ add_action('woocommerce_thankyou', function ($order_id): void {
     </script>
     <?php
 });
+
+/**
+ * Izklop štetja za napravo brez prijave (npr. telefon ekipe): ?zvij_analitika=izklop
+ * nastavi plausible_ignore v brskalniku (Plausible ga upošteva), ?zvij_analitika=vklop ga odstrani.
+ */
+add_action('wp_footer', function (): void {
+    $ukaz = isset($_GET['zvij_analitika']) ? sanitize_key(wp_unslash($_GET['zvij_analitika'])) : '';
+    if ($ukaz !== 'izklop' && $ukaz !== 'vklop') {
+        return;
+    }
+    $izklop = $ukaz === 'izklop';
+    $besedilo = $izklop
+        ? 'Ta naprava se v analitiki zvij.si ne šteje več. Velja v tem brskalniku, dokler ne odprete ?zvij_analitika=vklop.'
+        : 'Ta naprava se v analitiki zvij.si spet šteje.';
+    ?>
+    <script>
+      try { <?php echo $izklop ? "localStorage.setItem('plausible_ignore', 'true');" : "localStorage.removeItem('plausible_ignore');"; ?> } catch (e) {}
+    </script>
+    <div role="status" style="position:fixed;left:16px;right:16px;bottom:16px;z-index:99999;max-width:520px;margin:0 auto;padding:14px 16px;border-radius:12px;background:#111827;color:#fff;font:15px/1.45 system-ui,sans-serif;box-shadow:0 8px 28px rgba(0,0,0,.3)">
+      <?php echo esc_html($besedilo); ?>
+    </div>
+    <?php
+}, 99);
 
 remove_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10);
 remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_meta', 40);
