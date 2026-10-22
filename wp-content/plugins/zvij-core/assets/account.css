@@ -41,3 +41,24 @@
   .zv-acc-media, .zv-acc-card--wide .zv-acc-media { aspect-ratio: auto; min-height: 64px; }
   .zv-acc-code { font-size: 20px; }
 }
+
+/* Account artwork keeps full product framing; only the welcome uses an overlay. */
+.zv-acc-media--photo,.zv-acc-card--wide .zv-acc-media--photo{display:block;position:relative;aspect-ratio:3 / 1;height:auto;min-height:0;margin:0;border:0;border-radius:0;background:#dededb;overflow:hidden}
+.zv-acc-media--photo img{display:block;width:100%;height:auto;aspect-ratio:3 / 1;object-fit:contain;margin:0}
+.zv-acc-equation{position:absolute;left:47%;top:25%;width:28%;text-align:center;color:#171a15;font-size:16px;font-weight:600;line-height:1.35;letter-spacing:0;text-transform:none}
+.zv-acc-equation strong{font-size:22px}
+.zv-acc-image-note{padding:12px 20px 0!important;margin:0!important;font-size:14px;line-height:1.5;color:var(--zvij-text,#171a15)}
+.zv-acc-image-note small{display:block;font-size:11px;opacity:.65;margin-top:4px}
+.zv-acc-hello{position:relative;isolation:isolate;background:#161512;min-height:260px;aspect-ratio:3 / 1;display:flex;align-items:center;color:#fff}
+.zv-acc-hello .zv-acc-media--photo{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;z-index:-2;background:#161512}
+.zv-acc-hello .zv-acc-media--photo img{width:100%;height:100%;object-fit:contain;object-position:center}
+.zv-acc-hello .zv-acc-body{max-width:52%;padding:30px;color:#fff}
+.zv-acc-hello h2,.zv-acc-hello p{color:#fff!important}
+.zv-acc-hello .zv-acc-links a{color:#fff!important;border-color:#ffffff73;background:#14171255}
+.zv-acc-hello .zv-acc-links a:hover{background:#ffffff24}
+@media(max-width:600px){
+ .zv-acc-hello{min-height:340px;aspect-ratio:auto;align-items:flex-start}
+ .zv-acc-hello .zv-acc-body{max-width:100%;padding:22px 18px}
+ .zv-acc-hello .zv-acc-media--photo img{object-fit:contain;object-position:center bottom}
+ .zv-acc-equation{font-size:12px;top:22%}.zv-acc-equation strong{font-size:17px}
+}
