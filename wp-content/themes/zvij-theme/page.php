@@ -114,7 +114,7 @@ while (have_posts()) :
             <p>Zvij.si je nastal iz preproste ideje: vse za tvoj ritual naj bo na enem mestu — kvalitetno, pošteno in brez iskanja po petih trgovinah.</p>
             <p>DUBI filtri, tulci, papir, vžigalniki in CBD čaj — vsako stvar izberemo z mero in okusom, ker jo sami uporabljamo. Za vsakim izdelkom stoji nekdo, ki ga je preizkusil.</p>
             <p>Verjamemo v diskretnost — pakiranje brez oznak, poštene cene brez presenečenj in skupnost, ki jo gradimo skupaj. Tvoj vajb, tvoja pravila. Mi poskrbimo, da imaš vse pri roki.</p>
-            <p class="zv-about-story__note">Zvij.si je namenjen polnoletnim osebam (18+).</p>
+            <p class="zv-about-story__note">Pri naročilu CBD/CBG vršičkov zahtevamo potrditev polnoletnosti (18+).</p>
           </div>
         </section>
         <?php $articles = new WP_Query(['post_type' => 'post', 'post_status' => 'publish', 'posts_per_page' => 3, 'ignore_sticky_posts' => true]); ?>

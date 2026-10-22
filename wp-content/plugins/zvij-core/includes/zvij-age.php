@@ -1,116 +1,98 @@
 <?php
 /**
- * ZVIJ — starostna omejitev 18+.
- *
- * Dve ravni:
- *  1. Vstopno okno ob prvem obisku (»Si star vsaj 18 let?«). Odgovor se
- *     zapomni v piškotku `zvij_age` (nujen za izpolnitev zakonske omejitve,
- *     zato ni vezan na privolitev za piškotke). Pravne strani (pogoji,
- *     zasebnost, vračila) so dostopne brez potrditve.
- *  2. Obvezna potrditev na blagajni. Brez kljukice naročila ni mogoče oddati;
- *     čas potrditve se shrani na naročilo (`_zvij_age_confirmed`) kot dokaz.
+ * Confirmation at checkout for carts containing CBD/CBG flowers only.
+ * This is a shop policy, not a determination of the products' legal status.
+ * No entrance dialog or age-confirmation cookie is created.
  */
-
 if (! defined('ABSPATH')) {
     exit;
 }
 
-/** Strani, ki morajo biti berljive brez potrditve starosti. */
-function zvij_age_is_exempt_page(): bool {
-    $ids = array_filter([
-        (int) get_option('woocommerce_terms_page_id'),
-        (int) get_option('wp_page_for_privacy_policy'),
-        (int) get_option('woocommerce_refund_returns_page_id'),
-    ]);
-    return $ids && is_page($ids);
+function zvij_age_product_requires_confirmation($product): bool {
+    if (! $product instanceof WC_Product) {
+        return false;
+    }
+    $id = $product->get_parent_id() ?: $product->get_id();
+    $category = defined('ZVIJ_GRAM_CATEGORY') ? ZVIJ_GRAM_CATEGORY : 'cbd-cbg-vrsicki';
+    return has_term($category, 'product_cat', $id);
 }
 
-function zvij_age_gate_render(): void {
-    if (is_admin() || zvij_age_is_exempt_page()) {
+function zvij_age_cart_requires_confirmation(): bool {
+    if (! function_exists('WC') || ! WC()->cart) {
+        return false;
+    }
+    foreach (WC()->cart->get_cart() as $item) {
+        if ((float) ($item['quantity'] ?? 0) <= 0) {
+            continue;
+        }
+        $product = $item['data'] ?? null;
+        if (! $product instanceof WC_Product) {
+            $product = wc_get_product(! empty($item['variation_id']) ? $item['variation_id'] : ($item['product_id'] ?? 0));
+        }
+        if (zvij_age_product_requires_confirmation($product)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function zvij_age_order_requires_confirmation(WC_Order $order): bool {
+    foreach ($order->get_items() as $item) {
+        if ($item->get_quantity() > 0 && zvij_age_product_requires_confirmation($item->get_product())) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function zvij_age_is_confirmed(array $posted): bool {
+    return isset($posted['zvij_age_confirm']) && is_scalar($posted['zvij_age_confirm'])
+        && (string) $posted['zvij_age_confirm'] === '1';
+}
+
+function zvij_age_checkout_render(): void {
+    if (! zvij_age_cart_requires_confirmation()) {
         return;
     }
-    $terms = get_permalink((int) get_option('woocommerce_terms_page_id'));
-    ?>
-    <style>
-      .zv-age{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;padding:1.25rem;background:rgba(17,19,16,.82);backdrop-filter:blur(6px)}
-      .zv-age[hidden]{display:none}
-      .zv-age__box{max-width:26rem;width:100%;background:var(--zvij-panel,#fff);color:var(--zvij-text,#14160f);border-radius:var(--zvij-radius,16px);padding:1.75rem 1.5rem;text-align:center;box-shadow:0 24px 70px rgba(0,0,0,.35)}
-      .zv-age__badge{display:inline-block;font-weight:800;font-size:1.6rem;line-height:1;padding:.55rem .8rem;border-radius:999px;background:var(--zvij-lime,#c8f24c);color:#14160f;margin-bottom:.9rem}
-      .zv-age__box h2{margin:0 0 .5rem;font-size:1.3rem}
-      .zv-age__box p{margin:0 0 1.2rem;color:var(--zvij-muted,#6f7268);font-size:.95rem;line-height:1.5}
-      .zv-age__actions{display:flex;gap:.6rem}
-      .zv-age__actions button{flex:1;cursor:pointer;border-radius:999px;font-weight:700;font-size:.95rem;padding:.75rem 1rem;border:1px solid var(--zvij-line,#e3e1d9);background:transparent;color:inherit}
-      .zv-age__actions .zv-age__yes{background:var(--zvij-text,#14160f);border-color:var(--zvij-text,#14160f);color:var(--zvij-bg,#f5f4f0)}
-      .zv-age__no-msg{margin-top:1rem!important;font-weight:600;color:inherit!important}
-      .zv-age__small{font-size:.8rem!important;margin:1rem 0 0!important}
-      .zv-age__small a{color:inherit}
-      html.zv-age-open,html.zv-age-open body{overflow:hidden}
-    </style>
-    <div class="zv-age" id="zvij-age" role="dialog" aria-modal="true" aria-labelledby="zvij-age-title" hidden>
-      <div class="zv-age__box">
-        <span class="zv-age__badge">18+</span>
-        <h2 id="zvij-age-title"><?php esc_html_e('Si star vsaj 18 let?', 'zvij-core'); ?></h2>
-        <p><?php esc_html_e('Zvij.si prodaja kadilski pribor in vršičke za čaj izključno polnoletnim osebam.', 'zvij-core'); ?></p>
-        <div class="zv-age__actions">
-          <button type="button" data-age="no"><?php esc_html_e('Ne', 'zvij-core'); ?></button>
-          <button type="button" data-age="yes" class="zv-age__yes"><?php esc_html_e('Da, star sem 18+', 'zvij-core'); ?></button>
-        </div>
-        <p class="zv-age__no-msg" data-age-no hidden><?php esc_html_e('Žal ti strani ne smemo prikazati. Vrni se, ko boš polnoleten.', 'zvij-core'); ?></p>
-        <?php if ($terms) : ?>
-          <p class="zv-age__small"><a href="<?php echo esc_url($terms); ?>"><?php esc_html_e('Pogoji poslovanja', 'zvij-core'); ?></a></p>
-        <?php endif; ?>
-      </div>
-    </div>
-    <script>
-    (function(){
-      var el=document.getElementById('zvij-age');
-      if(!el||document.cookie.split('; ').indexOf('zvij_age=18')!==-1){return;}
-      el.hidden=false;document.documentElement.classList.add('zv-age-open');
-      var yes=el.querySelector('[data-age="yes"]');if(yes){yes.focus();}
-      el.addEventListener('click',function(e){
-        var b=e.target.closest('[data-age]');if(!b){return;}
-        if(b.getAttribute('data-age')==='yes'){
-          var d=new Date();d.setTime(d.getTime()+365*864e5);
-          document.cookie='zvij_age=18;expires='+d.toUTCString()+';path=/;SameSite=Lax';
-          el.hidden=true;document.documentElement.classList.remove('zv-age-open');
-        }else{
-          el.querySelector('.zv-age__actions').hidden=true;
-          el.querySelector('[data-age-no]').hidden=false;
-        }
-      });
-    })();
-    </script>
-    <?php
-}
-add_action('wp_footer', 'zvij_age_gate_render', 90);
-
-/** Obvezna kljukica na blagajni, tik pred gumbom za oddajo. */
-add_action('woocommerce_review_order_before_submit', function (): void {
-    $checked = ! empty($_POST['zvij_age_confirm']); // phpcs:ignore WordPress.Security.NonceVerification
+    $posted = $_POST; // phpcs:ignore WordPress.Security.NonceVerification
+    // WooCommerce replaces this fragment when the checkout/cart changes.
+    if (isset($posted['post_data']) && is_string($posted['post_data'])) {
+        parse_str(wp_unslash($posted['post_data']), $posted);
+    }
     ?>
     <p class="form-row validate-required zvij-age-confirm" id="zvij_age_confirm_field">
       <label class="woocommerce-form__label woocommerce-form__label-for-checkbox checkbox">
-        <input type="checkbox" class="woocommerce-form__input woocommerce-form__input-checkbox input-checkbox" name="zvij_age_confirm" id="zvij_age_confirm" value="1" <?php checked($checked); ?>>
-        <span><?php esc_html_e('Potrjujem, da sem star vsaj 18 let.', 'zvij-core'); ?></span>&nbsp;<abbr class="required" title="<?php esc_attr_e('obvezno', 'zvij-core'); ?>">*</abbr>
+        <input type="checkbox" class="woocommerce-form__input woocommerce-form__input-checkbox input-checkbox" name="zvij_age_confirm" id="zvij_age_confirm" value="1" required aria-required="true" <?php checked(zvij_age_is_confirmed($posted)); ?>>
+        <span><?php esc_html_e('Potrjujem, da sem star vsaj 18 let. Potrditev velja za CBD/CBG vršičke v tem naročilu.', 'zvij-core'); ?></span>&nbsp;<abbr class="required" title="<?php esc_attr_e('obvezno', 'zvij-core'); ?>">*</abbr>
       </label>
     </p>
     <?php
-}, 5);
+}
+add_action('woocommerce_review_order_before_submit', 'zvij_age_checkout_render', 5);
 
-add_action('woocommerce_checkout_process', function (): void {
-    if (empty($_POST['zvij_age_confirm'])) { // phpcs:ignore WordPress.Security.NonceVerification
-        wc_add_notice(__('Za oddajo naročila potrdi, da si star vsaj 18 let.', 'zvij-core'), 'error');
+function zvij_age_checkout_validate(): void {
+    if (zvij_age_cart_requires_confirmation() && ! zvij_age_is_confirmed($_POST)) { // phpcs:ignore WordPress.Security.NonceVerification
+        wc_add_notice(__('Za nakup CBD/CBG vršičkov potrdi, da si star vsaj 18 let.', 'zvij-core'), 'error');
     }
-});
+}
+add_action('woocommerce_checkout_process', 'zvij_age_checkout_validate');
 
-add_action('woocommerce_checkout_create_order', function ($order): void {
-    if (! empty($_POST['zvij_age_confirm'])) { // phpcs:ignore WordPress.Security.NonceVerification
-        $order->update_meta_data('_zvij_age_confirmed', current_time('mysql'));
+function zvij_age_checkout_save($order): void {
+    if (! $order instanceof WC_Order || ! zvij_age_order_requires_confirmation($order)) {
+        return;
     }
-});
+    if (! zvij_age_is_confirmed($_POST)) { // phpcs:ignore WordPress.Security.NonceVerification
+        throw new Exception(__('Za nakup CBD/CBG vršičkov potrdi, da si star vsaj 18 let.', 'zvij-core'));
+    }
+    $order->update_meta_data('_zvij_age_confirmed', current_time('mysql'));
+}
+add_action('woocommerce_checkout_create_order', 'zvij_age_checkout_save');
 
 add_action('woocommerce_admin_order_data_after_billing_address', function ($order): void {
     $at = (string) $order->get_meta('_zvij_age_confirmed');
+    if ($at === '' && ! zvij_age_order_requires_confirmation($order)) {
+        return;
+    }
     echo '<p><strong>' . esc_html__('Starost 18+', 'zvij-core') . ':</strong> '
         . ($at !== '' ? esc_html(sprintf(__('potrjeno %s', 'zvij-core'), mysql2date('j. n. Y H:i', $at))) : esc_html__('ni potrditve', 'zvij-core'))
         . '</p>';
