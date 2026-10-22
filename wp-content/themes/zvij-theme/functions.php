@@ -108,8 +108,8 @@ add_action('woocommerce_thankyou', function ($order_id): void {
     <script>
       window.plausible = window.plausible || function () { (window.plausible.q = window.plausible.q || []).push(arguments); };
       window.plausible('purchase', {
-        revenue: { currency: '<?php echo esc_js($order->get_currency()); ?>', amount: '<?php echo esc_js($order->get_total()); ?>' },
-        props: { order: '<?php echo esc_js((string) $order_id); ?>' }
+        revenue: { currency: '<?php echo esc_js($order->get_currency()); ?>', amount: '<?php echo esc_js($order->get_total()); ?>' }
+        // No order/customer identifier is sent to analytics.
       });
     </script>
     <?php
@@ -1187,3 +1187,20 @@ add_filter('woocommerce_add_to_cart_fragments', function (array $fragments): arr
     $fragments['.site-cart b'] = '<b>' . esc_html((string) WC()->cart->get_cart_contents_count()) . '</b>';
     return $fragments;
 });
+
+/** Keep the former returns URL useful for existing links and bookmarks. */
+add_action('template_redirect', function (): void {
+    $path = wp_parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
+    if (untrailingslashit((string) $path) === '/vracila-in-reklamacije') {
+        wp_safe_redirect(home_url('/refund_returns/'), 301);
+        exit;
+    }
+}, 1);
+
+/** An unknown shipping weight is not useful product information. */
+add_filter('woocommerce_display_product_attributes', function (array $attributes, $product): array {
+    if ($product instanceof WC_Product && $product->get_slug() === 'zvij-si-jollysafe') {
+        unset($attributes['weight']);
+    }
+    return $attributes;
+}, 20, 2);

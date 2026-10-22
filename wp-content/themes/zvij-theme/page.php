@@ -152,7 +152,7 @@ while (have_posts()) :
       <header class="page-hero">
         <p class="eyebrow">Zvij.si</p>
         <h1><?php the_title(); ?></h1>
-        <div class="page-hero__intro"><?php the_excerpt(); ?></div>
+        <?php if (has_excerpt()) : ?><div class="page-hero__intro"><?php the_excerpt(); ?></div><?php endif; ?>
       </header>
       <div class="content-card entry-content"><?php the_content(); ?></div>
       <div class="page-actions">

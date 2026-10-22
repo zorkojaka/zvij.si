@@ -1,16 +1,9 @@
 <?php
 /**
- * ZVIJ — obvestilo o piškotkih (GDPR/ePrivacy).
- *
- * Nujni piškotki (WooCommerce košarica/seja, WordPress) se naložijo vedno.
- * Nenujni (analitika/trženje) se NE naložijo brez izrecne privolitve — okno je
- * ločeno od članstva/nakupa, zavrnitev je enako preprosta kot privolitev.
- *
- * Stanje privolitve: piškotek `zvij_consent` = "all" | "necessary" (180 dni).
- * JS izpostavi `window.zvijConsent = {necessary:true, analytics:bool}` in sproži
- * dogodek `zvij:consent` — morebitni analitični skripti (npr. GA) naj se naložijo
- * šele, ko je `analytics` true (ali ob tem dogodku). Ponovni prikaz:
- * `window.zvijOpenCookieSettings()` (povezava »Nastavitve piškotkov« v nogi).
+ * Informativno obvestilo: nujni piškotki trgovine in Plausible brez analitičnih
+ * piškotkov. Gumb shrani potrditev obvestila za 180 dni. Stara izbira "all"
+ * ostane prepoznana, vendar ne dovoljuje prihodnjih nenujnih sledilnikov.
+ * Za morebitne prihodnje sledilnike je potrebna ločena veljavna privolitev.
  */
 
 if (! defined('ABSPATH')) {
@@ -38,12 +31,11 @@ function zvij_cookie_consent_render(): void {
     <section class="zv-cookie" id="zvij-cookie" aria-label="<?php esc_attr_e('Obvestilo o piškotkih', 'zvij-core'); ?>" hidden>
       <div class="zv-cookie__inner">
         <p class="zv-cookie__text">
-          <?php esc_html_e('Uporabljamo nujne piškotke za delovanje trgovine. S tvojo privolitvijo bomo uporabljali tudi analitične piškotke.', 'zvij-core'); ?>
+          <?php esc_html_e('Za delovanje trgovine uporabljamo nujne piškotke. Statistiko obiska merimo z lastnim Plausible brez analitičnih piškotkov.', 'zvij-core'); ?>
           <?php if ($more) : ?><a href="<?php echo esc_url($more); ?>"><?php esc_html_e('Več o piškotkih', 'zvij-core'); ?></a><?php endif; ?>
         </p>
         <div class="zv-cookie__actions">
-          <button type="button" data-consent="necessary"><?php esc_html_e('Samo nujni', 'zvij-core'); ?></button>
-          <button type="button" data-consent="all" class="zv-cookie__accept"><?php esc_html_e('Sprejmi vse', 'zvij-core'); ?></button>
+          <button type="button" data-consent="necessary"><?php esc_html_e('Razumem', 'zvij-core'); ?></button>
         </div>
       </div>
     </section>
@@ -53,7 +45,7 @@ function zvij_cookie_consent_render(): void {
       if(!el){return;}
       function get(n){return document.cookie.split('; ').reduce(function(a,c){var p=c.split('=');return p[0]===n?decodeURIComponent(p[1]||''):a;},'');}
       function set(n,v,days){var d=new Date();d.setTime(d.getTime()+days*864e5);document.cookie=n+'='+encodeURIComponent(v)+';expires='+d.toUTCString()+';path=/;SameSite=Lax';}
-      function apply(v){window.zvijConsent={necessary:true,analytics:v==='all'};try{document.dispatchEvent(new CustomEvent('zvij:consent',{detail:window.zvijConsent}));}catch(e){}}
+      function apply(v){window.zvijConsent={necessary:true,analytics:false};try{document.dispatchEvent(new CustomEvent('zvij:consent',{detail:window.zvijConsent}));}catch(e){}}
       var cur=get(NAME);
       if(cur==='all'||cur==='necessary'){apply(cur);}else{el.hidden=false;}
       el.addEventListener('click',function(e){var b=e.target.closest('[data-consent]');if(!b){return;}var v=b.getAttribute('data-consent');set(NAME,v,180);apply(v);el.hidden=true;});
