@@ -997,7 +997,7 @@ function zvij_render_homepage_product_carousel(): void {
         <div>
           <p class="zv-carousel__label"><?php esc_html_e('IZBRANO ZA TVOJ SETUP', 'zvij-theme'); ?></p>
           <h2 id="zv-carousel-title"><?php esc_html_e('Poglej, kaj se trenutno zvija.', 'zvij-theme'); ?></h2>
-          <p><?php esc_html_e('Filtri, vršički in stvari, ki sodijo zraven.', 'zvij-theme'); ?></p>
+          <p><?php esc_html_e('Grinderji, filtri, rizle in stvari, ki sodijo zraven.', 'zvij-theme'); ?></p>
         </div>
         <div class="zv-carousel__controls">
           <button type="button" data-carousel-prev aria-label="<?php esc_attr_e('Prejšnji izdelki', 'zvij-theme'); ?>">‹</button>
