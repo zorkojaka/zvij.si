@@ -61,7 +61,7 @@
 :root[data-theme="dark"] .zv-member__card { color: #f1f3ec; }
 :root[data-theme="dark"] .zv-service-strip [data-ico]::before { filter: brightness(2) saturate(.65); }
 :root[data-theme="dark"] .zvij-credit-note { background: #293724; }
-:root[data-theme="dark"] :is(.zv-carousel__label, .zv-carousel-card__cat) { color: var(--zvij-accent); }
+:root[data-theme="dark"] .zv-carousel__label { color: var(--zvij-accent); }
 :root[data-theme="dark"] .zv-edit__copy h2 { color: #f1f3ec; }
 :root[data-theme="dark"] .zv-carousel-card__vars button:not(.on),
 :root[data-theme="dark"] .woocommerce ul.products li.product .zv-shop-vars .zv-carousel-card__vars button:not(.on) {

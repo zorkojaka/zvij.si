@@ -187,55 +187,32 @@
       }
 
       function updateImagePack(choice) {
-        var image = card.querySelector('.zv-carousel-card__image');
         var shopCard = card.closest('.zv-pcard');
-        if (!image && shopCard) {
-          image = shopCard.querySelector('.zv-pcard__media');
-        }
-        if (!image) {
+        var image = shopCard && shopCard.querySelector('.zv-pcard__media');
+        var photo = image && image.querySelector('img');
+        if (!photo) {
           return;
         }
-        image.querySelectorAll('.zv-carousel-card__image-clone').forEach(function (clone) {
-          clone.remove();
-        });
-        var photo = image.querySelector('img');
         var fiveSrc = image.getAttribute('data-pack-five-src');
         // Variacija z lastno sliko (papir, barva) ima prednost pred 1 g/5 g logiko.
         var ownSrc = choice ? choice.getAttribute('data-image-src') : '';
         // singleSrc pomeni, da je bila slika že zamenjana — vrnitev na izvirnik.
-        if (photo && (ownSrc || fiveSrc || photo.dataset.singleSrc)) {
-          if (!photo.dataset.singleSrc) {
-            photo.dataset.singleSrc = photo.getAttribute('src') || '';
-            photo.dataset.singleSrcset = photo.getAttribute('srcset') || '';
-            photo.dataset.singleSizes = photo.getAttribute('sizes') || '';
-          }
-          var target = ownSrc || (fiveSrc && choiceIsFiveGram(choice) ? fiveSrc : '');
-          var five = target !== '';
-          photo.setAttribute('src', five ? target : photo.dataset.singleSrc);
-          if (five) {
-            photo.removeAttribute('srcset');
-            photo.removeAttribute('sizes');
-          } else {
-            if (photo.dataset.singleSrcset) { photo.setAttribute('srcset', photo.dataset.singleSrcset); }
-            if (photo.dataset.singleSizes) { photo.setAttribute('sizes', photo.dataset.singleSizes); }
-          }
-          image.classList.remove('is-pack-5');
+        if (!ownSrc && !fiveSrc && !photo.dataset.singleSrc) {
           return;
         }
-        if (shopCard) { return; }
-        image.classList.toggle('is-pack-5', choiceIsFiveGram(choice));
-        if (!image.classList.contains('is-pack-5')) {
-          return;
+        if (!photo.dataset.singleSrc) {
+          photo.dataset.singleSrc = photo.getAttribute('src') || '';
+          photo.dataset.singleSrcset = photo.getAttribute('srcset') || '';
+          photo.dataset.singleSizes = photo.getAttribute('sizes') || '';
         }
-        var original = image.querySelector('img:not(.zv-carousel-card__image-clone)');
-        if (!original) {
-          return;
-        }
-        for (var i = 0; i < 2; i += 1) {
-          var clone = original.cloneNode(true);
-          clone.classList.add('zv-carousel-card__image-clone');
-          clone.setAttribute('aria-hidden', 'true');
-          image.insertBefore(clone, original.nextSibling);
+        var target = ownSrc || (fiveSrc && choiceIsFiveGram(choice) ? fiveSrc : '');
+        photo.setAttribute('src', target || photo.dataset.singleSrc);
+        if (target) {
+          photo.removeAttribute('srcset');
+          photo.removeAttribute('sizes');
+        } else {
+          if (photo.dataset.singleSrcset) { photo.setAttribute('srcset', photo.dataset.singleSrcset); }
+          if (photo.dataset.singleSizes) { photo.setAttribute('sizes', photo.dataset.singleSizes); }
         }
       }
 
@@ -347,7 +324,7 @@
     var track = root.querySelector('[data-carousel-track]');
     var prev = root.querySelector('[data-carousel-prev]');
     var next = root.querySelector('[data-carousel-next]');
-    var originals = Array.prototype.slice.call(root.querySelectorAll('[data-carousel-card]'));
+    var originals = track ? Array.prototype.slice.call(track.children) : [];
     if (!viewport || !track || originals.length === 0) {
       return;
     }
@@ -382,7 +359,7 @@
     }
 
     function measure() {
-      var first = track.querySelector('[data-carousel-card]');
+      var first = track.firstElementChild;
       if (!first) {
         return;
       }
