@@ -26,7 +26,7 @@ add_action('after_setup_theme', function (): void {
 });
 
 add_action('wp_enqueue_scripts', function (): void {
-    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.86');
+    wp_enqueue_style('zvij-theme-style', get_stylesheet_uri(), [], '0.9.87');
     wp_enqueue_style('zvij-blog-layout', get_template_directory_uri() . '/assets/blog.css', ['zvij-theme-style'], '1.0.0');
 
     if (is_page('clan-zvij-si')) {
@@ -48,17 +48,17 @@ add_action('wp_enqueue_scripts', function (): void {
         if (function_exists('WC')) {
             wp_enqueue_script('wc-add-to-cart');
         }
-        wp_enqueue_script('zvij-home', get_template_directory_uri() . '/assets/home.js', ['jquery'], '0.9.41', true);
+        wp_enqueue_script('zvij-home', get_template_directory_uri() . '/assets/home.js', ['jquery'], '0.9.42', true);
     }
 
     wp_enqueue_script('zvij-site', get_template_directory_uri() . '/assets/site.js', [], '1.0.0', true);
-    wp_enqueue_script('zvij-swatches', get_template_directory_uri() . '/assets/swatches.js', ['jquery'], '1.0.0', true);
+    wp_enqueue_script('zvij-swatches', get_template_directory_uri() . '/assets/swatches.js', ['jquery'], '1.1.0', true);
     if (function_exists('is_shop') && is_shop()) {
         wp_enqueue_script('zvij-shop-jump', get_template_directory_uri() . '/assets/shop-jump.js', [], '1.2.0', true);
     }
     wp_enqueue_script('zvij-smoke', get_template_directory_uri() . '/assets/smoke.js', [], '1.2.0', true);
     wp_enqueue_script('zvij-analytics', get_template_directory_uri() . '/assets/analytics.js', ['jquery'], '0.1.0', true);
-    wp_enqueue_style('zvij-color-scheme', get_template_directory_uri() . '/assets/color-scheme.css', ['zvij-theme-style'], '1.0.1');
+    wp_enqueue_style('zvij-color-scheme', get_template_directory_uri() . '/assets/color-scheme.css', ['zvij-theme-style'], '1.0.2');
     // Run in the head so the saved theme is applied before the body is painted.
     wp_enqueue_script('zvij-color-scheme', get_template_directory_uri() . '/assets/color-scheme.js', [], '1.1.0', false);
 });
@@ -182,38 +182,44 @@ function zvij_per_unit_suffix(WC_Product $product): string
         : '';
 }
 
+/** Gumbi za izbiro različice (napis + naziv in cena); kartica in stran izdelka. */
+function zvij_variation_buttons_markup(WC_Product $product, array $variations): string
+{
+    [$hint, $group] = zvij_variation_choice_label($product);
+    $hidden = count($variations) === 1 ? ' hidden' : ''; // vršički po gramih: izbira ni potrebna
+    $html = '<div class="zv-carousel-card__hint"' . $hidden . '>' . esc_html($hint) . '</div>';
+    $html .= '<div class="zv-carousel-card__vars" role="group" aria-label="' . esc_attr($group) . '"' . $hidden . '>';
+    foreach ($variations as $i => $v) {
+        $html .= sprintf(
+            '<button type="button" data-variation-choice class="%1$s" aria-pressed="%2$s" data-variation-id="%3$d" data-product-id="%4$d" data-price="%5$s" data-image-src="%6$s" data-attrs="%7$s"><span class="zv-carousel-card__var-label">%8$s</span><span class="zv-carousel-card__var-price">%9$s</span></button>',
+            $i === 0 ? 'on' : '',
+            $i === 0 ? 'true' : 'false',
+            $v['id'],
+            $product->get_id(),
+            esc_attr(wp_strip_all_tags(wc_price((float) $v['raw_price']))),
+            esc_url($v['image']),
+            esc_attr(wp_json_encode($v['attrs'])),
+            esc_html($v['label']),
+            wp_kses_post(wc_price((float) $v['raw_price']))
+        );
+    }
+    return $html . '</div>';
+}
+
 function zvij_product_loop_buy_block(WC_Product $product): void
 {
     if ($product->is_type('variable')) {
-        $variations = zvij_homepage_carousel_variations($product);
+        $variations = zvij_product_variations($product);
         $default_variation = $variations[0] ?? [];
 
         if ($variations !== [] && $default_variation !== []) {
             ?>
             <div class="zv-shop-vars zv-carousel-card" data-product-id="<?php echo esc_attr((string) $product->get_id()); ?>" data-carousel-source="shop">
-              <?php $zvij_single_choice = count($variations) === 1; // vršički po gramih: izbira ni potrebna ?>
-              <?php [$zvij_choice_hint, $zvij_choice_group] = zvij_variation_choice_label($product); ?>
-              <div class="zv-carousel-card__hint"<?php echo $zvij_single_choice ? ' hidden' : ''; ?>><?php echo esc_html($zvij_choice_hint); ?></div>
-              <div class="zv-carousel-card__vars" role="group" aria-label="<?php echo esc_attr($zvij_choice_group); ?>"<?php echo $zvij_single_choice ? ' hidden' : ''; ?>>
-                <?php foreach ($variations as $variation_i => $variation) : ?>
-                  <button type="button"
-                    data-variation-choice
-                    class="<?php echo $variation_i === 0 ? 'on' : ''; ?>"
-                    aria-pressed="<?php echo $variation_i === 0 ? 'true' : 'false'; ?>"
-                    data-variation-id="<?php echo esc_attr((string) $variation['id']); ?>"
-                    data-product-id="<?php echo esc_attr((string) $product->get_id()); ?>"
-                    data-price="<?php echo esc_attr(wp_strip_all_tags(wc_price((float) $variation['raw_price']))); ?>"
-                    data-image-src="<?php echo esc_url($variation['image'] ?? ''); ?>"
-                    data-attrs="<?php echo esc_attr(wp_json_encode($variation['attrs'])); ?>">
-                    <span class="zv-carousel-card__var-label"><?php echo esc_html($variation['label']); ?></span>
-                    <span class="zv-carousel-card__var-price"><?php echo wp_kses_post(wc_price((float) $variation['raw_price'])); ?></span>
-                  </button>
-                <?php endforeach; ?>
-              </div>
+              <?php echo zvij_variation_buttons_markup($product, $variations); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in helper ?>
               <?php // Cena levo, gumb desno — na vseh karticah v isti zadnji vrstici. ?>
               <div class="zv-buyrow">
                 <p class="zv-shop-vars__price"><span data-price-out><?php echo wp_kses_post(wc_price((float) $default_variation['raw_price'])); ?></span> <?php echo zvij_per_unit_suffix($product); // phpcs:ignore WordPress.Security.EscapeOutput -- fiksen HTML ?></p>
-                <?php echo zvij_homepage_carousel_add_button($product, 0, $default_variation); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                <?php echo zvij_product_add_button($product, 0, $default_variation); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
               </div>
               <p class="zv-carousel-card__status" data-cart-status aria-live="polite"></p>
             </div>
@@ -831,7 +837,7 @@ function zvij_homepage_carousel_sort_value(WC_Product $product): array {
     ];
 }
 
-function zvij_homepage_carousel_product_visible(WC_Product $product): bool {
+function zvij_product_visible(WC_Product $product): bool {
     if ($product->get_status() !== 'publish') {
         return false;
     }
@@ -851,7 +857,7 @@ function zvij_homepage_carousel_product_visible(WC_Product $product): bool {
         }
     }
 
-    if ($product->is_type('variable') && zvij_homepage_carousel_variations($product) === []) {
+    if ($product->is_type('variable') && zvij_product_variations($product) === []) {
         return false;
     }
 
@@ -870,7 +876,7 @@ function zvij_homepage_carousel_products(): array {
         'orderby' => 'date',
         'order' => 'DESC',
     ]);
-    $products = array_values(array_filter($products, 'zvij_homepage_carousel_product_visible'));
+    $products = array_values(array_filter($products, 'zvij_product_visible'));
 
     usort($products, static function (WC_Product $a, WC_Product $b): int {
         return zvij_homepage_carousel_sort_value($a) <=> zvij_homepage_carousel_sort_value($b);
@@ -901,7 +907,13 @@ function zvij_product_pack_five_url(WC_Product $product): string {
     return $id ? (string) wp_get_attachment_image_url($id, 'medium_large') : '';
 }
 
-function zvij_homepage_carousel_variations(WC_Product $product): array {
+/**
+ * Različice, ki jih kupec lahko izbere (objavljene, s ceno, na zalogi). Ena funkcija
+ * za gumbe na kartici in strani izdelka ter za sličice različic.
+ *
+ * @return array<int,array{id:int,label:string,image:string,image_id:int,thumb:string,raw_price:float,grams:float,attrs:array}>
+ */
+function zvij_product_variations(WC_Product $product): array {
     if (! $product->is_type('variable')) {
         return [];
     }
@@ -909,10 +921,7 @@ function zvij_homepage_carousel_variations(WC_Product $product): array {
     $items = [];
     foreach ($product->get_children() as $variation_id) {
         $variation = wc_get_product($variation_id);
-        if (! $variation instanceof WC_Product_Variation) {
-            continue;
-        }
-        if (! zvij_homepage_carousel_product_visible($variation)) {
+        if (! $variation instanceof WC_Product_Variation || ! zvij_product_visible($variation)) {
             continue;
         }
 
@@ -931,14 +940,16 @@ function zvij_homepage_carousel_variations(WC_Product $product): array {
 
         // Lastna slika variacije (bel/nebeljen papir, barva tulca); ista kot
         // nadrejena pomeni »brez lastne« — tam ostane 1 g/5 g logika.
-        $image_id = (int) $variation->get_image_id('edit');
-        $image = $image_id && $image_id !== (int) $product->get_image_id()
-            ? (string) wp_get_attachment_image_url($image_id, 'medium_large')
-            : '';
+        $own_image = (int) $variation->get_image_id('edit');
+        $image_id = $own_image ?: (int) $product->get_image_id();
 
         $items[] = [
             'id' => $variation->get_id(),
-            'image' => $image,
+            'image' => $own_image && $own_image !== (int) $product->get_image_id()
+                ? (string) wp_get_attachment_image_url($own_image, 'medium_large')
+                : '',
+            'image_id' => $image_id,
+            'thumb' => (string) wp_get_attachment_image_url($image_id, 'thumbnail'),
             'label' => $label !== '' ? $label : $variation->get_name(),
             'raw_price' => (float) $variation->get_price(),
             'grams' => $grams,
@@ -949,7 +960,7 @@ function zvij_homepage_carousel_variations(WC_Product $product): array {
     return $items;
 }
 
-function zvij_homepage_carousel_add_button(WC_Product $product, int $position, array $default_variation = []): string {
+function zvij_product_add_button(WC_Product $product, int $position, array $default_variation = []): string {
     if ($product->is_type('variable')) {
         $variation_id = isset($default_variation['id']) ? (string) $default_variation['id'] : '';
         $attrs = isset($default_variation['attrs']) && is_array($default_variation['attrs']) ? wp_json_encode($default_variation['attrs']) : '{}';
@@ -1052,27 +1063,8 @@ add_filter('language_attributes', static function (string $output): string {
  * @return array<int,array{id:int,label:string,thumb:string,attrs:array}>
  */
 function zvij_variation_swatches(WC_Product $product): array {
-    if (! $product->is_type('variable')) {
-        return [];
-    }
-    $out = [];
-    $images = [];
-    foreach ($product->get_children() as $child_id) {
-        $variation = wc_get_product($child_id);
-        if (! $variation instanceof WC_Product_Variation || ! $variation->is_purchasable() || $variation->get_status() !== 'publish') {
-            continue;
-        }
-        $image_id = (int) ($variation->get_image_id('edit') ?: $product->get_image_id());
-        $attrs = $variation->get_variation_attributes();
-        $out[] = [
-            'id' => $variation->get_id(),
-            'label' => (string) (reset($attrs) ?: $variation->get_name()),
-            'thumb' => (string) wp_get_attachment_image_url($image_id, 'thumbnail'),
-            'attrs' => $attrs,
-        ];
-        $images[$image_id] = true;
-    }
-    return count($out) > 1 && count($images) > 1 ? $out : [];
+    $out = zvij_product_variations($product);
+    return count($out) > 1 && count(array_unique(array_column($out, 'image_id'))) > 1 ? $out : [];
 }
 
 /** »3 različice« z ednino, dvojino in množino. */
@@ -1116,12 +1108,25 @@ function zvij_variation_swatches_markup(WC_Product $product, string $context): s
     return $html;
 }
 
-/** Na strani izdelka: sličice nad izbiro različice. */
+/** Stran izdelka: sličice in gumbi različic kot na kartici; swatches.js jih poveže z Woo izbiro. */
 add_action('woocommerce_before_variations_form', static function (): void {
     global $product;
-    if ($product instanceof WC_Product) {
-        echo zvij_variation_swatches_markup($product, 'single'); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped above
+    if (! $product instanceof WC_Product) {
+        return;
     }
+    $variations = zvij_product_variations($product);
+    echo zvij_variation_swatches_markup($product, 'single'); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in helper
+    if ($variations !== []) {
+        echo zvij_variation_buttons_markup($product, $variations); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in helper
+    }
+});
+
+// Izbiro opravijo gumbi; Woo spustni meni ostane za obrazec, a skrit.
+add_filter('woocommerce_dropdown_variation_attribute_options_args', static function (array $args): array {
+    if (! empty($args['product']) && zvij_product_variations($args['product']) !== []) {
+        $args['class'] = trim(($args['class'] ?? '') . ' zv-native-variation-select');
+    }
+    return $args;
 });
 
 // Število v ikoni košarice se po AJAX dodajanju (tudi navadni Woo gumbi) osveži samo.

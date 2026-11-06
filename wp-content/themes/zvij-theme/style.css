@@ -340,9 +340,7 @@ a {
 
 .route-card,
 .content-card,
-.empty-shop,
-.woocommerce ul.products li.product,
-.woocommerce-page ul.products li.product {
+.empty-shop {
   background: rgba(255, 250, 241, 0.9);
   border: 1px solid var(--zvij-line);
   border-radius: var(--zvij-radius);
@@ -499,11 +497,10 @@ a {
   margin: 0;
 }
 
-.woocommerce ul.products,
-.woocommerce-page ul.products {
+.woocommerce ul.products {
   display: grid;
   gap: 1rem;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   margin: 0;
 }
 
@@ -515,15 +512,19 @@ a {
 /* Kartica po vzoru domačega karusela: slikovni pas čez celo širino zgoraj,
    telo spodaj. Eksplicitne grid vrstice (brez flex + auto marginov, ker
    Chromium tam napačno izračuna višino grid vrstice v ul.products). */
-.woocommerce ul.products li.product,
-.woocommerce-page ul.products li.product {
-  float: none;
-  margin: 0;
-  width: auto;
-  padding: 0;
+.woocommerce ul.products li.product {
+  background: rgba(255, 250, 242, 0.78);
+  border: 1px solid var(--zvij-line);
+  border-radius: 8px;
+  box-shadow: 0 16px 38px rgba(25, 18, 10, 0.06);
   display: grid;
+  float: none;
   grid-template-rows: auto 1fr;
+  margin: 0;
+  min-width: 0;
   overflow: hidden;
+  padding: 0;
+  width: auto;
 }
 
 .woocommerce ul.products li.product .zv-pcard__media {
@@ -1174,32 +1175,15 @@ a {
   width: 1px !important;
 }
 
-.zv-single-vars {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.55rem;
+/* Stran izdelka: isti gumbi različic kot na kartici; s sličicami jih ne kažemo. */
+.single-product form.variations_form .zv-carousel-card__vars {
+  margin-bottom: 0.85rem;
+  max-width: 360px;
 }
 
-.zv-single-var {
-  align-items: center;
-  background: var(--zvij-panel-alt);
-  border: 1px solid var(--zvij-line);
-  border-radius: 999px;
-  color: var(--zvij-text);
-  cursor: pointer;
-  display: inline-flex;
-  font: inherit;
-  font-weight: 950;
-  justify-content: center;
-  min-height: 42px;
-  min-width: 74px;
-  padding: 0.55rem 1rem;
-}
-
-.zv-single-var.on {
-  background: var(--zvij-text);
-  border-color: var(--zvij-text);
-  color: var(--zvij-bg);
+.single-product form.variations_form:has([data-swatches]) .zv-carousel-card__hint,
+.single-product form.variations_form:has([data-swatches]) .zv-carousel-card__vars {
+  display: none;
 }
 
 .single-product .single_variation_wrap {
@@ -2244,17 +2228,6 @@ a {
   color: var(--zvij-bg-soft);
 }
 
-.woocommerce ul.products,
-.woocommerce-page ul.products {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
-.woocommerce ul.products li.product,
-.woocommerce-page ul.products li.product {
-  background: var(--zvij-panel);
-  border-radius: var(--zvij-radius);
-}
-
 .woocommerce ul.products li.product a img {
   background: linear-gradient(135deg, var(--zvij-panel-alt), var(--zvij-panel));
 }
@@ -2284,8 +2257,7 @@ a {
   }
 
   .zv-reload-grid,
-  .woocommerce ul.products,
-  .woocommerce-page ul.products {
+  .woocommerce ul.products {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
@@ -2321,9 +2293,7 @@ a {
 .zv-kit-page-grid,
 .zv-reload-grid,
 .zv-service-strip,
-.zv-about-stats,
-.woocommerce ul.products,
-.woocommerce-page ul.products {
+.zv-about-stats {
     grid-template-columns: 1fr;
   }
 
@@ -2392,7 +2362,6 @@ a {
 
   .card-grid--four,
   .woocommerce ul.products,
-  .woocommerce-page ul.products,
   .zvij-product-context {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -2444,7 +2413,6 @@ a {
 
   .card-grid--four,
   .woocommerce ul.products,
-  .woocommerce-page ul.products,
   .zvij-product-context {
     grid-template-columns: 1fr;
   }
@@ -3694,14 +3662,16 @@ body::before {
   will-change: transform;
 }
 
-.zv-carousel-card,
-.woocommerce ul.products > li.product {
+.zv-carousel ul.products.zv-carousel__track > li.product {
+  flex: 0 0 calc((100% - 4rem) / 5);
+}
+
+.zv-carousel-card {
   background: rgba(255, 250, 242, 0.78);
   border: 1px solid var(--zvij-line);
   border-radius: 8px;
   box-shadow: 0 16px 38px rgba(25, 18, 10, 0.06);
   display: grid;
-  flex: 0 0 calc((100% - 4rem) / 5);
   grid-template-rows: auto 1fr;
   min-width: 0;
   overflow: hidden;
@@ -5120,8 +5090,7 @@ body.admin-bar .site-header { top: 32px; }
    width: 48 % z bolj specificnim izbirnikom ([class*="columns-"]), zato je bila
    na telefonu vsaka kartica v enem stolpcu le pol zaslona siroka.
    Kartice postavlja nasa mreza, ne WooCommercov float. */
-.woocommerce ul.products[class*="columns-"] li.product,
-.woocommerce-page ul.products[class*="columns-"] li.product {
+.woocommerce ul.products[class*="columns-"] li.product {
   float: none;
   margin: 0;
   width: auto;

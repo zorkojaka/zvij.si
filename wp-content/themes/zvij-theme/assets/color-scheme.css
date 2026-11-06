@@ -52,7 +52,7 @@
   background: var(--zvij-panel);
   border-color: var(--zvij-line);
 }
-:root[data-theme="dark"] :is(.woocommerce, .woocommerce-page) ul.products li.product,
+:root[data-theme="dark"] .woocommerce ul.products li.product,
 :root[data-theme="dark"] .single-product div.product .summary,
 :root[data-theme="dark"] .single-product .woocommerce-tabs {
   background: var(--zvij-panel);
