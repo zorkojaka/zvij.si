@@ -86,6 +86,10 @@ add_action('wp_head', function (): void {
 
     echo '<script defer data-domain="' . esc_attr($host) . '" src="https://analitika.zvij.si/js/script.revenue.js"></script>' . "\n";
     echo '<script>window.plausible=window.plausible||function(){(window.plausible.q=window.plausible.q||[]).push(arguments)};</script>' . "\n";
+    // Spider: obisk, kliki in oddaje za Lijak in Laboratorij (brez piškotkov), samo na živi domeni
+    if ($host === 'zvij.si') {
+        echo '<script defer src="https://web.spiderhub.si/stat.js" data-spider-stat="zvij-nova"></script>' . "\n";
+    }
 }, 5);
 
 /**
